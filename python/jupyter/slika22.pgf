@@ -1,0 +1,35 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[scale=1, line width=0.8pt,x=0.4cm,y=0.4cm, font=\footnotesize]
+\coordinate (A) at (-2,3);
+\coordinate (B) at (3,0);
+\coordinate (C) at (9,1);
+\coordinate (D) at (4,4);
+\coordinate (E) at (2,9);
+\coordinate (F) at (7,6); 
+\coordinate (H) at ($(B)!2!(C)$);
+\coordinate (G) at ($(A)!2!(D)$);
+\coordinate (K) at ($(E)!2!(D)$);
+\coordinate (J) at ($(F)!2!(C)$);
+\filldraw[deepskyblue,fill opacity=0.5] (D) -- (C) -- (H) -- (G) -- cycle;
+\filldraw[orange,fill opacity=0.5] (D) -- (C) -- (F) -- (E) -- cycle;
+\filldraw[orange,fill opacity=0.5] (D) -- (C) -- (J) -- (K) -- cycle;
+\filldraw[deepskyblue,fill opacity=0.5] (A) -- (B) -- (C) -- (D) -- cycle;
+\draw[shorten <=-1.5cm, shorten >=-1.5cm] (C) -- (D);
+\node[xslant=-1.2,yslant=-0.1] at ($(H)+(-1.3,0.3)$) {\rotatebox{10}{\rotatebox{2}{$\Pi_1$}}};
+\node[xslant=-0.7,yslant=-0.7] at ($(J)+(-1,1)$) {\rotatebox{-22}{$\Pi_2$}};
+\node[right] at ($(C)+(1cm,-1cm)$) {\normalsize$p$};
+\end{tikzpicture}

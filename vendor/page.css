@@ -1,0 +1,140 @@
+#container {
+    width: 100%;
+    margin: 0;
+}
+
+#content {
+    position: relative;
+    float: left;
+    left: 50px;
+    top: 50px;
+}
+
+#sidebar {
+    position: relative;
+    float: left;
+    left: 50px;
+    top: 50px;
+    padding-top: 100px;
+}
+
+#footer {
+    position: relative;
+    clear: both;
+}
+
+h1 {
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 28pt;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 15px;
+}
+
+#naslov {
+    background-color: #2A2B24;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    width: 100%;
+}
+
+#naslovBlok {
+    background-color: #2A2B24;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+body {
+    background-color: #e0d6db;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+p.size14 {
+    font-size: 14pt;
+    background-color: #FFFACD;
+    padding: 10px;
+    border: 1px solid #2A2B24;
+}
+
+span.razmak10 {
+    display: inline-block;
+    width: 10px;
+}
+
+span.razmak15 {
+    display: inline-block;
+    width: 15px;
+}
+
+.box {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 1em;
+  padding: 20px;
+  background-color: #FFFACD;
+  border: 1px solid #2A2B24;
+}
+
+
+.fbox {
+  display: inline-block;
+  background-color: #FFFACD;
+  vertical-align: middle;
+  margin: 0.5em;
+  padding: 5px 5px;
+  width:150px;
+  font-size:24px;
+  border: 2px solid #bd6416;
+  border-radius: 25px;
+}
+
+.sadrzaj {
+  display: inline-block;
+  width: 250px;
+  height: 400px;
+  background-color: #FFFACD;
+  border: 2px solid #2A2B24;
+  margin: 30pt;
+  vertical-align: top;
+  padding: 10px;
+}
+
+div.ui-slider-range {
+    background: #87CEEB;
+}
+
+div.ui-slider {
+position: relative;
+display: inline-block;
+}
+
+a:link {
+  text-decoration: none;
+  color : #4169E1;
+}
+
+a:visited {
+  color: #2A2B24;
+}
+
+a:hover {
+  color: #8B0000;
+  text-decoration: underline;
+}
+
+.color-box {
+  display: inline-block;
+  vertical-align: middle;
+  background-clip: content-box;
+  padding: 2px;
+  width: 20px;
+	height: 20px;
+	margin-right: 10px;
+	border: 2px solid #2A2B24;
+}

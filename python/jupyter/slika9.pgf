@@ -1,0 +1,63 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[line width=0.8pt,scale=1.2]
+\tikzstyle{vrh}=[draw,circle,inner sep=1.1pt,fill=white,draw=black!35]
+\tikzstyle{vrh2}=[draw,circle,inner sep=1.2pt,fill=white,draw=black]
+\node[inner sep=0pt] at (-0.65,1.2) {};
+\coordinate (A2) at (0,-2);
+\coordinate (A3) at (-2.8,-0.6);
+\coordinate (A6) at (-0.59,-0.17);
+\coordinate (A7) at (2.4,-0.95);
+\coordinate (S) at (-1.07,0.53);
+\coordinate (B) at (-2.78,-1.81);
+\coordinate (F) at (-0.65,1.1);
+\coordinate (D) at (-1.98,-0.71);
+\coordinate (G) at (-2.14,-0.93);
+\coordinate (I) at (-2.19,0.65);
+\coordinate (H) at (1.41,0.26);
+\coordinate (T) at (0.48,0.36);
+\coordinate (J) at (-2.19,-0.48);
+\coordinate (E) at (1.41,-1.38);
+\coordinate (K) at (-0.06,-1.78);
+\coordinate (L) at (-0.06,-1.16);
+\coordinate (A1) at (0,0);
+\coordinate (A4) at (-2.8,0.6);
+\coordinate (A5) at (-0.59,0.78);
+\coordinate (A8) at (2.4,0.45);
+\coordinate (N) at (-0.5,0.47);
+\coordinate (O) at (0.04,0.41);
+\coordinate (C1) at (1.22,0.08);
+\coordinate (D1) at (0.5,-0.07);
+\coordinate (E1) at (-1.89,-0.13);
+\coordinate (F1) at (-0.23,0.24);
+%\draw[black!40] (G)--(D);
+%\draw (G)--(B);
+\shadedraw[opacity=0.3,top color=white,bottom color=gray,shading angle=105,line width=0.5pt]
+(A2)--(A3)--(A6)--(A7)--cycle;
+\shadedraw[opacity=0.3,top color=white,bottom color=green,draw=green,line width=0.4pt] (J)--(E)--(H)--(I)--cycle;
+%\draw (D)--(F);
+%\draw (I)--(H);
+\draw[->,>=stealth',red,line width=0.8pt] (K)--(L);
+\draw[->,>=stealth',red,line width=0.8pt] (C1)--(D1) node[below,pos=0.95] {\color{black}$\vec{n}_{\pi}$};
+%\draw[->,>=stealth',red,line width=1.3pt] (N)--(O);
+\node[vrh2,draw=green!80,label={[xshift=-2pt,yshift=-2pt]above:\small\color{green!80}$T_1$}] at (E1) {};
+\node[vrh2,draw=green!80,label={[xshift=-2pt,yshift=1pt]below:\small\color{green!80}$T_2$}] at (F1) {};
+%\node[right] at (B) {$p$};
+%\node[above] at ($(I)+(2pt,-1pt)$) {$q$};
+%\node [coordinate, pin={[line width=0.4pt,draw=gray,fill=lightyellow,inner sep=2pt,pin distance=0.3cm,pin edge={gray,line width=0.4pt}]100:\small$\Sigma$}] at (-2.62,-0.64) {};
+\node[right] at ($(L)+(0pt,-6pt)$) {$\vec{n}_{\hspace*{1pt}\raisebox{-1pt}{\scriptsize$\Sigma$}}$};
+%\node  at (-0.1,0.72) {$\vec{s}_q$};
+\end{tikzpicture}

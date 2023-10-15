@@ -1,0 +1,205 @@
+<html> 
+  <head> 
+	<meta charset="utf-8">  
+    <title>polinom6</title> 			
+    <script type='text/javascript' src='../x3dom/x3dom.js'> </script> 
+    <link rel='stylesheet' type='text/css' href='../x3dom/x3dom.css'>
+    <script src="../lib/jquery-3.3.1.min.js"></script>
+    <script src="../lib/bootstrap.min.js"></script>
+    <script src="../lib/dat.gui.min.js"></script>
+    <link rel="stylesheet" href="../lib/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/fontawesome/css/all.css"> 
+    <style>
+    body {
+      margin: 0; 
+      overflow: hidden;
+    }
+    .dg.a { margin-right:0px !important; }
+    /*x3d{
+      border:2px solid darkorange;
+	  }*/  
+    </style>
+  </head> 
+          
+  <body>
+  <x3d width='100%' height='100%', margin-left='0px' disableDoubleClick="true"> 
+    <scene> 
+      <inline url="data/polinom6.x3d" nameSpaceName="pol6" mapDEFToID="true" onclick=''/>
+    </scene> 
+  </x3d>
+
+   <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+     <div class="modal-dialog" role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="exampleModalLabel">Camera navigation</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+          <h6><b>Examine Mode (activate with key 'e'):</b></h6>
+           <ul>
+            <li>Left Button / Left Button + Shift &nbsp;&#8680;&nbsp; Rotate</li>
+            <li>Mid Button / Left Button + Ctl &nbsp;&#8680;&nbsp; Pan</li>
+            <li>Right Button / Wheel / Left Button + Alt &nbsp;&#8680;&nbsp; Zoom</li>
+           </ul>
+          <h6><b>Walk Mode (activate with key 'w'):</b></h6>
+           <ul>
+            <li>Left Button &nbsp;&#8680;&nbsp; Move forward</li>
+            <li>Right Button &nbsp;&#8680;&nbsp; Move backward</li>
+           </ul>
+          <h6><b>Fly Mode (activate with key 'f'):</b></h6>
+           <ul>
+            <li>Left Button &nbsp;&#8680;&nbsp; Move forward</li>
+            <li>Right Button &nbsp;&#8680;&nbsp; Move backward</li>
+           </ul>
+          <h6><b>Look at (activate with key 'l'):</b></h6>
+           <ul>
+            <li>Left Button &nbsp;&#8680;&nbsp; Move closer</li>
+            <li>Right Button &nbsp;&#8680;&nbsp; Move back</li>
+           </ul>
+          <h6><b>Non-interactive camera movement:</b></h6>
+           <ul>
+            <li>r &nbsp;&#8680;&nbsp; Reset view</li>
+            <li>a &nbsp;&#8680;&nbsp; Show all</li>
+            <li>u &nbsp;&#8680;&nbsp; Upright</li>
+            <li>m &nbsp;&#8680;&nbsp; Dotted view of the surface</li>
+           </ul>
+         </div>
+         <div class="modal-footer">
+           <a class="btn btn-link mr-auto" href="https://www.x3dom.org/documentation/interaction/" target="_blank" role="button">x3dom</a>
+           <a class="btn btn-danger btn-sm shadow-none mr-auto" href="data/complex_curve_visualisation.pdf" target="_blank"><span class="fas fa-file-pdf" style="color:white;"><sub>&thinsp;1</sub></span></a>
+           <a class="btn btn-danger btn-sm shadow-none mr-auto" href="data/complex_visualisation.pdf" target="_blank"><span class="fas fa-file-pdf" style="color:white;"><sub>&thinsp;2</sub></span></a>
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+       </div>
+     </div>
+   </div>
+
+   <script>
+    let gui = new dat.GUI({resizable: false, width: 180});
+    var controls = new function() {
+      this.wireframe = false;
+      this.help = function() {
+        $("#infoModal").modal();
+      };
+    }
+    let wireframe = gui.add(controls, 'wireframe').listen();
+    wireframe.onChange(function() {
+      let ID1 = document.getElementById('pol6__mat1_grid');
+      let ID2 = document.getElementById('pol6__mat2_grid');
+      let ID3 = document.getElementById('pol6__mat3_grid');
+      let ID4 = document.getElementById('pol6__mat4_grid');
+      let ID5 = document.getElementById('pol6__mat5_grid');
+      let ID6 = document.getElementById('pol6__mat6_grid');
+      let ID7 = document.getElementById('pol6__mat7_grid');
+      let ID8 = document.getElementById('pol6__mat8_grid');
+      let ID9 = document.getElementById('pol6__mat9_grid');
+      let ID10 = document.getElementById('pol6__mat10_grid');
+      let ID11 = document.getElementById('pol6__mat11_grid');
+      let ID12 = document.getElementById('pol6__mat12_grid');
+      let ID13 = document.getElementById('pol6__mat13_grid');
+      let ID14 = document.getElementById('pol6__mat14_grid');
+      let ID15 = document.getElementById('pol6__mat15_grid');
+      let ID16 = document.getElementById('pol6__mat16_grid');
+      let ID17 = document.getElementById('pol6__mat17_grid');
+      let ID18 = document.getElementById('pol6__mat18_grid');
+      let ID19 = document.getElementById('pol6__mat19_grid');
+      let ID20 = document.getElementById('pol6__mat20_grid');
+      let ID21 = document.getElementById('pol6__mat21_grid');
+      let ID22 = document.getElementById('pol6__mat22_grid');
+      let ID23 = document.getElementById('pol6__mat23_grid');
+      let ID24 = document.getElementById('pol6__mat24_grid');
+      let ID25 = document.getElementById('pol6__mat25_grid');
+      let ID26 = document.getElementById('pol6__mat26_grid');
+      let ID27 = document.getElementById('pol6__mat27_grid');
+      let ID28 = document.getElementById('pol6__mat28_grid');
+      let ID29 = document.getElementById('pol6__mat29_grid');
+      let ID30 = document.getElementById('pol6__mat30_grid');
+      let ID31 = document.getElementById('pol6__mat31_grid');
+      let ID32 = document.getElementById('pol6__mat32_grid');
+      let ID33 = document.getElementById('pol6__mat33_grid');
+      let ID34 = document.getElementById('pol6__mat34_grid');
+      let ID35 = document.getElementById('pol6__mat35_grid');
+      let ID36 = document.getElementById('pol6__mat36_grid');
+      if (controls.wireframe) {
+        ID1.setAttribute('transparency','1');
+        ID2.setAttribute('transparency','1');
+        ID3.setAttribute('transparency','1');
+        ID4.setAttribute('transparency','1');
+        ID5.setAttribute('transparency','1');
+        ID6.setAttribute('transparency','1');
+        ID7.setAttribute('transparency','1');
+        ID8.setAttribute('transparency','1');
+        ID9.setAttribute('transparency','1');
+        ID10.setAttribute('transparency','1');
+        ID11.setAttribute('transparency','1');
+        ID12.setAttribute('transparency','1');
+        ID13.setAttribute('transparency','1');
+        ID14.setAttribute('transparency','1');
+        ID15.setAttribute('transparency','1');
+        ID16.setAttribute('transparency','1');
+        ID17.setAttribute('transparency','1');
+        ID18.setAttribute('transparency','1');
+        ID19.setAttribute('transparency','1');
+        ID20.setAttribute('transparency','1');
+        ID21.setAttribute('transparency','1');
+        ID22.setAttribute('transparency','1');
+        ID23.setAttribute('transparency','1');
+        ID24.setAttribute('transparency','1');
+        ID25.setAttribute('transparency','1');
+        ID26.setAttribute('transparency','1');
+        ID27.setAttribute('transparency','1');
+        ID28.setAttribute('transparency','1');
+        ID29.setAttribute('transparency','1');
+        ID30.setAttribute('transparency','1');
+        ID31.setAttribute('transparency','1');
+        ID32.setAttribute('transparency','1');
+        ID33.setAttribute('transparency','1');
+        ID34.setAttribute('transparency','1');
+        ID35.setAttribute('transparency','1');
+        ID36.setAttribute('transparency','1');
+      } else {
+        ID1.setAttribute('transparency','0');
+        ID2.setAttribute('transparency','0');
+        ID3.setAttribute('transparency','0');
+        ID4.setAttribute('transparency','0');
+        ID5.setAttribute('transparency','0');
+        ID6.setAttribute('transparency','0');
+        ID7.setAttribute('transparency','0');
+        ID8.setAttribute('transparency','0');
+        ID9.setAttribute('transparency','0');
+        ID10.setAttribute('transparency','0');
+        ID11.setAttribute('transparency','0');
+        ID12.setAttribute('transparency','0');
+        ID13.setAttribute('transparency','0');
+        ID14.setAttribute('transparency','0');
+        ID15.setAttribute('transparency','0');
+        ID16.setAttribute('transparency','0');
+        ID17.setAttribute('transparency','0');
+        ID18.setAttribute('transparency','0');
+        ID19.setAttribute('transparency','0');
+        ID20.setAttribute('transparency','0');
+        ID21.setAttribute('transparency','0');
+        ID22.setAttribute('transparency','0');
+        ID23.setAttribute('transparency','0');
+        ID24.setAttribute('transparency','0');
+        ID25.setAttribute('transparency','0');
+        ID26.setAttribute('transparency','0');
+        ID27.setAttribute('transparency','0');
+        ID28.setAttribute('transparency','0');
+        ID29.setAttribute('transparency','0');
+        ID30.setAttribute('transparency','0');
+        ID31.setAttribute('transparency','0');
+        ID32.setAttribute('transparency','0');
+        ID33.setAttribute('transparency','0');
+        ID34.setAttribute('transparency','0');
+        ID35.setAttribute('transparency','0');
+        ID36.setAttribute('transparency','0');
+      }      
+    });
+    gui.add(controls,'help');
+   </script>
+  </body>
+  </html>

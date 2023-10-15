@@ -1,0 +1,228 @@
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>de Casteljau</title>
+         <link rel="stylesheet" type="text/css" href="../vendor/jsxgraph.css"/>
+         <script src="../vendor/jsxgraphcore.js"></script>
+         <script src="../noUISlider/nouislider.min.js"></script>
+         <link rel="stylesheet" type="text/css" href="../noUISlider/nouislider.css"/>
+         <script src="../lib/jquery-3.3.1.min.js"></script>
+         <script src="../lib/bootstrap.min.js"></script>
+         <link rel="stylesheet" href="../lib/bootstrap.min.css">
+         <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+         <link href="../vendor/simple-sidebar.css" rel="stylesheet">
+         <link rel="stylesheet" type="text/css" href="../vendor/page.css">
+         <style>
+          .btn:focus, .btn:active, label.btn {
+          outline: none !important;
+          box-shadow: none !important;
+          -webkit-box-shadow: none !important;
+          }
+          .btn.btn-custom-sm {
+            border-radius: 0;
+          }
+         </style>
+    </head>
+
+    <body>
+       
+      <div id="container" style="height:700px;">
+
+        <div id="wrapper">
+
+      
+        <div id="sidebar-wrapper">
+          <ul class="sidebar-nav">
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B&eacute;zierove krivulje</b></li>
+          <li><a href="bernsteinovi_polinomi.html">Bernsteinovi polinomi</a></li>
+          <li><a href="#" style="color:yellow;">De Casteljaunov algoritam</a></li>
+          <li><a href="partBezier.html">Subdivizija B&eacute;zierove krivulje</a></li>
+          <li><a href="derivacijaBezier.html">Derivacija B&eacute;zierove krivulje</a></li>
+          <li><a href="podizanje_stupnja_Bezier.html">Podizanje stupnja</a></li>
+          <li><a href="G2neprekidnost.html">Geometrijska neprekidnost</a></li>
+          <li><a href="G2gamma.html">G<sup>2</sup> neprekidnost</a></li>
+          <li><a href="konike.html">Konike</a></li>
+          <li><a href="kruznica.html">Kružnica</a></li>
+          <li><a href="racionalni_deCasteljau.html">Racionalne B&eacute;zierove krivulje</a></li>
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B-splajnovi</b></li>
+           <li><a href="bspline_basis.html">Bazne funkcije</a></li>
+           <li><a href="lokalni_deboor.html">Lokalni De Boorov algoritam</a></li>
+           <li><a href="globalni_deboor.html">Globalni De Boorov algoritam</a></li>
+           <li><a href="kubicna_Bsplajn_krivulja.html">Kubična B-splajn krivulja</a></li>
+           <li><a href="periodicna_Bsplajn_krivulja.html">Zatvorena B-splajn krivulja</a></li>
+          </ul>
+        </div>
+
+        <div class="row">
+
+          <div class="col">
+            <a style="position:absolute; left:15px; padding:5px 5px;" href="#menu-toggle" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" id="menu-toggle"><span class="fas fa-th-list fa-2x" style="color:white;"></span></a>
+       
+        <div id="content" style="width:800px;">
+           <div id="box" class="jxgbox" style="width:800px; height:600px; margin-bottom:30px; z-index:100;"></div>
+           <div class="alert alert-secondary" role="alert" style="width:540px; margin-top:50px; margin-left:120px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div style="margin-top:20px; margin-bottom: 20px;"><i>t</i>&nbsp; <div id="t-slider-elem" style="width:80%; display: inline-block;"></div>
+            <button type="button" class="btn btn-sm btn-danger" id="refresh" style="position:relative; left:45px; top:0px; border-radius:7px;"><span class="fas fa-sync-alt" style="color:white;"></span></button>
+            </div>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+              <span class="badge badge-primary" style="display: inline-block; height:20px; padding-bottom:2px;margin-top:6px;">De Casteljau</span>&nbsp;&nbsp; 
+              <label class="btn btn-sm btn-secondary">
+                <input type="radio" value="0" name="deCast_view" id="deCast0" autocomplete="off" checked> hide
+              </label>
+              <label class="btn btn-sm btn-secondary active">
+                <input type="radio" value="1" name="deCast_view" id="deCast1" autocomplete="off"> show
+              </label>
+            </div>
+           </div>
+        </div>
+
+      </div>      
+
+      <div class="col">
+
+        <a style="position:absolute;top:0px; right:15px; margin:0; padding:5px 5px;" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" data-toggle="collapse" href="#pomoc" aria-expanded="false" aria-controls="collapseExample"><span class="far fa-image fa-2x" style="color:white;"></span></a>
+
+      <div class="collapse" id="pomoc" style="width:600; position: absolute; top: 50; right:30; z-index:100;">
+       <div class="card card-body">
+       <p style="text-align:center;">
+        <a style="position:absolute; top:0px; left:0px;" href="slike/deCasteljau3_alg.pdf" target="_blank"><button type="button" class="btn btn-danger btn-sm btn-custom-sm" style="vertical-align:top;"><span class="fas fa-file-pdf" style="color:white;"></span></button></a>
+        <img src="slike/deCasteljau3_alg.png" width="500"></p>
+      </div>
+     </div> 
+
+
+        <div class="alert alert-secondary" role="alert" style="width:540px; margin-top:80px; margin-left:80px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <p><b>De Casteljaunov algoritam</b><p>
+            <hr>  
+            <p><span class="badge badge-warning">Na segmentu&nbsp; <img src="slike/deCasteljau1.png"></span></p>
+            <p><span class="badge badge-secondary">kontrolne točke</span>&nbsp; <img src="slike/deCasteljau2.png"></p>
+            <p><img src="slike/deCasteljau3.png"></p> 
+            <p><img src="slike/deCasteljau4.png"></p>
+            <p><span class="badge badge-secondary">B&eacute;zierova krivulja</span>&nbsp; <img src="slike/deCasteljau5.png"></p>
+            <hr>
+            <p><span class="badge badge-warning">Na segmentu&nbsp; <img src="slike/deCasteljau1a.png"></span></p>
+            <p><span class="badge badge-secondary">kontrolne točke</span>&nbsp; <img src="slike/deCasteljau2a.png"></p>
+            <p><img src="slike/deCasteljau3a.png"></p> 
+            <p><img src="slike/deCasteljau4.png"></p>
+            <p><span class="badge badge-secondary">B&eacute;zierova krivulja</span>&nbsp; <img src="slike/deCasteljau5a.png"></p>
+          </div>
+      </div>
+
+      </div>
+    </div>
+        
+      </div>
+
+      <script language="JavaScript">
+            var t_slider_elem = document.getElementById('t-slider-elem');
+            var t_slider = 0.4;
+
+            noUiSlider.create(t_slider_elem, {start: [0.4], connect: 'lower', tooltips:[true], step: 0.01, 
+                                         range: {'min': 0, 'max': 1}});
+            
+            var control = [];
+            var deCast_show = 1;
+            
+            var aplet = JXG.JSXGraph.initBoard('box', {boundingbox: [-2, 9, 11, -0.5], grid:true,  
+                                                       showCopyright:false, keepaspectratio: false,
+                                                       showNavigation:false,axis:true,
+                                                       zoom:{wheel:false},
+                                                       pan:{enabled:false}});
+            
+            aplet.highlightInfobox = function (x, y, el) {
+                aplet.infobox.setText('');
+            }; 
+
+            var ime = aplet.create('text',[10.7,8.6,'<span style="background-color:white;">De Casteljau algoritam</span>'],{anchorX:'right',anchorY:'bottom',fontSize:14});
+
+            control[0] = aplet.create('point', [1,2], {'name':'<span style="background-color:white; opacity:0.7;">b_0</span>', size:4, color:'#009900', label:{offset:[-5,-17]}});
+            control[1] = aplet.create('point', [2,6], {'name':'<span style="background-color:white; opacity:0.7;">b_1</span>', size:4, color:'#009900', label:{offset:[-5,17]}});
+            control[2] = aplet.create('point', [8,7], {'name':'<span style="background-color:white; opacity:0.7;">b_2</span>', size:4, color:'#009900', label:{offset:[-5,17]}}); 
+            control[3] = aplet.create('point', [9,3], {'name':'<span style="background-color:white; opacity:0.7;">b_3</span>', size:4, color:'#009900', label:{offset:[-5,-17]}});
+
+            var B01 = aplet.create('point', [function(){return (1 - t_slider) * control[0].X() + t_slider * control[1].X();},
+                                             function(){return (1 - t_slider) * control[0].Y() + t_slider * control[1].Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_0^1</span>', face:'square', 
+                                        color:'#30c5dc', size:2, label:{offset:[-5,-17]}, visible:function(){return (deCast_show == 1);}});
+            var B11 = aplet.create('point', [function(){return (1 - t_slider) * control[1].X() + t_slider * control[2].X();},
+                                             function(){return (1 - t_slider) * control[1].Y() + t_slider * control[2].Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_1^1</span>', face:'square', 
+                                        color:'#30c5dc', size:2, label:{offset:[-5,-17]}, visible:function(){return (deCast_show == 1);}});
+            var B21 = aplet.create('point', [function(){return (1 - t_slider) * control[2].X() + t_slider * control[3].X();},
+                                             function(){return (1 - t_slider) * control[2].Y() + t_slider * control[3].Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_2^1</span>', face:'square', 
+                                        color:'#30c5dc', size:2, label:{offset:[-5,-17]}, visible:function(){return (deCast_show == 1);}});
+
+            var segment1 = aplet.create('segment', [control[0],control[1]], {strokeColor:'magenta',dash:1,strokeWidth:1});
+            var segment2 = aplet.create('segment', [control[1],control[2]], {strokeColor:'magenta',dash:1,strokeWidth:1});
+            var segment3 = aplet.create('segment', [control[2],control[3]], {strokeColor:'magenta',dash:1,strokeWidth:1});
+            
+            var segment4 = aplet.create('segment', [B01,B11], {strokeColor:'#0033ff',dash:1,strokeWidth:1,visible:function(){return (deCast_show == 1);}});
+            var segment5 = aplet.create('segment', [B11,B21], {strokeColor:'#0033ff',dash:1,strokeWidth:1,visible:function(){return (deCast_show == 1);}});
+
+            var B02 = aplet.create('point', [function(){return (1 - t_slider) * B01.X() + t_slider * B11.X();},
+                                             function(){return (1 - t_slider) * B01.Y() + t_slider * B11.Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_0^2</span>', face:'square', 
+                                        color:'#6c8cff', size:2, label:{offset:[-5,-17]}, visible:function(){return (deCast_show == 1);}});
+            var B12 = aplet.create('point', [function(){return (1 - t_slider) * B11.X() + t_slider * B21.X();},
+                                             function(){return (1 - t_slider) * B11.Y() + t_slider * B21.Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_1^2</span>', face:'square', 
+                                        color:'#6c8cff', size:2, label:{offset:[-5,-17]}, visible:function(){return (deCast_show == 1);}});
+
+            var segment6 = aplet.create('segment', [B02,B12], {strokeColor:'#25976f',dash:2,strokeWidth:1,visible:function(){return (deCast_show == 1);}});
+
+            var B03 = aplet.create('point', [function(){return (1 - t_slider) * B02.X() + t_slider * B12.X();},
+                                             function(){return (1 - t_slider) * B02.Y() + t_slider * B12.Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_0^3</span>', color:'#ffff00', size:2, label:{offset:[-5,-17]}});
+
+            ime.setAttribute({fixed:true});
+            segment1.setAttribute({fixed:true,highlight:false});
+            segment2.setAttribute({fixed:true,highlight:false});
+            segment3.setAttribute({fixed:true,highlight:false});
+            segment4.setAttribute({fixed:true,highlight:false});
+            segment5.setAttribute({fixed:true,highlight:false});
+            segment6.setAttribute({fixed:true,highlight:false});
+            B01.setAttribute({highlight:false});
+            B11.setAttribute({highlight:false});
+            B21.setAttribute({highlight:false});
+            B02.setAttribute({highlight:false});
+            B12.setAttribute({highlight:false});
+            B03.setAttribute({strokeColor: 'black'});
+
+            var krivulja = aplet.create('curve', JXG.Math.Numerics.bezier(control), {strokeWidth:3,strokeColor:'red'});
+            
+            $("#menu-toggle").click(function(event) {
+              event.preventDefault();
+              $("#wrapper").toggleClass("toggled");
+            });
+
+            t_slider_elem.noUiSlider.on('update', function() {
+              t_slider = Number(t_slider_elem.noUiSlider.get());
+              aplet.update();
+            });
+
+            $('#refresh').on('click', function(event) {
+              event.preventDefault();
+              control[0].moveTo([1,2]);
+              control[1].moveTo([2,6]);
+              control[2].moveTo([8,7]);
+              control[3].moveTo([9,3]);
+              t_slider = 0.4;
+              t_slider_elem.noUiSlider.set(0.4);
+              if (deCast_show != 1) {
+                deCast_show = 1;
+                $("#deCast1").prop("checked", true).trigger("click");
+              }
+              aplet.update();
+            });
+
+            $('input[name=deCast_view]').on('change', function() {
+              deCast_show = parseInt($(this).val());
+              aplet.update();
+            });
+        </script>
+
+    </body>
+
+</html>

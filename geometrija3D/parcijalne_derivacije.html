@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>parcijalne derivacije</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <script src="../lib/dat.gui.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+        <style>
+            body {margin: 0; overflow: hidden}
+            button:focus {outline:0 !important;}
+            .btn.btn-custom-sm {
+                border-radius: 0;
+            }
+            .matBut {
+                margin-right: 14px!important; 
+                margin-bottom: 14px!important;
+                width: 80px;
+                height:80px;
+            }
+            .card {
+                background-color: rgba(255,255,255, 0.95) !important;
+                font-size: 95%;
+            }
+            .dg.a { margin-right:0px !important; }
+            .center {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+
+    <div style="position: absolute; left:0px; top: 0px;">
+        <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" onclick="toggler('info');"><span class="fa fa-info-circle fa-2x" style="color:white;"></span></a>
+    </div>
+
+    <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 45px; width:350px;">
+    <div id="infoHead" class="card-header">
+    Parcijalna derivacija po varijabli <i>x</i>
+    </div>
+    <div id="infoBody" class="card-body">
+    <p>Plavu točku u <i>xy</i>-ravnini možete micati paralelno s osima unutar smeđeg kvadrata. Zajedno s njom se pomiče i pripadna plava točka na plohi.</p>
+    <p>Pomoću tipki <b>A</b> i <b>D</b> točka se pomiče paralelno s <i>x</i>-osi. U ovom slučaju tangentu šećete po presječnoj krivulji.</p>
+    <p style="margin-bottom:0px;">Pomoću tipki <b>W</b> i <b>S</b> točka se pomiče paralelno s <i>y</i>-osi. U ovom slučaju mijenjate presječnu krivulju na plohi i pripadnu ravninu <img src='data/parc6.png' style='vertical-align: text-bottom;'> ukoliko je odabrano da bude vidljiva u 3D sceni.</p>
+    </div>
+    </div>
+
+    <div align="center" style="position: absolute; right:30px; bottom: 30px; z-index: 2; width: 300px">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="btn-group">
+                <div class="matBut"></div>
+                <button id="tipka_W" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">W</span></button>
+                <div class="matBut"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class=" btn-group">
+                <button id="tipka_A" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">A</span></button>
+                <button id="tipka_S" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">S</span></button>
+                <button id="tipka_D" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">D</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+     <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="exampleModalLabel">Definicija parcijalne derivacije</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+          <ul style="padding:8px;">
+            <p>Neka je <img src='data/parc1.png' style='vertical-align: text-bottom;'> realna funkcija dvije realne varijable čiji je graf ploha prikazana na slici u nijansama zelene boje. Neka točka <img src='data/parc2.png' style='vertical-align: text-bottom;'> iz unutrašnjosti domene funkcije <img src='data/parc3.png' style='vertical-align: text-bottom;'> prikazana je na slici plavom bojom u <i>xy</i>-ravnini. Pripadna točka na grafu funkcije <img src='data/parc3.png' style='vertical-align: text-bottom;'> prikazana je također plavom bojom i njezine koordinate su <img src='data/parc4.png' style='vertical-align: text-bottom;'> pri čemu je <img src='data/parc5.png' style='vertical-align: text-bottom;'></p>
+            <li style="margin-bottom:5px;">Točkom <img src='data/parc2.png' style='vertical-align: text-bottom;'> postavimo ravninu <img src='data/parc6.png' style='vertical-align: text-bottom;'> prikazanu na slici u nijansama svjetloplave boje. Ta ravnina siječe graf funkcije <img src='data/parc3.png' style='vertical-align: text-bottom;'> po nekoj krivulji koja je na slici prikazana crvenom bojom. Na tu krivulju možemo gledati kao na graf funkcije jedne varijable <img src='data/parc7.png' style='vertical-align: text-bottom;'>. Derivaciju funkcije <img src='data/parc8.png' style='vertical-align: text-bottom;'> zovemo parcijalna derivacija funkcije <img src='data/parc3.png' style='vertical-align: text-bottom;'> po varijabli <img src='data/parc9.png' style='vertical-align: baseline;'>. Dakle, <img src='data/parc10.png' class="center" style="margin-top:10px; margin-bottom:10px;"> <b>Geometrijska interpretacija.</b> Parcijalna derivacija po varijabli <img src='data/parc9.png' style='vertical-align: baseline;'> funkcije <img src='data/parc1.png' style='vertical-align: text-bottom;'> u točki <img src='data/parc2.png' style='vertical-align: text-bottom;'> je koeficijent smjera tangente na graf funkcije <img src='data/parc7.png' style='vertical-align: text-bottom;'> u točki <img src='data/parc11.png' style='vertical-align: sub;'>. Spomenuta tangenta prikazana je na slici plavom bojom.</li>
+            <li style="margin-bottom:5px;">Točkom <img src='data/parc2.png' style='vertical-align: text-bottom;'> postavimo ravninu <img src='data/parc12.png' style='vertical-align: sub;'> prikazanu na slici u nijansama svjetloplave boje. Ta ravnina siječe graf funkcije <img src='data/parc3.png' style='vertical-align: text-bottom;'> po nekoj krivulji koja je na slici prikazana crvenom bojom. Na tu krivulju možemo gledati kao na graf funkcije jedne varijable <img src='data/parc13.png' style='vertical-align: text-bottom;'>. Derivaciju funkcije <img src='data/parc14.png' style='vertical-align: text-bottom;'> zovemo parcijalna derivacija funkcije <img src='data/parc3.png' style='vertical-align: text-bottom;'> po varijabli <img src='data/parc15.png' style='vertical-align: text-bottom;'>. Dakle, <img src='data/parc16.png' class="center" style="margin-top:10px; margin-bottom:10px;"> <b>Geometrijska interpretacija.</b> Parcijalna derivacija po varijabli <img src='data/parc15.png' style='vertical-align: text-bottom;'> funkcije <img src='data/parc1.png' style='vertical-align: text-bottom;'> u točki <img src='data/parc2.png' style='vertical-align: text-bottom;'> je koeficijent smjera tangente na graf funkcije <img src='data/parc13.png' style='vertical-align: text-bottom;'> u točki <img src='data/parc17.png' style='vertical-align: sub;'>. Spomenuta tangenta prikazana je na slici plavom bojom.</li>
+            <li><b>Tangencijalna ravnina.</b> Spomenute plave tangente određuju tangencijalnu ravninu na graf funkcije <img src='data/parc1.png' style='vertical-align: text-bottom;'> u točki <img src='data/parc2.png' style='vertical-align: text-bottom;'>. Preciznije, tangenta na graf funkcije <img src='data/parc7.png' style='vertical-align: text-bottom;'> u točki <img src='data/parc11.png' style='vertical-align: sub;'>  i tangenta na graf funkcije <img src='data/parc13.png' style='vertical-align: text-bottom;'> u točki <img src='data/parc17.png' style='vertical-align: sub;'> određuju tangencijalnu ravninu na graf funkcije <img src='data/parc1.png' style='vertical-align: text-bottom;'> u točki <img src='data/parc2.png' style='vertical-align: text-bottom;'>.</li>
+            <hr>
+            <li style="margin-bottom:5px;">U gornjem desnom kutu je izbornik za biranje opcija, a s lijeve strane su pripadne informacije koje možete zatvoriti i ponovo otvoriti klikom na tipku <span class="badge badge-secondary"><i class="fa fa-info-circle" aria-hidden="true"></i></span> u gornjem lijevom kutu.</li>
+            <li>Pomoću srednje tipke miša možete približavati ili udaljavati kameru od objekta, a pomoću lijeve tipke miša možete se kretati oko objekta.</li>
+          </ul>
+         </div>
+         <div class="modal-footer">
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+       </div>
+     </div>
+    </div>
+
+    <div id="WebGL-output"></div>
+
+    <script language="JavaScript">
+        function toggler(divId) {
+            $("#" + divId).slideToggle(500);
+        }
+    </script>
+
+    <script language="JavaScript" type="module">
+    import * as THREE from '../lib/three.module.js';
+    import { OrbitControls } from '../lib/OrbitControls.js';
+
+    var manager = new THREE.LoadingManager();
+    manager.onLoad = function() { // when all resources are loaded
+        init();
+    }
+
+    var font = null;
+    var texture = null;
+
+    var fontloader = new THREE.FontLoader(manager);
+    fontloader.load("../lib/helvetiker_regular.typeface.json", function(response) {font = response;});
+
+    var textureloader = new THREE.TextureLoader(manager);
+    textureloader.load('tekstura3.png', function(response) {texture = response});
+
+    function init() {
+        var pomak;
+
+        var scene = new THREE.Scene();
+
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        var renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setClearColor(0xA9A9A9, 1);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        $("#WebGL-output").append(renderer.domElement);
+
+        camera.position.x = 50;
+        camera.position.y = 30;
+        camera.position.z = 50;
+
+        scene.add(camera);
+
+        var X0koor = 5, Z0koor = 9, Y0koor = ff(Z0koor, X0koor); //tocka u xy-ravnini
+
+        var pointLight = new THREE.PointLight("#ffffaa");
+        pointLight.position.set(50,30,50);
+        camera.add(pointLight);
+        pointLight.intensity = 0.3;
+
+        var pointLight1 = new THREE.PointLight("#eeeeee");
+        pointLight1.distance = 250;
+        pointLight1.position.set(100,60,100);
+        scene.add(pointLight1);
+
+        var pointLight2 = new THREE.PointLight("#eeeeee");
+        pointLight2.distance = 250;
+        pointLight2.position.set(-100,60,-100);
+        scene.add(pointLight2);
+
+        var pointLight3 = new THREE.PointLight("#eeeeee");
+        pointLight3.distance = 150;
+        pointLight3.position.set(-100,30,100);
+        scene.add(pointLight3);
+
+        var pointLight4 = new THREE.PointLight("#eeeeee");
+        pointLight4.distance = 150;
+        pointLight4.position.set(100,30,-100);
+        scene.add(pointLight4);
+
+        var mat1 = new THREE.MeshPhongMaterial({color: 0x7fffd4, specular: 0x555599, shininess:50,  emissive:0xb22222, flatShading: false});
+        var mat2 = new THREE.MeshPhongMaterial({color: 0x00ffe0, emissive:0x444444, side:THREE.DoubleSide, transparent: true, opacity:0.65, depthWrite: false});
+        var mat2texFRONT = new THREE.MeshPhongMaterial({color: 0xffffeb, emissive:0x555555, side:THREE.FrontSide, map:texture});
+        var mat2texBACK = new THREE.MeshPhongMaterial({color: 0xee99ff, emissive:0x666666, side:THREE.BackSide, map:texture});
+        var mat3 = new THREE.MeshPhongMaterial({color: 0x0000FF, specular: 0x7777ff, emissive: 0x555555,  flatShading: false});
+        var mat4 = new THREE.LineBasicMaterial({color: 0x8B4513, linewidth: 3});
+
+        var kvadrat = new THREE.Geometry();
+        kvadrat.vertices.push(new THREE.Vector3(-13.6, 0, -13.6));
+        kvadrat.vertices.push(new THREE.Vector3(13.6, 0, -13.6));
+        kvadrat.vertices.push(new THREE.Vector3(13.6, 0, 13.6));
+        kvadrat.vertices.push(new THREE.Vector3(-13.6, 0, 13.6));
+        kvadrat.vertices.push(new THREE.Vector3(-13.6, 0, -13.6));
+
+        var podrucje = new THREE.Line(kvadrat, mat4);
+        scene.add(podrucje);
+
+        var Zos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+        Zos.translateY(10);
+        scene.add(Zos);
+
+        var Yos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+        Yos.rotation.z = -Math.PI / 2;
+        scene.add(Yos);
+
+        var Xos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+        Xos.rotation.x = Math.PI / 2;
+        scene.add(Xos);
+
+        var tekst_options = {
+            size: 2,
+            height: 0.3,
+            font: font,
+            curveSegments: 12
+        };
+
+        var oznake_options = {
+            size: 1,
+            height: 0.2,
+            font: font,
+            curveSegments: 12
+        };
+
+        var tekst_Zos = createText('z', tekst_options);
+        tekst_Zos.translateX(1);
+        tekst_Zos.translateY(35);
+        scene.add(tekst_Zos);
+
+        var tekst_Yos = createText('y', tekst_options);
+        tekst_Yos.translateX(26);
+        scene.add(tekst_Yos);
+
+        var tekst_Xos = createText('x', tekst_options);
+        tekst_Xos.translateY(-0.5);
+        tekst_Xos.translateZ(27.3);
+        tekst_Xos.rotation.y = Math.PI / 2;
+        scene.add(tekst_Xos);
+
+        var ravninaXY = new THREE.GridHelper(48, 24, 0x000000, 0x000000);
+        scene.add(ravninaXY);
+
+        var T0xy = new THREE.Mesh(new THREE.SphereGeometry(0.4,20,20), mat3);
+        T0xy.translateX(X0koor);
+        T0xy.translateZ(Z0koor);
+        scene.add(T0xy);
+
+        var T0 = new THREE.Mesh(new THREE.SphereGeometry(0.4,20,20), mat3);
+        T0.translateX(X0koor);
+        T0.translateY(Y0koor);
+        T0.translateZ(Z0koor);
+        scene.add(T0);
+
+        var plohaFUN = function(u,v,target) {
+           var z = 30 * u - 15;
+           var x = 30 * v - 15;
+           var y = 25 - 25/578 * ( Math.pow(30 * u - 15,2) + Math.pow(30 * v - 15,2) );
+           target.set(x,y,z);
+        }
+
+        var ploha_geometrija = new THREE.ParametricGeometry(plohaFUN, 100, 100, false);
+        var ploha = new THREE.Group();
+        ploha.add(new THREE.Mesh( ploha_geometrija, mat2texFRONT));
+        ploha.add(new THREE.Mesh( ploha_geometrija, mat2texBACK));
+        scene.add(ploha);
+
+        var krivulja1, krivulja2, kriv1, kriv2, tangenta1, tangenta2, tang_ravnina, presjek1, presjek2;
+        var kut1, kut2;
+        var theta;
+        var os = new THREE.Vector3();
+
+        function krivulja1( scale ) {
+            THREE.Curve.call( this );
+            this.scale = ( scale === undefined ) ? 1 : scale;
+        }
+        krivulja1.prototype = Object.create( THREE.Curve.prototype );
+        krivulja1.prototype.constructor = krivulja1;
+        krivulja1.prototype.getPoint = function ( t ) {
+            t = 30 * t - 15;
+            var tx = X0koor;
+            var ty = 25-12.5/289*(t*t+X0koor*X0koor);
+            var tz = t;
+            return new THREE.Vector3( tx, ty, tz ).multiplyScalar( this.scale );
+        };
+
+        function krivulja2( scale ) {
+            THREE.Curve.call( this );
+            this.scale = ( scale === undefined ) ? 1 : scale;
+        }
+        krivulja2.prototype = Object.create( THREE.Curve.prototype );
+        krivulja2.prototype.constructor = krivulja2;
+        krivulja2.prototype.getPoint = function ( t ) {
+            t = 30 * t - 15;
+            var tx = t;
+            var ty = 25-12.5/289*(t*t+Z0koor*Z0koor);
+            var tz = Z0koor;
+            return new THREE.Vector3( tx, ty, tz ).multiplyScalar( this.scale );
+        };
+
+        kriv1 = new THREE.Mesh( new THREE.TubeGeometry(new krivulja1, 50, 0.1, 6, false), mat1);
+        scene.add(kriv1);
+
+        kriv2 = new THREE.Mesh( new THREE.TubeGeometry(new krivulja2, 50, 0.1, 6, false), mat1);
+        scene.add(kriv2);
+        kriv2.visible = false;
+
+        tangenta1 = new THREE.Mesh( new THREE.CylinderGeometry(0.14,0.14,18,6), mat3);
+        kut1 = -Math.PI/2 + Math.atan(25/289*Z0koor);
+        tangenta1.rotation.x = kut1;
+        tangenta1.position.set(X0koor, Y0koor, Z0koor);
+        scene.add(tangenta1);
+
+        tangenta2 = new THREE.Mesh( new THREE.CylinderGeometry(0.14,0.14,18,6), mat3);
+        kut2 = Math.PI/2 - Math.atan(25/289*X0koor);
+        tangenta2.rotation.z = kut2;
+        tangenta2.position.set(X0koor, Y0koor, Z0koor);
+        scene.add(tangenta2);
+        tangenta2.visible = false;
+
+        var ravninaFUN = function(u,v,target) {
+            var x = 20*v - 10;
+            var y = 0;
+            var z = 20*u - 10;
+            target.set(x,y,z);
+        }
+
+        tang_ravnina = new THREE.Mesh(new THREE.ParametricGeometry(ravninaFUN, 4, 4, false), mat2);
+        rotiraj_ravninu();
+        scene.add(tang_ravnina);
+        tang_ravnina.visible = false;
+
+        presjek1 = new THREE.Mesh(new THREE.PlaneBufferGeometry(30, 28,10,10), mat2);
+        presjek1.rotation.y = Math.PI / 2;
+        presjek1.translateZ(X0koor);
+        presjek1.translateY(14);
+        scene.add(presjek1);
+
+        presjek2 = new THREE.Mesh(new THREE.PlaneBufferGeometry(30, 28,10,10), mat2);
+        presjek2.translateZ(Z0koor);
+        presjek2.translateY(14);
+        scene.add(presjek2);
+        presjek2.visible = false;
+
+        var orbitControls = new OrbitControls(camera, renderer.domElement);
+        orbitControls.minDistance = 40;
+        orbitControls.maxDistance = 100;
+        orbitControls.enablePan = false;
+        orbitControls.maxPolarAngle = 3.14;
+        orbitControls.minPolarAngle = 0;
+        orbitControls.target = new THREE.Vector3(0,10,0);
+
+        orbitControls.update();
+        orbitControls.addEventListener('change', render);
+
+        var controls = new function() {
+            this.izbor = '* parcijalna derivacija po x';
+            this.presjecnaRavnina = true;
+            this.help = function() {
+                $("#infoModal").modal();
+            };
+        }
+
+        var gui = new dat.GUI({resizable: false, width: 360});
+
+        var opcijaIzbor = gui.add(controls, 'izbor', ['* parcijalna derivacija po x', '* parcijalna derivacija po y', '* tangencijalna ravnina']);
+
+        opcijaIzbor.onChange( function(value) {
+            switch (value) {
+                case '* parcijalna derivacija po x':
+                    $("#infoHead").html("Parcijalna derivacija po varijabli <i>x</i>");
+                    $("#infoBody").html("<p>Plavu točku u <i>xy</i>-ravnini možete micati paralelno s osima unutar smeđeg kvadrata. Zajedno s njom se pomiče i pripadna plava točka na plohi.</p>\
+                        <p>Pomoću tipki <b>A</b> i <b>D</b> točka se pomiče paralelno s <i>x</i>-osi. U ovom slučaju tangentu šećete po presječnoj krivulji.</p>\
+                        <p style='margin-bottom:0px;'>Pomoću tipki <b>W</b> i <b>S</b> točka se pomiče paralelno s <i>y</i>-osi. U ovom slučaju mijenjate presječnu krivulju na plohi i pripadnu ravninu <img src='data/parc6.png' style='vertical-align: text-bottom;'> ukoliko je odabrano da bude vidljiva u 3D sceni.</p>");
+                    tangenta1.visible = true;
+                    tangenta2.visible = false;
+                    kriv1.visible = true;
+                    kriv2.visible = false;
+                    presjek2.visible = false;
+                    tang_ravnina.visible = false;
+                    if (controls.presjecnaRavnina) presjek1.visible = true;
+                    else presjek1.visible = false;
+                    break;
+                case '* parcijalna derivacija po y':
+                    $("#infoHead").html("Parcijalna derivacija po varijabli <i>y</i>");
+                    $("#infoBody").html("<p>Plavu točku u <i>xy</i>-ravnini možete micati paralelno s osima unutar smeđeg kvadrata. Zajedno s njom se pomiče i pripadna plava točka na plohi.</p>\
+                        <p>Pomoću tipki <b>A</b> i <b>D</b> točka se pomiče paralelno s <i>x</i>-osi. U ovom slučaju mijenjate presječnu krivulju na plohi i pripadnu ravninu <img src='data/parc12.png' style='vertical-align: sub;'> ukoliko je odabrano da bude vidljiva u 3D sceni.\
+                        <p style='margin-bottom:0px;'>Pomoću tipki <b>W</b> i <b>S</b> točka se pomiče paralelno s <i>y</i>-osi. U ovom slučaju tangentu šećete po presječnoj krivulji.</p>");
+                    tangenta1.visible = false;
+                    tangenta2.visible = true;
+                    kriv1.visible = false;
+                    kriv2.visible = true;
+                    presjek1.visible = false;
+                    tang_ravnina.visible = false;
+                    if (controls.presjecnaRavnina) presjek2.visible = true;
+                    else presjek2.visible = false;
+                    break;
+                case '* tangencijalna ravnina':
+                    $("#infoHead").html("Tangencijalna ravnina");
+                    $("#infoBody").html("<p>Plavu točku u <i>xy</i>-ravnini možete micati paralelno s osima unutar smeđeg kvadrata. Zajedno s njom se pomiče i pripadna plava točka na plohi.</p>\
+                        <p>Pomoću tipki <b>A</b> i <b>D</b> točka se pomiče paralelno s <i>x</i>-osi. U ovom slučaju pomičete tangencijalnu ravninu po plohi paralelno s <i>x</i>-osi po pripadnoj presječnoj krivulji.</p>\
+                        <p>Pomoću tipki <b>W</b> i <b>S</b> točka se pomiče paralelno s <i>y</i>-osi. U ovom slučaju pomičete tangencijalnu ravninu po plohi paralelno s <i>y</i>-osi po pripadnoj presječnoj krivulji.</p>\
+                        <p style='margin-bottom:0px;'>Opcija <code>presjecnaRavnina</code> iz gornjeg desnog izbornika u ovom slučaju nema utjecaja.</p>");
+                    tangenta1.visible = true;
+                    tangenta2.visible = true;
+                    kriv1.visible = true;
+                    kriv2.visible = true;
+                    presjek1.visible = false;
+                    presjek2.visible = false;
+                    tang_ravnina.visible = true;
+                    break;
+            }
+            render();
+        });
+
+        var opcijaPresjecnaRavnina = gui.add(controls, 'presjecnaRavnina').listen();
+        opcijaPresjecnaRavnina.onChange( function() {
+            presjek_refresh_checkbox();
+        });
+
+        gui.add(controls,'help');
+
+        render();
+
+        function render() {
+            renderer.render(scene, camera);
+        }
+
+        $(window).resize( function() {
+            camera.aspect = (window.innerWidth) / (window.innerHeight);
+            camera.updateProjectionMatrix();
+            renderer.setSize( window.innerWidth, window.innerHeight);
+            render();
+        });
+
+        function vektor(h1, r1, h2, r2) {
+            var valjakGeometry = new THREE.CylinderGeometry(r1,r1,h1,10);
+            var stozacGeometry = new THREE.CylinderGeometry(0,r2,h2,12);
+            var valjak = new THREE.Mesh(valjakGeometry);
+            var stozac = new THREE.Mesh(stozacGeometry);
+            var vek = new THREE.Geometry();
+            stozac.translateY((h1+h2)/2);
+            valjak.updateMatrix();
+            stozac.updateMatrix();
+            vek.merge(valjak.geometry, valjak.matrix);
+            vek.merge(stozac.geometry, stozac.matrix);
+            return vek;
+        }
+
+        function createText(text, params) {
+            var textGeo = new THREE.TextGeometry(text, params);
+            textGeo.computeBoundingBox();
+            textGeo.computeVertexNormals();
+            var material = [new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false}),
+                            new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false})];
+            var textMesh = new THREE.Mesh(textGeo, material);
+            return textMesh;
+        }
+
+        function rotiraj_ravninu() {
+            var fz = -25 / 289 * Z0koor;
+            var fx = -25 / 289 * X0koor;
+            var norma2 = fx*fx + fz*fz;
+            var norma = Math.sqrt(norma2);
+            theta = -Math.acos(1 / Math.sqrt(1+ norma2));
+            os.x = fz / norma;
+            os.z = -fx / norma;
+            tang_ravnina.rotateOnAxis(os, theta);
+            tang_ravnina.position.set(X0koor, Y0koor, Z0koor);
+        }
+
+        function vrati_ravninu() {
+            tang_ravnina.position.set(0,0,0);
+            tang_ravnina.rotateOnAxis(os, -theta);
+        }
+
+        function presjek_refresh_checkbox() {
+            switch (controls.izbor) {
+                case '* parcijalna derivacija po x':
+                    if (controls.presjecnaRavnina) presjek1.visible = true;
+                    else presjek1.visible = false;
+                    break;
+                case '* parcijalna derivacija po y':
+                    if (controls.presjecnaRavnina) presjek2.visible = true;
+                    else presjek2.visible = false;
+                    break;
+            }
+            render();
+        }
+
+        function ff(z,x) {
+            return 25 - 12.5/289 * (x*x + z*z);
+        }
+
+
+        $("#tipka_A").click(function() {
+            if (Z0koor < 13) {
+                if (13-Z0koor >= 2) pomak = 2;
+                else pomak = 13-Z0koor;
+                T0xy.translateZ(pomak);
+                tangenta1.position.set(0,0,0);
+                tangenta1.rotation.x = -kut1;
+                kriv2.translateZ(pomak);
+                kriv2.translateY(ff(Z0koor+pomak,X0koor)-Y0koor);
+                presjek2.translateZ(pomak);
+                vrati_ravninu();
+                Z0koor += pomak;
+                T0.translateZ(pomak);
+                Y0koor = ff(Z0koor, X0koor);
+                T0.position.y = Y0koor;
+                kut1 = -Math.PI/2 + Math.atan(25/289*Z0koor);
+                tangenta1.rotation.x = kut1;
+                tangenta1.position.set(X0koor, Y0koor, Z0koor);
+                tangenta2.position.set(X0koor, Y0koor, Z0koor);
+                rotiraj_ravninu();
+                render();
+            }
+        });
+
+        $("#tipka_S").click(function() {
+            if (X0koor > -13) {
+                if (X0koor+13 >= 2) pomak = -2;
+                else pomak = -X0koor-13;
+                T0xy.translateX(pomak);
+                tangenta2.position.set(0,0,0);
+                tangenta2.rotation.z = -kut2;
+                T0.translateX(pomak);
+                kriv1.translateX(pomak);
+                kriv1.translateY(ff(Z0koor,X0koor+pomak)-Y0koor);
+                presjek1.translateZ(pomak);
+                vrati_ravninu();
+                X0koor += pomak;
+                Y0koor = ff(Z0koor, X0koor);
+                T0.position.y = Y0koor;
+                tangenta1.position.set(X0koor, Y0koor, Z0koor);
+                kut2 = Math.PI/2 - Math.atan(25/289*X0koor);
+                tangenta2.rotation.z = kut2;
+                tangenta2.position.set(X0koor, Y0koor, Z0koor);
+                rotiraj_ravninu();
+                render();
+            }
+        });
+
+        $("#tipka_D").click(function() {
+            if (Z0koor > -13) {
+                if (Z0koor+13 >= 2) pomak = -2;
+                else pomak = -Z0koor-13;
+                T0xy.translateZ(pomak);
+                tangenta1.position.set(0,0,0);
+                tangenta1.rotation.x = -kut1;
+                kriv2.translateZ(pomak);
+                kriv2.translateY(ff(Z0koor+pomak,X0koor)-Y0koor);
+                presjek2.translateZ(pomak);
+                vrati_ravninu();
+                Z0koor += pomak;
+                T0.translateZ(pomak)
+                Y0koor = ff(Z0koor, X0koor);
+                T0.position.y = Y0koor;
+                kut1 = -Math.PI/2 + Math.atan(25/289*Z0koor);
+                tangenta1.rotation.x = kut1;
+                tangenta1.position.set(X0koor, Y0koor, Z0koor);
+                tangenta2.position.set(X0koor, Y0koor, Z0koor);
+                rotiraj_ravninu();
+                render();
+            }
+        });
+
+        $("#tipka_W").click(function() {
+            if (X0koor < 13) {
+                if (13-X0koor >= 2) pomak = 2;
+                else pomak = 13-X0koor;
+                T0xy.translateX(pomak);
+                tangenta2.position.set(0,0,0);
+                tangenta2.rotation.z = -kut2;
+                T0.translateX(pomak);
+                kriv1.translateX(pomak);
+                kriv1.translateY(ff(Z0koor,X0koor+pomak)-Y0koor);
+                presjek1.translateZ(pomak);
+                vrati_ravninu();
+                X0koor += pomak;
+                Y0koor = ff(Z0koor, X0koor);
+                T0.position.y = Y0koor;
+                tangenta1.position.set(X0koor, Y0koor, Z0koor);
+                kut2 = Math.PI/2 - Math.atan(25/289*X0koor);
+                tangenta2.rotation.z = kut2;
+                tangenta2.position.set(X0koor, Y0koor, Z0koor);
+                rotiraj_ravninu();
+                render();
+            }
+        });
+
+        window.addEventListener("keydown", event => {
+            if (!$('#infoModal').is(':visible')) {
+                switch (event.key) {
+                    case 'a':
+                    if (Z0koor < 13) {
+                        if (13-Z0koor >= 0.4) pomak = 0.4;
+                        else pomak = 13-Z0koor;
+                        T0xy.translateZ(pomak);
+                        tangenta1.position.set(0,0,0);
+                        tangenta1.rotation.x = -kut1;
+                        kriv2.translateZ(pomak);
+                        kriv2.translateY(ff(Z0koor+pomak,X0koor)-Y0koor);
+                        presjek2.translateZ(pomak);
+                        vrati_ravninu();
+                        Z0koor += pomak;
+                        T0.translateZ(pomak);
+                        Y0koor = ff(Z0koor, X0koor);
+                        T0.position.y = Y0koor;
+                        kut1 = -Math.PI/2 + Math.atan(25/289*Z0koor);
+                        tangenta1.rotation.x = kut1;
+                        tangenta1.position.set(X0koor, Y0koor, Z0koor);
+                        tangenta2.position.set(X0koor, Y0koor, Z0koor);
+                        rotiraj_ravninu();
+                        render();
+                    }
+                    break;
+                    case 'd':
+                    if (Z0koor > -13) {
+                        if (Z0koor+13 >= 0.4) pomak = -0.4;
+                        else pomak = -Z0koor-13;
+                        T0xy.translateZ(pomak);
+                        tangenta1.position.set(0,0,0);
+                        tangenta1.rotation.x = -kut1;
+                        kriv2.translateZ(pomak);
+                        kriv2.translateY(ff(Z0koor+pomak,X0koor)-Y0koor);
+                        presjek2.translateZ(pomak);
+                        vrati_ravninu();
+                        Z0koor += pomak;
+                        T0.translateZ(pomak)
+                        Y0koor = ff(Z0koor, X0koor);
+                        T0.position.y = Y0koor;
+                        kut1 = -Math.PI/2 + Math.atan(25/289*Z0koor);
+                        tangenta1.rotation.x = kut1;
+                        tangenta1.position.set(X0koor, Y0koor, Z0koor);
+                        tangenta2.position.set(X0koor, Y0koor, Z0koor);
+                        rotiraj_ravninu();
+                        render();
+                    }
+                    break;
+                    case 's':
+                    if (X0koor > -13) {
+                        if (X0koor+13 >= 0.4) pomak = -0.4;
+                        else pomak = -X0koor-13;
+                        T0xy.translateX(pomak);
+                        tangenta2.position.set(0,0,0);
+                        tangenta2.rotation.z = -kut2;
+                        T0.translateX(pomak);
+                        kriv1.translateX(pomak);
+                        kriv1.translateY(ff(Z0koor,X0koor+pomak)-Y0koor);
+                        presjek1.translateZ(pomak);
+                        vrati_ravninu();
+                        X0koor += pomak;
+                        Y0koor = ff(Z0koor, X0koor);
+                        T0.position.y = Y0koor;
+                        tangenta1.position.set(X0koor, Y0koor, Z0koor);
+                        kut2 = Math.PI/2 - Math.atan(25/289*X0koor);
+                        tangenta2.rotation.z = kut2;
+                        tangenta2.position.set(X0koor, Y0koor, Z0koor);
+                        rotiraj_ravninu();
+                        render();
+                    }
+                    break;
+                    case 'w':
+                    if (X0koor < 13) {
+                        if (13-X0koor >= 0.4) pomak = 0.4;
+                        else pomak = 13-X0koor;
+                        T0xy.translateX(pomak);
+                        tangenta2.position.set(0,0,0);
+                        tangenta2.rotation.z = -kut2;
+                        T0.translateX(pomak);
+                        kriv1.translateX(pomak);
+                        kriv1.translateY(ff(Z0koor,X0koor+pomak)-Y0koor);
+                        presjek1.translateZ(pomak);
+                        vrati_ravninu();
+                        X0koor += pomak;
+                        Y0koor = ff(Z0koor, X0koor);
+                        T0.position.y = Y0koor;
+                        tangenta1.position.set(X0koor, Y0koor, Z0koor);
+                        kut2 = Math.PI/2 - Math.atan(25/289*X0koor);
+                        tangenta2.rotation.z = kut2;
+                        tangenta2.position.set(X0koor, Y0koor, Z0koor);
+                        rotiraj_ravninu();
+                        render();
+                    }
+                    break;
+                }
+            }   
+        });
+    }//init
+    </script>
+</body>
+</html>

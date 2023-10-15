@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html>
+   
+    <head>
+        <meta charset="UTF-8">
+        <title>orijentacija</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+        <style>
+            body {margin: 0; overflow: hidden}
+            button:focus {outline:0 !important;}
+            .btn.btn-custom-sm {
+                border-radius: 0;
+            }
+            .card {
+                background-color: rgba(255,255,255, 0.95) !important;
+                font-size: 95%;
+            }
+        </style>   
+    </head>
+    
+    <body>
+
+        <div style="position: absolute; left:0px; top: 0px;">
+            <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" onclick="toggler('info');"><span class="fa fa-info-circle fa-2x" style="color:white;"></span></a>
+        </div>
+
+        <div style="position: absolute; right:0px; top: 0px; z-index:10;">
+            <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" data-toggle="modal" data-target="#infoModal"><span class="fa fa-question-circle fa-2x" style="color:white;"></span></a>
+        </div>
+
+        <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 45px; width:400px;">
+        <div id="infoHead" class="card-header">
+        Orijentacija - lijeva i desna baza
+        </div>
+        <div id="infoBody" class="card-body">
+        <ul style="padding:8px;">
+        <li>Svaku uređenu trojku nekomplanarnih vektora u <b><i>V<sup>&nbsp;3</sup></i></b> zovemo bazom za <b><i>V<sup>&nbsp;3</sup></i></b>.</li>
+        <li>Vektori <b>a</b>, <b>b</b>, <b>c</b> u danom poretku čine desnu bazu.</li>
+        <li>Naime, ako pogledamo ravninu koja sadrži vektore <b>a</b> i <b>b</b>, tada ta ravnina dijeli prostor na dva poluprostora. Gledamo li tu ravninu iz onog poluprostora prema kojemu gleda vektor <b>c</b>, tada je obilazak (koji je manji od 180&#176;) od vektora <b>a</b> prema vektoru <b>b</b> u smjeru suprotnom od kazaljke na satu. Zbog toga je (<b>a</b>,<b>b</b>,<b>c</b>) desna baza.</li>
+        <li>Uočite, ako gledamo ravninu iz onog drugog poluprostora prema kojemu ne gleda vektor <b>c</b>, tada je je obilazak od vektora <b>a</b> prema vektoru <b>b</b> u smjeru kazaljke na satu. Ukoliko bi vektor <b>c</b> gledao prema tom poluprostoru, tada bi (<b>a</b>,<b>b</b>,<b>c</b>) bila lijeva baza.</li>
+        </ul>
+        </div>
+        </div>
+
+        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upravljanje 3D objektom</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <ul>
+                 <li>Lijeva tipka miša - rotiranje kamere oko objekta</li>
+                 <li>Srednja tipka miša - približavanje i udaljavanje od objekta</li>
+                 <li>Pritisnuta tipka <code>A</code> na tastaturi - svaka tipka miša mijenja pogled kamere</li>
+                 <li>Pritisnuta tipka <code>S</code> na tastaturi - svaka tipka miša obavlja zumiranje</li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div id="WebGL-output"></div>
+
+        <script language="JavaScript">
+            function toggler(divId) {
+                $("#" + divId).slideToggle(500);
+            }
+        </script>
+        
+        <script language="JavaScript" type="module">
+            import * as THREE from '../lib/three.module.js';
+            import { TrackballControls } from '../lib/staticTrackballControls.js';
+            
+            $("#info").hide();
+
+            var fontloader = new THREE.FontLoader();
+            
+            fontloader.load("../lib/helvetiker_regular.typeface.json", function(font) {
+                            
+            var scene = new THREE.Scene();
+            
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            
+            var renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setPixelRatio( window.devicePixelRatio );
+            renderer.setClearColor(0xA9A9A9, 1);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            $("#WebGL-output").append(renderer.domElement);
+            
+            var planeGeometry = new THREE.PlaneGeometry(100,100,20,20);
+            var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffe0, side:THREE.DoubleSide, transparent: true, opacity:0.6});
+            var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+                
+            scene.add(plane);
+
+            var edges = new THREE.EdgesGeometry(planeGeometry);
+            var rub = new THREE.LineSegments(edges, new THREE.LineBasicMaterial( { color: 0x0000ff } ) );
+            scene.add(rub);
+            
+            var mat1 = new THREE.MeshPhongMaterial({color: 0x7fffd4, specular: 0x7777ff,  emissive:0xb22222, flatShading: false});
+            var mat2 = new THREE.MeshPhongMaterial({color: 0x98fb98, specular: 0x93fb93, flatShading: false});
+            var mat3 = new THREE.MeshPhongMaterial({color: 0x4169e1, specular: 0x4169e1, emissive: 0x444444, flatShading: false});
+            var matStrelica = new THREE.MeshPhongMaterial({color: 0xdda0dd, specular: 0xdda0dd, emissive: 0x222222, flatShading: false});
+            var matStrelica2 = new THREE.MeshPhongMaterial({color: 0xdda0dd, specular: 0xdda0dd, emissive: 0x440044, flatShading: false});
+            
+            camera.position.x = 0;
+            camera.position.y = 60;
+            camera.position.z = 200;
+            camera.lookAt(scene.position);
+                
+            var pointLight = new THREE.PointLight("#eeeeee");
+            pointLight.distance = 250;
+            pointLight.position.set(0,0,100);
+            scene.add(pointLight);
+            
+                            
+            var pointLight2 = new THREE.PointLight("#eeeeee");
+            pointLight2.distance = 250;
+            pointLight2.position.set(0,0,-100);
+            scene.add(pointLight2);
+            
+            
+            var start = new THREE.Vector3(-4, 5, 0);
+            var middle = new THREE.Vector3(10.5, -6, 0);
+            var end = new THREE.Vector3(8, -22, 0);
+            var curveQuad = new THREE.QuadraticBezierCurve3(start, middle, end);
+            var tuba = new THREE.TubeGeometry(curveQuad, 50, 0.3, 20, false);
+            var tubaMesh = new THREE.Mesh(tuba, matStrelica);
+            scene.add(tubaMesh);
+                
+                
+            var stozacStrelica = new THREE.Mesh(new THREE.CylinderGeometry(0,0.7,2,12), matStrelica);
+            stozacStrelica.translateY(5);
+            stozacStrelica.translateX(-4);
+            stozacStrelica.rotation.z = 0.9218;
+            stozacStrelica.translateY(1);
+            scene.add(stozacStrelica);
+            
+            
+            var poklopacStrelica = new THREE.Mesh(new THREE.CircleGeometry(0.3, 20), matStrelica2);
+            poklopacStrelica.translateY(-22);
+            poklopacStrelica.translateX(8);
+            poklopacStrelica.rotation.y = -0.15499674192394;
+            poklopacStrelica.rotation.x = Math.PI / 2;
+            scene.add(poklopacStrelica);
+
+            var tekst_options = {
+                size: 4,
+                height: 0.2,
+                font: font,
+                curveSegments: 12
+            };
+            
+            var tekstA = createText('a', tekst_options);
+            tekstA.translateZ(0.1);
+            tekstA.translateX(30);
+            tekstA.translateY(-30);
+            tekstA.rotation.z = -Math.PI / 6;
+            scene.add(tekstA);
+            
+            var tekstB = createText('b', tekst_options);
+            tekstB.translateZ(0.1);
+            tekstB.translateX(5);
+            tekstB.translateY(25);
+            tekstB.rotation.z = -0.5;
+            scene.add(tekstB);
+            
+            var tekstC = createText('c', tekst_options);
+            tekstC.translateZ(-2);
+            tekstC.translateX(7);
+            tekstC.translateZ(25);
+            tekstC.rotation.z = -0.75;
+            tekstC.rotation.x = 1;
+            scene.add(tekstC);
+            
+            var trackballControls = new TrackballControls(camera, document.getElementById('WebGL-output'));
+            trackballControls.maxDistance = 160;
+            trackballControls.minDistance = 20;
+            trackballControls.zoomSpeed = 2;
+            trackballControls.noZoom = false;
+            trackballControls.noPan = true;
+            trackballControls.staticMoving = true;
+
+            trackballControls.update();
+            trackballControls.addEventListener('change', render);
+                
+            var vektor1 = new THREE.Mesh(vektor(48), mat2);
+            vektor1.translateX(-20);
+            vektor1.translateY(-15);
+            vektor1.rotation.z = -Math.PI / 6;
+            vektor1.translateY(24);
+            scene.add(vektor1);
+            
+            var vektor2 = new THREE.Mesh(vektor(52), mat1);
+            vektor2.translateX(-20);
+            vektor2.translateY(-15);
+            vektor2.rotation.z = -1.9;
+            vektor2.translateY(26);
+            scene.add(vektor2);
+            
+            var vektor3 = new THREE.Mesh(vektor(38), mat3);
+            vektor3.translateX(-20);
+            vektor3.translateY(-15);
+            vektor3.rotation.z = -0.75;
+            vektor3.rotation.x = 1;
+            vektor3.translateY(19);
+            scene.add(vektor3);
+                
+            render();
+                
+            function render() {
+                trackballControls.handleResize();
+                renderer.render(scene, camera);
+            }
+                
+            $(window).resize( function() {
+                camera.aspect = (window.innerWidth) / (window.innerHeight);
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight);
+                trackballControls.handleResize();
+                render();
+            });
+            });//end fontLoader
+                
+            function vektor(h) {
+                var valjakGeometry = new THREE.CylinderGeometry(0.4,0.4,h,10);
+                var stozacGeometry = new THREE.CylinderGeometry(0,0.9,2,12);
+                var valjak = new THREE.Mesh(valjakGeometry);
+                var stozac = new THREE.Mesh(stozacGeometry);
+                
+                var vek = new THREE.Geometry();
+                
+                stozac.translateY(h/2 + 1);
+                
+                valjak.updateMatrix();
+                stozac.updateMatrix();
+            
+                vek.merge(valjak.geometry, valjak.matrix);
+                vek.merge(stozac.geometry, stozac.matrix);
+                
+                return vek;   
+            }
+                
+            function createText(text, params) {
+                var textGeo = new THREE.TextGeometry(text, params);
+                textGeo.computeBoundingBox();
+                textGeo.computeVertexNormals();
+
+                var material = [new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false}),
+                                new THREE.MeshPhongMaterial({color: 0xff88cc, flatShading: false})];
+                    
+                var textMesh = new THREE.Mesh(textGeo, material);
+                return textMesh;
+            }
+        </script>
+        
+    </body>
+
+</html>

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>rose 512</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <script src="../lib/dat.gui.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+        <style>
+        body {
+          margin: 0;
+          overflow: hidden;
+        }
+        button:focus {outline:0 !important;}
+        .btn.btn-custom-sm {
+          border-radius: 0;
+        }
+        .dg.a { margin-right:0px !important; }
+        </style>
+    </head>
+
+    <body>
+        <div style="position: absolute; left:0px; top: 0px; z-index:10;">
+          <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" onclick="toggler('info');"><span class="fa fa-info-circle fa-2x" style="color:white;"></span></a>
+        </div>
+
+        <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 45px; width:320px; z-index:11;">
+          <div id="infoHead" class="card-header">
+            Dijelovi ruže
+          </div>
+        <div id="infoBody" class="card-body">
+          <p style="margin-bottom:0px;"><span class="badge badge-primary mr-auto"><i>n = 5</i></span>&nbsp;<span class="badge badge-primary mr-auto"><i>d = 1</i></span>&nbsp;<span class="badge badge-primary mr-auto"><i>p = 2</i></span><img src='data/rose_nd_neparan.png' style="width:100%;"></p>
+        </div>
+        </div>
+
+        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upravljanje 3D objektom</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <ul>
+                 <li>Lijeva tipka miša - rotiranje objekta</li>
+                 <li>Desna tipka miša - translacija objekta</li>
+                 <li>Srednja tipka miša - približavanje i udaljavanje od objekta</li>
+                 <li>Tipka <code>R</code> (tastatura) - vraćanje početnog položaja kamere</li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="plohaModal" tabindex="-1" role="dialog" aria-labelledby="plohaModalLabel" aria-hidden="true" data-backdrop="static">
+          <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="example2ModalLabel">Parametarske jednadžbe</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+               <p style="text-align:center;"><img src="data/nd_neparan.png"></p>
+               <hr>
+               <ul>
+                <li style="margin-bottom:7px;"><span class="badge badge-dark">Brzi prikaz dijela ruže</span> - osam opcija za žičani ili površinski prikaz polovice ruže ili cijele ruže.</li>
+               <li style="margin-bottom:5px;"><span class="badge badge-dark">1. dio ruže</span>&nbsp;<span class="badge badge-dark">2. dio ruže</span>&nbsp;<span class="badge badge-dark">3. dio ruže</span>&nbsp;<span class="badge badge-dark">4. dio ruže</span>&nbsp;<span class="badge badge-dark">5. dio ruže</span>&nbsp;<span class="badge badge-dark">6. dio ruže</span>&nbsp;<span class="badge badge-dark">7. dio ruže</span>&nbsp;<span class="badge badge-dark">8. dio ruže</span>&nbsp; - omogućuju pojedinačnu kontrolu prikaza pojedinog dijela ruže. Pojedini dio ruže možete sakriti ili promijeniti mu način prikaza (žičani ili površinski prikaz).</li>
+               <li>Na slici u lijevom gornjem kutu prikazano je kako su pojedini dijelovi plohe povezani s parametrizacijom. Boja pojedinog pravokutnika odgovara dominantnoj boji pojedinog dijela plohe. Sliku možete po želji sakriti ili prikazati pritiskom na tipku <span class="badge badge-secondary"><i class="fa fa-info-circle" aria-hidden="true"></i></span>.</li> 
+               </ul>
+              </div>
+              <div class="modal-footer">
+                <span class="badge badge-primary mr-auto" style="font-size: 120%;"><i>n = 5, d = 1, p = 2</i></span>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="WebGL-output"></div>
+
+        <script language="JavaScript">
+            function toggler(divId) {
+                $("#" + divId).slideToggle(500);
+            }
+        </script>
+
+        <script language="JavaScript" type="module">
+        import * as THREE from '../lib/three.module.js';
+        import { OrbitControls } from '../lib/OrbitControls.js';
+
+        var n = 5;
+        var d = 1;
+        var p = 2;
+        var du = 36;
+        var dv = 10;
+
+        var scene = new THREE.Scene();
+
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 10);
+
+        var renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setClearColor(0xA9A9A9, 1);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        $("#WebGL-output").append(renderer.domElement);
+
+        camera.position.x = 4;
+        camera.position.y = 3;
+        camera.position.z = 4;
+
+        scene.add(camera);
+
+        var pointLight = new THREE.PointLight("#cccccc");
+        pointLight.position.set(2,2,2);
+        camera.add(pointLight);
+        pointLight.intensity = 1;
+
+        var pointLight2 = new THREE.PointLight(0x555555);
+        pointLight2.position.set(-4,-2,4)
+        camera.add( pointLight2 );
+        pointLight2.intensity = 0.5;
+
+        var mat1 = new THREE.MeshLambertMaterial({color: 0x7fffd4, emissive:0x222222, flatShading: false});
+        
+        var mat2tex1 = new THREE.MeshPhongMaterial({color: "rgb(20%,90%,30%)", emissive:0x777777, specular: 0x222222, shininess: 1,
+                                                   side:THREE.DoubleSide, 
+                                                   flatShading: false,
+                                                   polygonOffset: true,
+                                                   polygonOffsetFactor: 1.0,
+                                                   polygonOffsetUnits: 4.0});
+        var mat2wire1 = new THREE.LineBasicMaterial( { color: 0x009900, linewidth: 1.2, polygonOffset: false} );
+        
+        var mat2tex2 = new THREE.MeshPhongMaterial({color: "rgb(68%,48%,80%)", emissive:0x777777, specular: 0x222222, shininess: 1,
+                                                   side:THREE.DoubleSide,
+                                                   flatShading: false,
+                                                   polygonOffset: true,
+                                                   polygonOffsetFactor: 1.0,
+                                                   polygonOffsetUnits: 4.0});
+        var mat2wire2 = new THREE.LineBasicMaterial( { color: "rgb(60%,20%,100%)", linewidth: 1.2, polygonOffset: false} );
+
+        var mat2tex3 = new THREE.MeshPhongMaterial({color: "rgb(98%,67%,56%)", emissive:0x777777, specular: 0x222222, shininess: 1,
+                                                   side:THREE.DoubleSide,
+                                                   flatShading: false,
+                                                   polygonOffset: true,
+                                                   polygonOffsetFactor: 1.0,
+                                                   polygonOffsetUnits: 4.0});
+        var mat2wire3 = new THREE.LineBasicMaterial( { color: "rgb(39%,27%,22%)", linewidth: 1.2, polygonOffset: false} );
+
+        var mat2tex4 = new THREE.MeshPhongMaterial({color: "rgb(40%,80%,100%)", emissive:0x777777, specular: 0x222222, shininess: 1,
+                                                   side:THREE.DoubleSide, 
+                                                   flatShading: false,
+                                                   polygonOffset: true,
+                                                   polygonOffsetFactor: 1.0,
+                                                   polygonOffsetUnits: 4.0});
+        var mat2wire4 = new THREE.LineBasicMaterial( { color: "rgb(0%,40%,60%)", linewidth: 1.2, polygonOffset: false} );
+
+        var plohaFUN1 = function(u,v,target) {
+           u = (d * Math.PI / 2) * u; 
+           v = (Math.PI / 2) * v;
+           var z = 0.5 * Math.cos(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var x = 0.5 * Math.sin(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var y = 0.5 * (p + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.cos(v));
+           target.set(x,y,z);
+        }
+
+        var plohaFUN2 = function(u,v,target) {
+           u = (d * Math.PI / 2) * (u + 1); 
+           v = (Math.PI / 2) * v;
+           var z = 0.5 * Math.cos(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var x = 0.5 * Math.sin(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var y = 0.5 * (p + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.cos(v));
+           target.set(x,y,z);
+        }
+
+        var plohaFUN3 = function(u,v,target) {
+           u = (d * Math.PI / 2) * (u + 1); 
+           v = (Math.PI / 2) * (v + 3);
+           var z = 0.5 * Math.cos(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var x = 0.5 * Math.sin(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var y = 0.5 * (p + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.cos(v));
+           target.set(x,y,z);
+        }
+
+        var plohaFUN4 = function(u,v,target) {
+           u = (d * Math.PI / 2) * u; 
+           v = (Math.PI / 2) * (v + 3);
+           var z = 0.5 * Math.cos(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var x = 0.5 * Math.sin(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var y = 0.5 * (p + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.cos(v));
+           target.set(x,y,z);
+        }
+
+        var plohaFUN5 = function(u,v,target) {
+           u = (d * Math.PI / 2) * u; 
+           v = (Math.PI / 2) * (v + 1);
+           var z = 0.5 * Math.cos(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var x = 0.5 * Math.sin(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var y = 0.5 * (p + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.cos(v));
+           target.set(x,y,z);
+        }
+
+        var plohaFUN6 = function(u,v,target) {
+           u = (d * Math.PI / 2) * (u + 1); 
+           v = (Math.PI / 2) * (v + 1);
+           var z = 0.5 * Math.cos(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var x = 0.5 * Math.sin(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var y = 0.5 * (p + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.cos(v));
+           target.set(x,y,z);
+        }
+
+        var plohaFUN7 = function(u,v,target) {
+           u = (d * Math.PI / 2) * (u + 1); 
+           v = (Math.PI / 2) * (v + 2);
+           var z = 0.5 * Math.cos(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var x = 0.5 * Math.sin(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var y = 0.5 * (p + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.cos(v));
+           target.set(x,y,z);
+        }
+
+        var plohaFUN8 = function(u,v,target) {
+           u = (d * Math.PI / 2) * u; 
+           v = (Math.PI / 2) * (v + 2);
+           var z = 0.5 * Math.cos(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var x = 0.5 * Math.sin(u) * (Math.cos(n/d*u) + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.sin(v));
+           var y = 0.5 * (p + Math.sqrt(p**2 + Math.cos(n/d*u)**2) * Math.cos(v));
+           target.set(x,y,z);
+        }
+
+        var ploha1 = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN1, du, dv, false), mat2tex1);
+        var ploha1wire = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.ParametricGeometry(plohaFUN1, du, dv, false)), mat2wire1);
+        scene.add(ploha1);
+        scene.add(ploha1wire);
+
+        var ploha2 = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN2, du, dv, false), mat2tex2);
+        var ploha2wire = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.ParametricGeometry(plohaFUN2, du, dv, false)), mat2wire2);
+        scene.add(ploha2);
+        scene.add(ploha2wire);
+
+        var ploha3 = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN3, du, dv, false), mat2tex3);
+        var ploha3wire = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.ParametricGeometry(plohaFUN3, du, dv, false)), mat2wire3);
+        scene.add(ploha3);
+        scene.add(ploha3wire);
+
+        var ploha4 = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN4, du, dv, false), mat2tex4);
+        var ploha4wire = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.ParametricGeometry(plohaFUN4, du, dv, false)), mat2wire4);
+        scene.add(ploha4);
+        scene.add(ploha4wire);
+
+        var ploha5 = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN5, du, dv, false), mat2tex1);
+        var ploha5wire = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.ParametricGeometry(plohaFUN5, du, dv, false)), mat2wire1);
+        scene.add(ploha5);
+        scene.add(ploha5wire);
+
+        var ploha6 = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN6, du, dv, false), mat2tex2);
+        var ploha6wire = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.ParametricGeometry(plohaFUN6, du, dv, false)), mat2wire2);
+        scene.add(ploha6);
+        scene.add(ploha6wire);
+
+        var ploha7 = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN7, du, dv, false), mat2tex3);
+        var ploha7wire = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.ParametricGeometry(plohaFUN7, du, dv, false)), mat2wire3);
+        scene.add(ploha7);
+        scene.add(ploha7wire);
+
+        var ploha8 = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN8, du, dv, false), mat2tex4);
+        var ploha8wire = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.ParametricGeometry(plohaFUN8, du, dv, false)), mat2wire4);
+        scene.add(ploha8);
+        scene.add(ploha8wire);
+
+        var orbitControls = new OrbitControls(camera, renderer.domElement);
+        orbitControls.minDistance = 2;
+        orbitControls.maxDistance = 8;
+        orbitControls.enablePan = true;
+        orbitControls.maxPolarAngle = 3.14;
+        orbitControls.minPolarAngle = 0;
+        orbitControls.target = new THREE.Vector3(0,0.9,0);
+        orbitControls.saveState();
+
+        orbitControls.update();
+        orbitControls.addEventListener('change', render);
+
+        let gui = new dat.GUI({resizable: false, width: 210});
+        var controls = new function() {
+        this.wireframe1 = true;
+        this.wireframe2 = true;
+        this.wireframe3 = true;
+        this.wireframe4 = true;
+        this.wireframe5 = true;
+        this.wireframe6 = true;
+        this.wireframe7 = true;
+        this.wireframe8 = true;
+        this.solid1 = true;
+        this.solid2 = true;
+        this.solid3 = true;
+        this.solid4 = true;
+        this.solid5 = true;
+        this.solid6 = true;
+        this.solid7 = true;
+        this.solid8 = true;
+        this.polaSolid = function() {
+          ploha1.visible = false;
+          ploha2.visible = false;
+          ploha3.visible = false;
+          ploha4.visible = false;
+          ploha5.visible = true;
+          ploha6.visible = true;
+          ploha7.visible = true;
+          ploha8.visible = true;
+          ploha1wire.visible = false;
+          ploha2wire.visible = false;
+          ploha3wire.visible = false;
+          ploha4wire.visible = false;
+          ploha5wire.visible = false;
+          ploha6wire.visible = false;
+          ploha7wire.visible = false;
+          ploha8wire.visible = false;
+          this.solid1 = false;
+          this.solid2 = false;
+          this.solid3 = false;
+          this.solid4 = false;
+          this.solid5 = true;
+          this.solid6 = true;
+          this.solid7 = true;
+          this.solid8 = true;
+          this.wireframe1 = false;
+          this.wireframe2 = false;
+          this.wireframe3 = false;
+          this.wireframe4 = false;
+          this.wireframe5 = false;
+          this.wireframe6 = false;
+          this.wireframe7 = false;
+          this.wireframe8 = false;
+          render();
+        }
+        this.polaWire = function() {
+          ploha1.visible = false;
+          ploha2.visible = false;
+          ploha3.visible = false;
+          ploha4.visible = false;
+          ploha5.visible = false;
+          ploha6.visible = false;
+          ploha7.visible = false;
+          ploha8.visible = false;
+          ploha1wire.visible = false;
+          ploha2wire.visible = false;
+          ploha3wire.visible = false;
+          ploha4wire.visible = false;
+          ploha5wire.visible = true;
+          ploha6wire.visible = true;
+          ploha7wire.visible = true;
+          ploha8wire.visible = true;
+          this.solid1 = false;
+          this.solid2 = false;
+          this.solid3 = false;
+          this.solid4 = false;
+          this.solid5 = false;
+          this.solid6 = false;
+          this.solid7 = false;
+          this.solid8 = false;
+          this.wireframe1 = false;
+          this.wireframe2 = false;
+          this.wireframe3 = false;
+          this.wireframe4 = false;
+          this.wireframe5 = true;
+          this.wireframe6 = true;
+          this.wireframe7 = true;
+          this.wireframe8 = true;
+          render();
+        }
+        this.polaSolidWire = function() {
+          ploha1.visible = false;
+          ploha2.visible = false;
+          ploha3.visible = false;
+          ploha4.visible = false;
+          ploha5.visible = true;
+          ploha6.visible = true;
+          ploha7.visible = true;
+          ploha8.visible = true;
+          ploha1wire.visible = false;
+          ploha2wire.visible = false;
+          ploha3wire.visible = false;
+          ploha4wire.visible = false;
+          ploha5wire.visible = true;
+          ploha6wire.visible = true;
+          ploha7wire.visible = true;
+          ploha8wire.visible = true;
+          this.solid1 = false;
+          this.solid2 = false;
+          this.solid3 = false;
+          this.solid4 = false;
+          this.solid5 = true;
+          this.solid6 = true;
+          this.solid7 = true;
+          this.solid8 = true;
+          this.wireframe1 = false;
+          this.wireframe2 = false;
+          this.wireframe3 = false;
+          this.wireframe4 = false;
+          this.wireframe5 = true;
+          this.wireframe6 = true;
+          this.wireframe7 = true;
+          this.wireframe8 = true;
+          render();
+        }
+        this.ruzaSolid = function() {
+          ploha1.visible = true;
+          ploha2.visible = true;
+          ploha3.visible = true;
+          ploha4.visible = true;
+          ploha5.visible = true;
+          ploha6.visible = true;
+          ploha7.visible = true;
+          ploha8.visible = true;
+          ploha1wire.visible = false;
+          ploha2wire.visible = false;
+          ploha3wire.visible = false;
+          ploha4wire.visible = false;
+          ploha5wire.visible = false;
+          ploha6wire.visible = false;
+          ploha7wire.visible = false;
+          ploha8wire.visible = false;
+          this.solid1 = true;
+          this.solid2 = true;
+          this.solid3 = true;
+          this.solid4 = true;
+          this.solid5 = true;
+          this.solid6 = true;
+          this.solid7 = true;
+          this.solid8 = true;
+          this.wireframe1 = false;
+          this.wireframe2 = false;
+          this.wireframe3 = false;
+          this.wireframe4 = false;
+          this.wireframe5 = false;
+          this.wireframe6 = false;
+          this.wireframe7 = false;
+          this.wireframe8 = false;
+          render();
+        }
+        this.ruzaWire = function() {
+          ploha1.visible = false;
+          ploha2.visible = false;
+          ploha3.visible = false;
+          ploha4.visible = false;
+          ploha5.visible = false;
+          ploha6.visible = false;
+          ploha7.visible = false;
+          ploha8.visible = false;
+          ploha1wire.visible = true;
+          ploha2wire.visible = true;
+          ploha3wire.visible = true;
+          ploha4wire.visible = true;
+          ploha5wire.visible = true;
+          ploha6wire.visible = true;
+          ploha7wire.visible = true;
+          ploha8wire.visible = true;
+          this.solid1 = false;
+          this.solid2 = false;
+          this.solid3 = false;
+          this.solid4 = false;
+          this.solid5 = false;
+          this.solid6 = false;
+          this.solid7 = false;
+          this.solid8 = false;
+          this.wireframe1 = true;
+          this.wireframe2 = true;
+          this.wireframe3 = true;
+          this.wireframe4 = true;
+          this.wireframe5 = true;
+          this.wireframe6 = true;
+          this.wireframe7 = true;
+          this.wireframe8 = true;
+          render();
+        }
+        this.ruzaSolidWire = function() {
+          ploha1.visible = true;
+          ploha2.visible = true;
+          ploha3.visible = true;
+          ploha4.visible = true;
+          ploha5.visible = true;
+          ploha6.visible = true;
+          ploha7.visible = true;
+          ploha8.visible = true;
+          ploha1wire.visible = true;
+          ploha2wire.visible = true;
+          ploha3wire.visible = true;
+          ploha4wire.visible = true;
+          ploha5wire.visible = true;
+          ploha6wire.visible = true;
+          ploha7wire.visible = true;
+          ploha8wire.visible = true;
+          this.solid1 = true;
+          this.solid2 = true;
+          this.solid3 = true;
+          this.solid4 = true;
+          this.solid5 = true;
+          this.solid6 = true;
+          this.solid7 = true;
+          this.solid8 = true;
+          this.wireframe1 = true;
+          this.wireframe2 = true;
+          this.wireframe3 = true;
+          this.wireframe4 = true;
+          this.wireframe5 = true;
+          this.wireframe6 = true;
+          this.wireframe7 = true;
+          this.wireframe8 = true;
+          render();
+        }
+        this.SolidwireWire = function() {
+          ploha1.visible = false;
+          ploha2.visible = false;
+          ploha3.visible = false;
+          ploha4.visible = false;
+          ploha5.visible = true;
+          ploha6.visible = true;
+          ploha7.visible = true;
+          ploha8.visible = true;
+          ploha1wire.visible = true;
+          ploha2wire.visible = true;
+          ploha3wire.visible = true;
+          ploha4wire.visible = true;
+          ploha5wire.visible = true;
+          ploha6wire.visible = true;
+          ploha7wire.visible = true;
+          ploha8wire.visible = true;
+          this.solid1 = false;
+          this.solid2 = false;
+          this.solid3 = false;
+          this.solid4 = false;
+          this.solid5 = true;
+          this.solid6 = true;
+          this.solid7 = true;
+          this.solid8 = true;
+          this.wireframe1 = true;
+          this.wireframe2 = true;
+          this.wireframe3 = true;
+          this.wireframe4 = true;
+          this.wireframe5 = true;
+          this.wireframe6 = true;
+          this.wireframe7 = true;
+          this.wireframe8 = true;
+          render();
+        }
+        this.SolidWire = function() {
+          ploha1.visible = false;
+          ploha2.visible = false;
+          ploha3.visible = false;
+          ploha4.visible = false;
+          ploha5.visible = true;
+          ploha6.visible = true;
+          ploha7.visible = true;
+          ploha8.visible = true;
+          ploha1wire.visible = true;
+          ploha2wire.visible = true;
+          ploha3wire.visible = true;
+          ploha4wire.visible = true;
+          ploha5wire.visible = false;
+          ploha6wire.visible = false;
+          ploha7wire.visible = false;
+          ploha8wire.visible = false;
+          this.solid1 = false;
+          this.solid2 = false;
+          this.solid3 = false;
+          this.solid4 = false;
+          this.solid5 = true;
+          this.solid6 = true;
+          this.solid7 = true;
+          this.solid8 = true;
+          this.wireframe1 = true;
+          this.wireframe2 = true;
+          this.wireframe3 = true;
+          this.wireframe4 = true;
+          this.wireframe5 = false;
+          this.wireframe6 = false;
+          this.wireframe7 = false;
+          this.wireframe8 = false;
+          render();
+        }
+        this.help = function() {
+          $("#infoModal").modal();
+        };
+        this.ploha = function() {
+          $("#plohaModal").modal();
+        };
+        }
+
+        let brziPrikaz = gui.addFolder('Brzi prikaz dijela ruže');
+        brziPrikaz.add(controls,'polaSolid');
+        brziPrikaz.add(controls,'polaWire');
+        brziPrikaz.add(controls,'polaSolidWire');
+        brziPrikaz.add(controls,'ruzaSolid');
+        brziPrikaz.add(controls,'ruzaWire');
+        brziPrikaz.add(controls,'ruzaSolidWire');
+        brziPrikaz.add(controls,'SolidwireWire');
+        brziPrikaz.add(controls,'SolidWire');
+        brziPrikaz.open();
+
+        let folderBoy1 = gui.addFolder('1. dio ruže');
+        folderBoy1.add(controls, 'solid1').listen().onChange( function() {
+          if (controls.solid1) {
+            ploha1.visible = true;
+          } else {
+            ploha1.visible = false;
+          }
+          render();
+        });
+        folderBoy1.add(controls, 'wireframe1').listen().onChange( function() {
+          if (controls.wireframe1) {
+            ploha1wire.visible = true;
+          } else {
+            ploha1wire.visible = false;
+          }
+          render();
+        });
+
+        let folderBoy2 = gui.addFolder('2. dio ruže');
+        folderBoy2.add(controls, 'solid2').listen().onChange( function() {
+          if (controls.solid2) {
+            ploha2.visible = true;
+          } else {
+            ploha2.visible = false;
+          }
+          render();
+        });
+        folderBoy2.add(controls, 'wireframe2').listen().onChange( function() {
+          if (controls.wireframe2) {
+            ploha2wire.visible = true;
+          } else {
+            ploha2wire.visible = false;
+          }
+          render();
+        });
+
+        let folderBoy3 = gui.addFolder('3. dio ruže');
+        folderBoy3.add(controls, 'solid3').listen().onChange( function() {
+          if (controls.solid3) {
+            ploha3.visible = true;
+          } else {
+            ploha3.visible = false;
+          }
+          render();
+        });
+        folderBoy3.add(controls, 'wireframe3').listen().onChange( function() {
+          if (controls.wireframe3) {
+            ploha3wire.visible = true;
+          } else {
+            ploha3wire.visible = false;
+          }
+          render();
+        });
+
+        let folderBoy4 = gui.addFolder('4. dio ruže');
+        folderBoy4.add(controls, 'solid4').listen().onChange( function() {
+          if (controls.solid4) {
+            ploha4.visible = true;
+          } else {
+            ploha4.visible = false;
+          }
+          render();
+        });
+        folderBoy4.add(controls, 'wireframe4').listen().onChange( function() {
+          if (controls.wireframe4) {
+            ploha4wire.visible = true;
+          } else {
+            ploha4wire.visible = false;
+          }
+          render();
+        });
+
+        let folderBoy5 = gui.addFolder('5. dio ruže');
+        folderBoy5.add(controls, 'solid5').listen().onChange( function() {
+          if (controls.solid5) {
+            ploha5.visible = true;
+          } else {
+            ploha5.visible = false;
+          }
+          render();
+        });
+        folderBoy5.add(controls, 'wireframe5').listen().onChange( function() {
+          if (controls.wireframe5) {
+            ploha5wire.visible = true;
+          } else {
+            ploha5wire.visible = false;
+          }
+          render();
+        });
+
+        let folderBoy6 = gui.addFolder('6. dio ruže');
+        folderBoy6.add(controls, 'solid6').listen().onChange( function() {
+          if (controls.solid6) {
+            ploha6.visible = true;
+          } else {
+            ploha6.visible = false;
+          }
+          render();
+        });
+        folderBoy6.add(controls, 'wireframe6').listen().onChange( function() {
+          if (controls.wireframe6) {
+            ploha6wire.visible = true;
+          } else {
+            ploha6wire.visible = false;
+          }
+          render();
+        });
+
+        let folderBoy7 = gui.addFolder('7. dio ruže');
+        folderBoy7.add(controls, 'solid7').listen().onChange( function() {
+          if (controls.solid7) {
+            ploha7.visible = true;
+          } else {
+            ploha7.visible = false;
+          }
+          render();
+        });
+        folderBoy7.add(controls, 'wireframe7').listen().onChange( function() {
+          if (controls.wireframe7) {
+            ploha7wire.visible = true;
+          } else {
+            ploha7wire.visible = false;
+          }
+          render();
+        });
+
+        let folderBoy8 = gui.addFolder('8. dio ruže');
+        folderBoy8.add(controls, 'solid8').listen().onChange( function() {
+          if (controls.solid8) {
+            ploha8.visible = true;
+          } else {
+            ploha8.visible = false;
+          }
+          render();
+        });
+        folderBoy8.add(controls, 'wireframe8').listen().onChange( function() {
+          if (controls.wireframe8) {
+            ploha8wire.visible = true;
+          } else {
+            ploha8wire.visible = false;
+          }
+          render();
+        });
+
+        gui.add(controls,'help');
+        gui.add(controls,'ploha');
+
+        render();
+
+        function render() {
+          renderer.render( scene, camera );
+        }
+
+        $(window).resize( function() {
+            camera.aspect = (window.innerWidth) / (window.innerHeight);
+            camera.updateProjectionMatrix();
+            renderer.setSize( window.innerWidth, window.innerHeight);
+            render();
+        });
+
+        window.addEventListener("keydown", event => {
+          if (!($('#infoModal').is(':visible') || $('#plohaModal').is(':visible'))) {
+              if (event.repeat) return;
+              if (event.key == "r") {
+                  $('#pogkam').html('O');
+                  orbitControls.reset();
+                  render();
+              }
+          }   
+        });
+        </script>
+    </body>
+</html>

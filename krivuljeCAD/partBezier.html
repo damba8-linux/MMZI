@@ -1,0 +1,411 @@
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>B&eacute;zier - dio krivulje</title>
+         <link rel="stylesheet" type="text/css" href="../vendor/jsxgraph.css"/>
+         <script src="../vendor/jsxgraphcore.js"></script>
+         <script src="../noUISlider/nouislider.min.js"></script>
+         <link rel="stylesheet" type="text/css" href="../noUISlider/nouislider.css"/>
+         <script src="../lib/jquery-3.3.1.min.js"></script>
+         <script src="../lib/bootstrap.min.js"></script>
+         <link rel="stylesheet" href="../lib/bootstrap.min.css">
+         <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+         <link href="../vendor/simple-sidebar.css" rel="stylesheet">
+         <link rel="stylesheet" type="text/css" href="../vendor/page.css">
+         <style>
+          .btn:focus, .btn:active, label.btn {
+          outline: none !important;
+          box-shadow: none !important;
+          -webkit-box-shadow: none !important;
+          }
+          .btn.btn-custom-sm {
+            border-radius: 0;
+          }
+          [data-toggle="collapse"].collapsed .fa:before { content: "\f056"; }
+          [data-toggle="collapse"] .fa:before { content: "\f055"; }
+          .btn-col1 {
+            color: #ff0000;
+          }
+          .btn-col1:hover {
+            color: #cc0000;
+          }
+         </style>
+    </head>
+
+    <body>       
+      <div id="container" style="height:700px;">
+
+        <div id="wrapper">
+
+      
+        <div id="sidebar-wrapper">
+          <ul class="sidebar-nav">
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B&eacute;zierove krivulje</b></li>
+          <li><a href="bernsteinovi_polinomi.html">Bernsteinovi polinomi</a></li>
+          <li><a href="deCasteljau.html">De Casteljaunov algoritam</a></li>
+          <li><a href="#" style="color:yellow;">Subdivizija B&eacute;zierove krivulje</a></li>
+          <li><a href="derivacijaBezier.html">Derivacija B&eacute;zierove krivulje</a></li>
+          <li><a href="podizanje_stupnja_Bezier.html">Podizanje stupnja</a></li>
+          <li><a href="G2neprekidnost.html">Geometrijska neprekidnost</a></li>
+          <li><a href="G2gamma.html">G<sup>2</sup> neprekidnost</a></li>
+          <li><a href="konike.html">Konike</a></li>
+          <li><a href="kruznica.html">Kružnica</a></li>
+          <li><a href="racionalni_deCasteljau.html">Racionalne B&eacute;zierove krivulje</a></li>
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B-splajnovi</b></li>
+           <li><a href="bspline_basis.html">Bazne funkcije</a></li>
+           <li><a href="lokalni_deboor.html">Lokalni De Boorov algoritam</a></li>
+           <li><a href="globalni_deboor.html">Globalni De Boorov algoritam</a></li>
+           <li><a href="kubicna_Bsplajn_krivulja.html">Kubična B-splajn krivulja</a></li>
+           <li><a href="periodicna_Bsplajn_krivulja.html">Zatvorena B-splajn krivulja</a></li>
+          </ul>
+        </div>
+
+        <div class="row">
+
+          <div class="col">
+            <a style="position:absolute; left:15px; padding:5px 5px;" href="#menu-toggle" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" id="menu-toggle"><span class="fas fa-th-list fa-2x" style="color:white;"></span></a>
+       
+        <div id="content" style="width:800px;">
+           <div id="box" class="jxgbox" style="width:800px; height:600px; margin-bottom:30px; z-index:100;"></div>
+           <div class="alert alert-secondary" role="alert" style="width:540px; margin-top:50px; margin-left:120px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div id="t-slider-elem" style="width:85%; margin-top:30px; display: inline-block;"></div>
+            <button type="button" class="btn btn-sm btn-danger" id="refresh" style="position:relative; left:30px; top:0px; border-radius:7px;"><span class="fas fa-sync-alt" style="color:white;"></span></button>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-top:20px;">
+              <label class="btn btn-sm btn-secondary active">
+                <input type="radio" value="1" name="curve_view" id="option1" autocomplete="off" checked> One curve
+              </label>
+              <label class="btn btn-sm btn-secondary">
+                <input type="radio" value="3" name="curve_view" id="option3" autocomplete="off"> Three curves
+              </label>
+            </div>
+           </div> 
+        </div>
+
+      </div>      
+
+      <div class="col">
+
+        <a style="position:absolute;top:0px; right:15px; margin:0; padding:5px 5px;" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" data-toggle="collapse" href="#pomoc" aria-expanded="false" aria-controls="collapseExample"><span class="far fa-image fa-2x" style="color:white;"></span></a>
+
+        <div class="collapse" id="pomoc" style="width:600; position: absolute; top: 50; right:30; z-index:100;">
+         <div class="card card-body">
+
+        <p><a style="position:absolute; top:0px; left:0px;" href="slike/bezierPart.pdf" target="_blank"><button type="button" class="btn btn-danger btn-sm btn-custom-sm" style="vertical-align:top;"><span class="fas fa-file-pdf" style="color:white;"></span></button></a></p>
+
+        <div class="accordion" id="accordionExample">
+        <div class="card" style="border:hidden;">
+          <div class="card-header" id="headingOne" style="background-color: white; padding:0;">
+            <h2 class="mb-0">
+              <button class="btn btn-link btn-col1" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <i class="fa"></i> Slika
+              </button>
+            </h2>
+          </div>
+      
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+              <div class="card-body">
+                <p style="text-align:center;">
+                <img src="slike/bezierPart.png" width="550"></p>
+              </div>
+            </div>
+        </div>
+        <div class="card" style="border:hidden;">
+          <div class="card-header" id="headingTwo" style="background-color: white; padding:0;">
+            <h2 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+               <i class="fa"></i> Pomoć
+              </button>
+            </h2>
+          </div>
+          <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+            <div class="card-body">
+              <ul style="margin:0px; padding:0px;">
+                <li>Pomoću slidera mogu se mijenjati položaji točaka P<sub>1</sub> i P<sub>2</sub> u kojima će se početna krivulja podijeliti na tri manje krivulje.</li>
+                <li>Ako je aktivna opcija <span class="badge badge-secondary">One curve</span>, tada se mogu pomicati samo kontrolne točke <b>b<sub>0</sub></b>, <b>b<sub>1</sub></b>, <b>b<sub>2</sub></b> i <b>b<sub>3</sub></b> od cijele krivulje. Kontrolne točke manjih krivulja automatski se mijenjaju tako da cijela krivulja ostane glatka u djelišnim točkama P<sub>1</sub> i P<sub>2</sub>.</li>
+                <li>Ako kliknemo na opciju <span class="badge badge-secondary">Three curves</span>, tada se trenutna krivulja razreže u točkama P<sub>1</sub> i P<sub>2</sub> na tri manje krivulje čije kontrolne točke možemo pomicati. Pomicanjem tih kontrolnih točaka više ne moramo imati glatkoću u točkama P<sub>1</sub> i P<sub>2</sub>. U ovom slučaju slider više nema utjecaja na točke P<sub>1</sub> i P<sub>2</sub>, već se i te točke mogu direktno pomicati mišem po želji.</li>
+                <li>Ako ponovo kliknemo na opciju <span class="badge badge-secondary">One curve</span>, tada se od zasebne tri krivulje stvara jedna kubična B&eacute;zierova krivulja <b>b</b> koja interpolira točke <b>b<sub>0</sub></b>, P<sub>1</sub>, P<sub>2</sub> i <b>b<sub>3</sub></b> tako da vrijedi <img src="slike/bezier_interp0.png">, <img src="slike/bezier_interp1.png">, <img src="slike/bezier_interp2.png"> i <img src="slike/bezier_interp3.png">. Pritom su <img src="slike/t1.png"> i <img src="slike/t2.png"> trenutne vrijednosti na slideru. Moguće je da nove kreirane kontrolne točke <b>b<sub>1</sub></b> i <b>b<sub>2</sub></b> izlete izvan granica apleta. U tom slučaju možemo ih translatiranjem slike (<span class="badge badge-secondary">SHIFT</span> + <span class="badge badge-secondary">lijeva tipka miša</span>) i pomicanjem korak po korak dovesti unutar granica apleta.</li>
+                <li>Pomoću tipke <span class="badge badge-danger"><span class="fas fa-sync-alt" style="color:white;"></span></span> možemo vratiti aplet u početno stanje.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div> 
+      </div>
+     </div> 
+
+        <div class="alert alert-secondary" role="alert" style="width:540px; margin-top:80px; margin-left:80px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <p><b>Cvat (engl. blossom) kubične B&eacute;zierove krivulje</b><p>
+            <hr>  
+            <p><span class="badge badge-warning">Na segmentu&nbsp; <img src="slike/segment01.png"></span></p>
+            <p><img src="slike/blossomBezier1.png"></p>
+            <hr>
+            <p><span class="badge badge-warning">Na segmentu&nbsp; <img src="slike/segmentAB.png"></span></p>
+            <p><img src="slike/blossomBezier2.png"></p>
+          </div>
+      </div>
+
+      </div>
+    </div>
+        
+      </div>
+
+      <script language="JavaScript">
+            var t_slider_elem = document.getElementById('t-slider-elem');
+            var t_slider0 = 0.3;
+            var t_slider1 = 0.66;
+            var numberCurve = "1";
+            var pocetak = false;    
+
+            function blossom(t1, t2, t3) {
+              let s1 = 1 - t1, s2 = 1 - t2, s3 = 1 - t3;
+              let a0 = s1 * s2 * s3;
+              let a1 = s1 * s2 * t3 + s1 * t2 * s3 + t1 * s2 * s3;
+              let a2 = t1 * t2 * s3 + t1 * s2 * t3 + s1 * t2 * t3;
+              let a3 = t1 * t2 * t3;
+              let x = a0 * control[0].X() + a1 * control[1].X() + a2 * control[2].X() + a3 * control[3].X();
+              let y = a0 * control[0].Y() + a1 * control[1].Y() + a2 * control[2].Y() + a3 * control[3].Y();
+              return [x,y];
+            }
+
+            noUiSlider.create(t_slider_elem, {start: [0.3, 0.66], connect: true, tooltips:[true, true], step: 0.01, 
+                                         margin: 0.08, range: {'min': 0, 'max': 1}});
+
+            var control = [];
+
+            //JXG.Options.layer['curve'] = 7;
+            //JXG.Options.layer['line'] = 5;
+            
+            var aplet = JXG.JSXGraph.initBoard('box', {boundingbox: [-2, 9, 11, -0.5], grid:true,  
+                                                       showCopyright:false, keepaspectratio: false,
+                                                       showNavigation:false,axis:true,
+                                                       zoom:{wheel:false},
+                                                       pan:{enabled:true}});
+            
+            aplet.highlightInfobox = function (x, y, el) {
+                aplet.infobox.setText('');
+            }; 
+
+            var ime = aplet.create('text',[function() {return aplet.getBoundingBox()[2] - 0.1;},
+                                           function() {return aplet.getBoundingBox()[1] - 0.1;},
+                                           '<span style="background-color:white;">Subdivizija B&eacute;zierove krivulje</span>'],
+                                           {anchorX:'right',anchorY:'top',fontSize:14});
+
+            control[0] = aplet.create('point', [-1.5,0.8], {'name':'<span style="background-color:white; opacity:0.7;">b_0</span>', size:4, color:'#009900', label:{offset:[-5,-17]}});
+            control[1] = aplet.create('point', [0.5,8.1], {'name':'<span style="background-color:white; opacity:0.7;">b_1</span>', size:4, color:'#009900', label:{offset:[-5,17]}});
+            control[2] = aplet.create('point', [9.4,8.1], {'name':'<span style="background-color:white; opacity:0.7;">b_2</span>', size:4, color:'#009900', label:{offset:[-5,17]}}); 
+            control[3] = aplet.create('point', [10.6,0.7], {'name':'<span style="background-color:white; opacity:0.7;">b_3</span>', size:4, color:'#009900', label:{offset:[-5,-17]}});
+
+            var segment1 = aplet.create('segment', [control[0],control[1]], {strokeColor:'green',dash:1,strokeWidth:1});
+            var segment2 = aplet.create('segment', [control[1],control[2]], {strokeColor:'green',dash:1,strokeWidth:1});
+            var segment3 = aplet.create('segment', [control[2],control[3]], {strokeColor:'green',dash:1,strokeWidth:1});
+
+            var P1 = aplet.create('point', [function() {return blossom(t_slider0, t_slider0, t_slider0);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">P_1</span>', color:'#ffff00', size:3, label:{offset:[-5,-17]}});
+            var P2 = aplet.create('point', [function() {return blossom(t_slider1, t_slider1, t_slider1);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">P_2</span>', color:'#ffff00', size:3, label:{offset:[-5,-17]}});
+            var A1 = aplet.create('point', [function() {return blossom(0, 0, t_slider0);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">a_1</span>', face:'square', color:'#6c8cff', size:3, label:{offset:[-5,17]}});
+            var A2 = aplet.create('point', [function() {return blossom(0, t_slider0, t_slider0);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">a_2</span>', face:'square', color:'#6c8cff', size:3, label:{offset:[-5,17]}});
+            var C1 = aplet.create('point', [function() {return blossom(t_slider0, t_slider0, t_slider1);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">c_1</span>', face:'square', color:'#30c5dc', size:3, label:{offset:[-5,17]}});
+            var C2 = aplet.create('point', [function() {return blossom(t_slider0, t_slider1, t_slider1);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">c_2</span>', face:'square', color:'#30c5dc', size:3, label:{offset:[-5,17]}});
+            var D1 = aplet.create('point', [function() {return blossom(t_slider1, t_slider1, 1);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_1</span>', face:'square', color:'#1cbd9f', size:3, label:{offset:[-5,17]}});
+            var D2 = aplet.create('point', [function() {return blossom(t_slider1, 1, 1);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_2</span>', face:'square', color:'#1cbd9f', size:3, label:{offset:[-5,17]}});
+            
+            var segment4 = aplet.create('segment', [A1,A2], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+            var segment5 = aplet.create('segment', [A2,P1], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+            var segment6 = aplet.create('segment', [P1,C1], {strokeColor:'#30c5dc',dash:1,strokeWidth:1});
+            var segment7 = aplet.create('segment', [C1,C2], {strokeColor:'#30c5dc',dash:1,strokeWidth:1});
+            var segment8 = aplet.create('segment', [C2,P2], {strokeColor:'#30c5dc',dash:1,strokeWidth:1});
+            var segment9 = aplet.create('segment', [P2,D1], {strokeColor:'#1cbd9f',dash:1,strokeWidth:1});
+            var segment10 = aplet.create('segment', [D1,D2], {strokeColor:'#1cbd9f',dash:1,strokeWidth:1});
+
+            ime.setAttribute({fixed:true});
+            segment1.setAttribute({fixed:true,highlight:false});
+            segment2.setAttribute({fixed:true,highlight:false});
+            segment3.setAttribute({fixed:true,highlight:false});
+            segment4.setAttribute({fixed:true,highlight:false});
+            segment5.setAttribute({fixed:true,highlight:false});
+            segment6.setAttribute({fixed:true,highlight:false});
+            segment7.setAttribute({fixed:true,highlight:false});
+            segment8.setAttribute({fixed:true,highlight:false});
+            segment9.setAttribute({fixed:true,highlight:false});
+            segment10.setAttribute({fixed:true,highlight:false});
+            P1.setAttribute({strokeColor: 'black'});
+            P2.setAttribute({strokeColor: 'black'});
+
+            var krivulja1 = aplet.create('curve', JXG.Math.Numerics.bezier([control[0],A1,A2,P1]), {strokeWidth:3,strokeColor:'red',doAdvancedPlot:false});
+            var krivulja2 = aplet.create('curve', JXG.Math.Numerics.bezier([P1,C1,C2,P2]), {strokeWidth:3,strokeColor:'blue',doAdvancedPlot:false});
+            var krivulja3 = aplet.create('curve', JXG.Math.Numerics.bezier([P2,D1,D2,control[3]]), {strokeWidth:3,strokeColor:'magenta',doAdvancedPlot:false});
+
+            $("#menu-toggle").click(function(event) {
+              event.preventDefault();
+              $("#wrapper").toggleClass("toggled");
+            });
+
+            t_slider_elem.noUiSlider.on('update', function() {
+              [t_slider0, t_slider1] = t_slider_elem.noUiSlider.get().map(x => Number(x));
+              aplet.update();
+            });
+
+            $('input[name=curve_view]').on('change', function() {
+              numberCurve = $(this).val();
+              if (numberCurve == "1") {
+                if (!pocetak) {
+                  var mat = [[1, 0, 0, 0],
+                           [(1 - t_slider0)**3, 3 * t_slider0 * (1 - t_slider0)**2, 3 * t_slider0**2 * (1 - t_slider0), t_slider0**3],
+                           [(1 - t_slider1)**3, 3 * t_slider1 * (1 - t_slider1)**2, 3 * t_slider1**2 * (1 - t_slider1), t_slider1**3],
+                           [0, 0, 0, 1]];
+                  var vekX = [control[0].X(), P1.X(), P2.X(), control[3].X()];
+                  var vekY = [control[0].Y(), P1.Y(), P2.Y(), control[3].Y()];
+                  var xkoor = JXG.Math.Numerics.Gauss(mat, vekX);
+                  var ykoor = JXG.Math.Numerics.Gauss(mat, vekY);
+                }
+
+                aplet.removeObject([A1, A2, C1, C2, D1, D2, P1, P2,
+                                    krivulja1, krivulja2, krivulja3]);
+
+                aplet.suspendUpdate();
+
+                if (!pocetak) {
+                  control[1] = aplet.create('point', [xkoor[1], ykoor[1]], 
+                    {'name':'<span style="background-color:white; opacity:0.7;">b_1</span>', size:4, color:'#009900', label:{offset:[-5,17]}});
+                  control[2] = aplet.create('point', [xkoor[2], ykoor[2]], 
+                    {'name':'<span style="background-color:white; opacity:0.7;">b_2</span>', size:4, color:'#009900', label:{offset:[-5,17]}});
+                } else {
+                  control[1] = aplet.create('point', [0.5,8.1], 
+                    {'name':'<span style="background-color:white; opacity:0.7;">b_1</span>', size:4, color:'#009900', label:{offset:[-5,17]}});
+                  control[2] = aplet.create('point', [9.4,8.1], 
+                    {'name':'<span style="background-color:white; opacity:0.7;">b_2</span>', size:4, color:'#009900', label:{offset:[-5,17]}});
+                }
+
+                segment1 = aplet.create('segment', [control[0],control[1]], {strokeColor:'green',dash:1,strokeWidth:1});
+                segment2 = aplet.create('segment', [control[1],control[2]], {strokeColor:'green',dash:1,strokeWidth:1});
+                segment3 = aplet.create('segment', [control[2],control[3]], {strokeColor:'green',dash:1,strokeWidth:1});
+
+                P1 = aplet.create('point', [function() {return blossom(t_slider0, t_slider0, t_slider0);}],
+                                    {'name':'<span style="background-color:white; opacity:0.7;">P_1</span>', color:'#ffff00', size:3, label:{offset:[-5,-17]}});
+                P2 = aplet.create('point', [function() {return blossom(t_slider1, t_slider1, t_slider1);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">P_2</span>', color:'#ffff00', size:3, label:{offset:[-5,-17]}});
+                A1 = aplet.create('point', [function() {return blossom(0, 0, t_slider0);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">a_1</span>', face:'square', color:'#6c8cff', size:3, label:{offset:[-5,17]}});
+                A2 = aplet.create('point', [function() {return blossom(0, t_slider0, t_slider0);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">a_2</span>', face:'square', color:'#6c8cff', size:3, label:{offset:[-5,17]}});
+                C1 = aplet.create('point', [function() {return blossom(t_slider0, t_slider0, t_slider1);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">c_1</span>', face:'square', color:'#30c5dc', size:3, label:{offset:[-5,17]}});
+                C2 = aplet.create('point', [function() {return blossom(t_slider0, t_slider1, t_slider1);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">c_2</span>', face:'square', color:'#30c5dc', size:3, label:{offset:[-5,17]}});
+                D1 = aplet.create('point', [function() {return blossom(t_slider1, t_slider1, 1);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_1</span>', face:'square', color:'#1cbd9f', size:3, label:{offset:[-5,17]}});
+                D2 = aplet.create('point', [function() {return blossom(t_slider1, 1, 1);}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_2</span>', face:'square', color:'#1cbd9f', size:3, label:{offset:[-5,17]}});
+
+                segment4 = aplet.create('segment', [A1,A2], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+                segment5 = aplet.create('segment', [A2,P1], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+                segment6 = aplet.create('segment', [P1,C1], {strokeColor:'#30c5dc',dash:1,strokeWidth:1});
+                segment7 = aplet.create('segment', [C1,C2], {strokeColor:'#30c5dc',dash:1,strokeWidth:1});
+                segment8 = aplet.create('segment', [C2,P2], {strokeColor:'#30c5dc',dash:1,strokeWidth:1});
+                segment9 = aplet.create('segment', [P2,D1], {strokeColor:'#1cbd9f',dash:1,strokeWidth:1});
+                segment10 = aplet.create('segment', [D1,D2], {strokeColor:'#1cbd9f',dash:1,strokeWidth:1});
+
+                segment1.setAttribute({fixed:true,highlight:false});
+                segment2.setAttribute({fixed:true,highlight:false});
+                segment3.setAttribute({fixed:true,highlight:false});
+                segment4.setAttribute({fixed:true,highlight:false});
+                segment5.setAttribute({fixed:true,highlight:false});
+                segment6.setAttribute({fixed:true,highlight:false});
+                segment7.setAttribute({fixed:true,highlight:false});
+                segment8.setAttribute({fixed:true,highlight:false});
+                segment9.setAttribute({fixed:true,highlight:false});
+                segment10.setAttribute({fixed:true,highlight:false});
+                P1.setAttribute({strokeColor: 'black'});
+                P2.setAttribute({strokeColor: 'black'});
+
+                krivulja1 = aplet.create('curve', JXG.Math.Numerics.bezier([control[0],A1,A2,P1]), {strokeWidth:3,strokeColor:'red',doAdvancedPlot:false});
+                krivulja2 = aplet.create('curve', JXG.Math.Numerics.bezier([P1,C1,C2,P2]), {strokeWidth:3,strokeColor:'blue',doAdvancedPlot:false});
+                krivulja3 = aplet.create('curve', JXG.Math.Numerics.bezier([P2,D1,D2,control[3]]), {strokeWidth:3,strokeColor:'magenta',doAdvancedPlot:false});
+
+                aplet.unsuspendUpdate();
+              } else {
+                let xP1 = P1.X(), yP1 = P1.Y(), xP2 = P2.X(), yP2 = P2.Y();
+                let xA1 = A1.X(), yA1 = A1.Y(), xA2 = A2.X(), yA2 = A2.Y();
+                let xC1 = C1.X(), yC1 = C1.Y(), xC2 = C2.X(), yC2 = C2.Y();
+                let xD1 = D1.X(), yD1 = D1.Y(), xD2 = D2.X(), yD2 = D2.Y();
+                aplet.removeObject([control[1], control[2], A1, A2, C1, C2, D1, D2, P1, P2,
+                                    krivulja1, krivulja2, krivulja3]);
+                aplet.suspendUpdate();
+                P1 = aplet.create('point', [xP1, yP1],
+                                    {'name':'<span style="background-color:white; opacity:0.7;">P_1</span>', color:'#ffff00', size:3, label:{offset:[-5,-17]}});
+                P2 = aplet.create('point', [xP2, yP2],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">P_2</span>', color:'#ffff00', size:3, label:{offset:[-5,-17]}});
+                A1 = aplet.create('point', [xA1, yA1],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">a_1</span>', face:'square', color:'#6c8cff', size:3, label:{offset:[-5,17]}});
+                A2 = aplet.create('point', [xA2, yA2],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">a_2</span>', face:'square', color:'#6c8cff', size:3, label:{offset:[-5,17]}});
+                C1 = aplet.create('point', [xC1, yC1],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">c_1</span>', face:'square', color:'#30c5dc', size:3, label:{offset:[-5,17]}});
+                C2 = aplet.create('point', [xC2, yC2],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">c_2</span>', face:'square', color:'#30c5dc', size:3, label:{offset:[-5,17]}});
+                D1 = aplet.create('point', [xD1, yD1],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_1</span>', face:'square', color:'#1cbd9f', size:3, label:{offset:[-5,17]}});
+                D2 = aplet.create('point', [xD2, yD2],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_2</span>', face:'square', color:'#1cbd9f', size:3, label:{offset:[-5,17]}});
+                
+                segment1 = aplet.create('segment', [control[0],A1], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+                segment4 = aplet.create('segment', [A1,A2], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+                segment5 = aplet.create('segment', [A2,P1], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+                segment6 = aplet.create('segment', [P1,C1], {strokeColor:'#30c5dc',dash:1,strokeWidth:1});
+                segment7 = aplet.create('segment', [C1,C2], {strokeColor:'#30c5dc',dash:1,strokeWidth:1});
+                segment8 = aplet.create('segment', [C2,P2], {strokeColor:'#30c5dc',dash:1,strokeWidth:1});
+                segment9 = aplet.create('segment', [P2,D1], {strokeColor:'#1cbd9f',dash:1,strokeWidth:1});
+                segment10 = aplet.create('segment', [D1,D2], {strokeColor:'#1cbd9f',dash:1,strokeWidth:1});
+                segment2 = aplet.create('segment', [D2,control[3]], {strokeColor:'#1cbd9f',dash:1,strokeWidth:1});
+                
+                segment1.setAttribute({fixed:true,highlight:false});
+                segment2.setAttribute({fixed:true,highlight:false});
+                segment4.setAttribute({fixed:true,highlight:false});
+                segment5.setAttribute({fixed:true,highlight:false});
+                segment6.setAttribute({fixed:true,highlight:false});
+                segment7.setAttribute({fixed:true,highlight:false});
+                segment8.setAttribute({fixed:true,highlight:false});
+                segment9.setAttribute({fixed:true,highlight:false});
+                segment10.setAttribute({fixed:true,highlight:false});
+                P1.setAttribute({strokeColor: 'black'});
+                P2.setAttribute({strokeColor: 'black'});
+
+                krivulja1 = aplet.create('curve', JXG.Math.Numerics.bezier([control[0],A1,A2,P1]), {strokeWidth:3,strokeColor:'red',doAdvancedPlot:false});
+                krivulja2 = aplet.create('curve', JXG.Math.Numerics.bezier([P1,C1,C2,P2]), {strokeWidth:3,strokeColor:'blue',doAdvancedPlot:false});
+                krivulja3 = aplet.create('curve', JXG.Math.Numerics.bezier([P2,D1,D2,control[3]]), {strokeWidth:3,strokeColor:'magenta',doAdvancedPlot:false});
+
+                aplet.unsuspendUpdate();
+              }
+            });
+
+            $('#refresh').on('click', function(event) {
+              event.preventDefault();
+              t_slider0 = 0.3;
+              t_slider1 = 0.66;
+              t_slider_elem.noUiSlider.set([0.3, 0.66]);
+              aplet.setBoundingBox([-2, 9, 11, -0.5], false);
+              control[0].moveTo([-1.5,0.8]);
+              control[3].moveTo([10.6,0.7]);
+              if (numberCurve == "1") {
+                control[1].moveTo([0.5,8.1]);
+                control[2].moveTo([9.4,8.1]);
+              } else {
+                pocetak = true;
+                $("#option1").prop("checked", true).trigger("click");
+                pocetak = false;
+              }
+              aplet.update();
+            });
+        </script>
+
+    </body>
+
+</html>

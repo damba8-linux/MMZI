@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>dvoplohi hiperboloid</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <script src="../lib/dat.gui.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+        <style>
+            body {margin: 0; overflow: hidden}
+            button:focus {outline:0 !important;}
+            .btn.btn-custom-sm {
+                border-radius: 0;
+            }
+            .card {
+                background-color: rgba(255,255,255, 0.95) !important;
+                font-size: 95%;
+            }
+            .dg.a { margin-right:0px !important; }
+        </style>
+    </head>
+
+    <body>
+        <div style="position: absolute; left:0px; top: 0px;">
+        <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" onclick="toggler('info');"><span class="fa fa-info-circle fa-2x" style="color:white;"></span></a>
+        </div>
+
+        <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 45px; width:280px;">
+        <div id="infoHead" class="card-header">Dvoplohi hiperboloid</div>
+        <div id="infoBody" class="card-body">
+        <center><p id="infoRavnina"><img src='kvadrike_slike/dvoplohi_hiperboloid_Z.png'></p></center>
+        <p id="info_xos"><i>a</i> - faktor rastezanja duž <i>x</i>-osi</p>
+        <p id="info_yos"><i>b</i> - faktor rastezanja duž <i>y</i>-osi</p>
+        <p id="info_zos"><i>c</i> - duljina poluosi duž <i>z</i>-osi</p>
+        </div>
+        </div>
+
+        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Help</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <ul>
+                 <li>Lijeva tipka miša - rotiranje kamere oko objekta</li>
+                 <li>Srednja tipka miša - približavanje i udaljavanje od objekta</li>
+                 <li>S lijeve strane su informacije o plohi koje možete zatvoriti i ponovo otvoriti klikom na tipku <span class="badge badge-secondary"><i class="fa fa-info-circle" aria-hidden="true"></i></span> u gornjem lijevom kutu.</li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="WebGL-output"></div>
+
+        <script language="JavaScript">
+        function toggler(divId) {
+            $("#" + divId).slideToggle(500);
+        }
+        </script>
+
+        <script language="JavaScript" type="module">
+        import * as THREE from '../lib/three.module.js';
+        import { OrbitControls } from '../lib/OrbitControls.js';
+
+        var manager = new THREE.LoadingManager();
+        manager.onLoad = function() { // when all resources are loaded
+            init();
+        }
+
+        var font = null;
+        var texture = null;
+        var normalMap = null;
+
+        var fontloader = new THREE.FontLoader(manager);
+        fontloader.load("../lib/helvetiker_regular.typeface.json", function(response) {font = response;});
+
+        var textureloader = new THREE.TextureLoader(manager);
+        textureloader.load('cement4.jpg', function(response) {texture = response});
+
+        var normalMaploader = new THREE.TextureLoader(manager);
+        normalMaploader.load('cement4_normal.jpg', function(response) {normalMap = response});
+
+        function init() {
+            var a = 2;
+            var b = 3;
+            var c = 3;
+
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            var renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setClearColor(0xA9A9A9, 1);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            $("#WebGL-output").append(renderer.domElement);
+
+            camera.position.x = 50;
+            camera.position.y = 30;
+            camera.position.z = 50;
+
+            scene.add(camera);
+
+            var pointLight = new THREE.PointLight("#ffaaaa");
+            pointLight.distance = 150;
+            pointLight.position.set(50,30,50);
+            camera.add(pointLight);
+            pointLight.intensity = 1;
+
+
+            var pointLight1 = new THREE.PointLight("#eeeeee");
+            pointLight1.distance = 100;
+            pointLight1.position.set(50,10,10);
+            scene.add(pointLight1);
+            pointLight1.intensity = 0.7;
+
+            var pointLight2 = new THREE.PointLight("#eeeeee");
+            pointLight2.distance = 100;
+            pointLight2.position.set(-50,-10,-10);
+            scene.add(pointLight2);
+            pointLight2.intensity = 0.7;
+
+            var pointLight3 = new THREE.PointLight("#eeeeee");
+            pointLight3.distance = 100;
+            pointLight3.position.set(-10,50,10);
+            scene.add(pointLight3);
+            pointLight3.intensity = 0.7;
+
+            var pointLight4 = new THREE.PointLight("#eeeeee");
+            pointLight4.distance = 100;
+            pointLight4.position.set(10,-50,-10);
+            scene.add(pointLight4);
+            pointLight4.intensity = 0.7;
+
+            var pointLight5 = new THREE.PointLight("#eeeeee");
+            pointLight5.distance = 100;
+            pointLight5.position.set(-10,10,50);
+            scene.add(pointLight5);
+            pointLight5.intensity = 0.7;
+
+            var pointLight6 = new THREE.PointLight("#eeeeee");
+            pointLight6.distance = 100;
+            pointLight6.position.set(10,-10,-50);
+            scene.add(pointLight6);
+            pointLight6.intensity = 0.7;
+
+            var mat1 = new THREE.MeshLambertMaterial({color: 0x7fffd4, emissive:0xb22222, flatShading: false});
+            var mat2tex = new THREE.MeshPhongMaterial({color:0xffff00, emissive:0x777777, 
+                                                       side:THREE.DoubleSide, 
+                                                       map:texture, 
+                                                       normalMap:normalMap, 
+                                                       flatShading: false,
+                                                       polygonOffset: true,
+                                                       polygonOffsetFactor: 1.0,
+                                                       polygonOffsetUnits: 4.0});
+            var mat2wire = new THREE.LineBasicMaterial( { color: 0x555555, linewidth: 1.2, polygonOffset: false} );
+
+            var Zos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+            scene.add(Zos);
+
+            var Yos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+            Yos.rotation.z = -Math.PI / 2;
+            scene.add(Yos);
+
+            var Xos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+            Xos.rotation.x = Math.PI / 2;
+            scene.add(Xos);
+
+            var tekst_options = {
+                size: 2,
+                height: 0.3,
+                font: font,
+                curveSegments: 12
+            };
+
+            var tekst_Zos = createText('z', tekst_options);
+            tekst_Zos.translateX(1);
+            tekst_Zos.translateY(25);
+            scene.add(tekst_Zos);
+
+            var tekst_Yos = createText('y', tekst_options);
+            tekst_Yos.translateX(26);
+            scene.add(tekst_Yos);
+
+            var tekst_Xos = createText('x', tekst_options);
+            tekst_Xos.translateY(-0.5);
+            tekst_Xos.translateZ(27.3);
+            tekst_Xos.rotation.y = Math.PI / 2;
+            scene.add(tekst_Xos);
+
+            var ravninaXY = new THREE.GridHelper(48, 24, 0x800000, 0x800000);
+            scene.add(ravninaXY);
+
+            var ravninaXZ = new THREE.GridHelper(48, 24, 0x000066, 0x000066);
+            ravninaXZ.rotation.z = Math.PI / 2;
+            scene.add(ravninaXZ);
+            ravninaXZ.visible = false;
+
+            var ravninaYZ = new THREE.GridHelper(48, 24, 0x006600, 0x006600);
+            ravninaYZ.rotation.x = Math.PI / 2;
+            scene.add(ravninaYZ);
+            ravninaYZ.visible = false;
+
+            var plohaFUN1_plus = function(u,v,target) {
+               u = 2 * Math.PI * u;
+               v = 1.3 * v; 
+               var z = 2 * a * Math.cos(u) * Math.tan(v);
+               var x = 2 * b * Math.sin(u) * Math.tan(v);
+               var y = 2 * c / Math.cos(v);
+               target.set(x,y,z);
+            }
+
+            var plohaFUN1_minus = function(u,v,target) {
+               u = 2 * Math.PI * u;
+               v = 1.3 * v; 
+               var z = 2 * a * Math.cos(u) * Math.tan(v);
+               var x = 2 * b * Math.sin(u) * Math.tan(v);
+               var y = -2 * c / Math.cos(v);
+               target.set(x,y,z);
+            }
+
+            var plohaFUN2_plus = function(u,v,target) {
+               u = 2 * Math.PI * u;
+               v = 1.3 * v; 
+               var z = 2 * a * Math.cos(u) * Math.tan(v);
+               var x = 2 * c / Math.cos(v);
+               var y = 2 * b * Math.sin(u) * Math.tan(v);
+               target.set(x,y,z);
+            }
+
+            var plohaFUN2_minus = function(u,v,target) {
+               u = 2 * Math.PI * u;
+               v = 1.3 * v; 
+               var z = 2 * a * Math.cos(u) * Math.tan(v);
+               var x = -2 * c / Math.cos(v);
+               var y = 2 * b * Math.sin(u) * Math.tan(v);
+               target.set(x,y,z);
+            }
+
+            var plohaFUN3_plus = function(u,v,target) {
+               u = 2 * Math.PI * u;
+               v = 1.3 * v;
+               var z = 2 * a / Math.cos(v);
+               var x = 2 * b * Math.sin(u) * Math.tan(v);
+               var y = 2 * c * Math.cos(u) * Math.tan(v);
+               target.set(x,y,z);
+            }
+
+            var plohaFUN3_minus = function(u,v,target) {
+                u = 2 * Math.PI * u;
+                v = 1.3 * v;
+                var z = -2 * a / Math.cos(v);
+                var x = 2 * b * Math.sin(u) * Math.tan(v);
+                var y = 2 * c * Math.cos(u) * Math.tan(v);
+                target.set(x,y,z);
+            }
+
+            var ploha1_plus = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN1_plus, 40, 20, false), mat2tex);
+            var ploha1_plus_wire = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.ParametricGeometry(plohaFUN1_plus, 40, 20, false),0.3), mat2wire);
+            scene.add(ploha1_plus);
+            scene.add(ploha1_plus_wire);
+
+            var ploha1_minus = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN1_minus, 40, 20, false), mat2tex);
+            var ploha1_minus_wire = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.ParametricGeometry(plohaFUN1_minus, 40, 20, false),0.3), mat2wire);
+            scene.add(ploha1_minus);
+            scene.add(ploha1_minus_wire);
+
+            var ploha2_plus = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN2_plus, 40, 20, false), mat2tex);
+            var ploha2_plus_wire = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.ParametricGeometry(plohaFUN2_plus, 40, 20, false),0.3), mat2wire);
+            scene.add(ploha2_plus);
+            scene.add(ploha2_plus_wire);
+            ploha2_plus.visible = false;
+            ploha2_plus_wire.visible = false;
+
+            var ploha2_minus = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN2_minus, 40, 20, false), mat2tex);
+            var ploha2_minus_wire = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.ParametricGeometry(plohaFUN2_minus, 40, 20, false),0.3), mat2wire);
+            scene.add(ploha2_minus);
+            scene.add(ploha2_minus_wire);
+            ploha2_minus.visible = false;
+            ploha2_minus_wire.visible = false;
+
+            var ploha3_plus = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN3_plus, 40, 20, false), mat2tex);
+            var ploha3_plus_wire = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.ParametricGeometry(plohaFUN3_plus, 40, 20, false),0.3), mat2wire);
+            scene.add(ploha3_plus);
+            scene.add(ploha3_plus_wire);
+            ploha3_plus.visible = false;
+            ploha3_plus_wire.visible = false;
+
+            var ploha3_minus = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN3_minus, 40, 20, false), mat2tex);
+            var ploha3_minus_wire = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.ParametricGeometry(plohaFUN3_minus, 40, 20, false),0.3), mat2wire);
+            scene.add(ploha3_minus);
+            scene.add(ploha3_minus_wire);
+            ploha3_minus.visible = false;
+            ploha3_minus_wire.visible = false;
+
+            var orbitControls = new OrbitControls(camera, renderer.domElement);
+            orbitControls.minDistance = 40;
+            orbitControls.maxDistance = 100;
+            orbitControls.enablePan = false;
+            orbitControls.maxPolarAngle = 3.14;
+            orbitControls.minPolarAngle = 0;
+
+            orbitControls.addEventListener('change', render);
+
+            var controls = new function() {
+                this.a = 2;
+                this.b = 3;
+                this.c = 3;
+                this.mreza = false;
+                this.ploha = false;
+                this.oboje = true;
+                this.xy = true;
+                this.yz = false;
+                this.xz = false;
+                this.plohaX = false;
+                this.plohaY = false;
+                this.plohaZ = true;
+                this.help = function() {
+                    $("#infoModal").modal();
+                };
+            }
+
+            var gui = new dat.GUI({resizable : false});
+
+            var hiper_parametri = gui.addFolder('Parametri hiperboloida');
+            hiper_parametri.add(controls, 'a', 1, 3.5).step(0.5).onChange( function(value) { 
+                a = value;
+                ploha1_plus.scale.z = a / 2;
+                ploha1_minus.scale.z = a / 2;
+                ploha2_plus.scale.z = a / 2;
+                ploha2_minus.scale.z = a / 2;
+                ploha3_plus.scale.z = a / 2;
+                ploha3_minus.scale.z = a / 2;
+                ploha1_plus_wire.scale.z = a / 2;
+                ploha1_minus_wire.scale.z = a / 2;
+                ploha2_plus_wire.scale.z = a / 2;
+                ploha2_minus_wire.scale.z = a / 2;
+                ploha3_plus_wire.scale.z = a / 2;
+                ploha3_minus_wire.scale.z = a / 2;
+                render();} ); 
+            hiper_parametri.add(controls, 'b', 1, 3.5).step(0.5).onChange( function(value) { 
+                b = value;
+                ploha1_plus.scale.x = b / 3;
+                ploha1_minus.scale.x = b / 3;
+                ploha2_plus.scale.x = b / 3;
+                ploha2_minus.scale.x = b / 3;
+                ploha3_plus.scale.x = b / 3;
+                ploha3_minus.scale.x = b / 3;
+                ploha1_plus_wire.scale.x = b / 3;
+                ploha1_minus_wire.scale.x = b / 3;
+                ploha2_plus_wire.scale.x = b / 3;
+                ploha2_minus_wire.scale.x = b / 3;
+                ploha3_plus_wire.scale.x = b / 3;
+                ploha3_minus_wire.scale.x = b / 3;
+                render();} ); // 2*b / 10
+            hiper_parametri.add(controls, 'c', 1, 3.5).step(0.5).onChange( function(value) { 
+                c = value;
+                ploha1_plus.scale.y = c / 3;
+                ploha1_minus.scale.y = c / 3;
+                ploha2_plus.scale.y = c / 3;
+                ploha2_minus.scale.y = c / 3;
+                ploha3_plus.scale.y = c / 3;
+                ploha3_minus.scale.y = c / 3;
+                ploha1_plus_wire.scale.y = c / 3;
+                ploha1_minus_wire.scale.y = c / 3;
+                ploha2_plus_wire.scale.y = c / 3;
+                ploha2_minus_wire.scale.y = c / 3;
+                ploha3_plus_wire.scale.y = c / 3;
+                ploha3_minus_wire.scale.y = c / 3;
+                render();} );
+                
+            hiper_parametri.open();
+
+            var prikaz = gui.addFolder('Prikaz');
+            var MREZA = prikaz.add(controls,'mreza').listen();
+            MREZA.onChange( function() {
+                controls.mreza = true;
+                controls.ploha = false;
+                controls.oboje = false;
+                ploha1_plus.visible = false;
+                ploha1_minus.visible = false;
+                ploha2_plus.visible = false;
+                ploha2_minus.visible = false;
+                ploha3_plus.visible = false;
+                ploha3_minus.visible = false;
+                if (controls.plohaX) {
+                    ploha3_plus_wire.visible = true;
+                    ploha3_minus_wire.visible = true;
+                } else {
+                    ploha3_plus_wire.visible = false;
+                    ploha3_minus_wire.visible = false;
+                }
+                if (controls.plohaY) {
+                    ploha2_plus_wire.visible = true;
+                    ploha2_minus_wire.visible = true;
+                } else {
+                    ploha2_plus_wire.visible = false;
+                    ploha2_minus_wire.visible = false;
+                }
+                if (controls.plohaZ) {
+                    ploha1_plus_wire.visible = true;
+                    ploha1_minus_wire.visible = true;
+                } else {
+                    ploha1_plus_wire.visible = false;
+                    ploha1_minus_wire.visible = false;
+                }
+                render();
+            });
+            var SURF = prikaz.add(controls,'ploha').listen();
+            SURF.onChange( function() {
+                controls.mreza = false;
+                controls.ploha = true;
+                controls.oboje = false;
+                ploha1_plus_wire.visible = false;
+                ploha1_minus_wire.visible = false;
+                ploha2_plus_wire.visible = false;
+                ploha2_minus_wire.visible = false;
+                ploha3_plus_wire.visible = false;
+                ploha3_minus_wire.visible = false;
+                if (controls.plohaX) {
+                    ploha3_plus.visible = true;
+                    ploha3_minus.visible = true;
+                } else {
+                    ploha3_plus.visible = false;
+                    ploha3_minus.visible = false;
+                }
+                if (controls.plohaY) {
+                    ploha2_plus.visible = true;
+                    ploha2_minus.visible = true;
+                } else {
+                    ploha2_plus.visible = false;
+                    ploha2_minus.visible = false;
+                }
+                if (controls.plohaZ) {
+                    ploha1_plus.visible = true;
+                    ploha1_minus.visible = true;
+                } else {
+                    ploha1_plus.visible = false;
+                    ploha1_minus.visible = false;
+                }
+                render();
+            });
+            var OBOJE = prikaz.add(controls,'oboje').listen();
+            OBOJE.onChange( function() {
+                controls.mreza = false;
+                controls.ploha = false;
+                controls.oboje = true;
+                if (controls.plohaX) {
+                    ploha3_plus.visible = true;
+                    ploha3_minus.visible = true;
+                    ploha3_plus_wire.visible = true;
+                    ploha3_minus_wire.visible = true;
+                } else {
+                    ploha3_plus.visible = false;
+                    ploha3_minus.visible = false;
+                    ploha3_plus_wire.visible = false;
+                    ploha3_minus_wire.visible = false;
+                }
+                if (controls.plohaY) {
+                    ploha2_plus.visible = true;
+                    ploha2_minus.visible = true;
+                    ploha2_plus_wire.visible = true;
+                    ploha2_minus_wire.visible = true;
+                } else {
+                    ploha2_plus.visible = false;
+                    ploha2_minus.visible = false;
+                    ploha2_plus_wire.visible = false;
+                    ploha2_minus_wire.visible = false;
+                }
+                if (controls.plohaZ) {
+                    ploha1_plus.visible = true;
+                    ploha1_minus.visible = true;
+                    ploha1_plus_wire.visible = true;
+                    ploha1_minus_wire.visible = true;
+                } else {
+                    ploha1_plus.visible = false;
+                    ploha1_minus.visible = false;
+                    ploha1_plus_wire.visible = false;
+                    ploha1_minus_wire.visible = false;
+                }
+                render();
+            });
+
+            prikaz.open();
+
+            var koordinatne_ravnine = gui.addFolder('Koordinatne ravnine');
+
+            var xy_rav = koordinatne_ravnine.add(controls,'xy').listen();
+            xy_rav.onChange( function() {
+                if (controls.xy) {
+                    ravninaXY.visible = true;
+                } else {
+                    ravninaXY.visible = false;
+                }
+                render();
+            });
+
+            var yz_rav = koordinatne_ravnine.add(controls,'yz').listen();
+            yz_rav.onChange( function() {
+                if (controls.yz) {
+                    ravninaYZ.visible = true;
+                } else {
+                    ravninaYZ.visible = false;
+                }
+                render();
+            });
+
+            var xz_rav = koordinatne_ravnine.add(controls,'xz').listen();
+            xz_rav.onChange( function() {
+                if (controls.xz) {
+                    ravninaXZ.visible = true;
+                } else {
+                    ravninaXZ.visible = false;
+                }
+                render();
+            });
+
+            koordinatne_ravnine.open();
+
+            var os_plohe = gui.addFolder('Plus varijabla');
+
+            var ploha_x = os_plohe.add(controls,'plohaX').name('x-varijabla').listen();
+            ploha_x.onChange( function() {
+                controls.plohaX = true;
+                controls.plohaY = false;
+                controls.plohaZ = false;
+                ploha1_plus.visible = false;
+                ploha1_minus.visible = false;
+                ploha2_plus.visible = false;
+                ploha2_minus.visible = false;
+                if (!controls.mreza) {
+                    ploha3_plus.visible = true;
+                    ploha3_minus.visible = true;
+                } else {
+                    ploha3_plus.visible = false;
+                    ploha3_minus.visible = false;
+                }
+                ploha1_plus_wire.visible = false;
+                ploha1_minus_wire.visible = false;
+                ploha2_plus_wire.visible = false;
+                ploha2_minus_wire.visible = false;
+                if (!controls.ploha) {
+                    ploha3_plus_wire.visible = true;
+                    ploha3_minus_wire.visible = true;
+                } else {
+                    ploha3_plus_wire.visible = false;
+                    ploha3_minus_wire.visible = false;
+                }
+                $("#infoRavnina").html("<img src='kvadrike_slike/dvoplohi_hiperboloid_X.png'>");
+                $("#info_xos").html("<i>a</i> - duljina poluosi duž <i>x</i>-osi");
+                $("#info_yos").html("<i>b</i> - faktor rastezanja duž <i>y</i>-osi");
+                $("#info_zos").html("<i>c</i> - faktor rastezanja duž <i>z</i>-osi");
+                render();
+            });
+
+            var ploha_y = os_plohe.add(controls,'plohaY').name('y-varijabla').listen();
+            ploha_y.onChange( function() {
+                controls.plohaX = false;
+                controls.plohaY = true;
+                controls.plohaZ = false;
+                ploha1_plus.visible = false;
+                ploha1_minus.visible = false;
+                if (!controls.mreza) {
+                    ploha2_plus.visible = true;
+                    ploha2_minus.visible = true;
+                } else {
+                    ploha2_plus.visible = false;
+                    ploha2_minus.visible = false;
+                }
+                ploha3_plus.visible = false;
+                ploha3_minus.visible = false;
+                ploha1_plus_wire.visible = false;
+                ploha1_minus_wire.visible = false;
+                if (!controls.ploha) {
+                    ploha2_plus_wire.visible = true;
+                    ploha2_minus_wire.visible = true;
+                } else {
+                    ploha2_plus_wire.visible = false;
+                    ploha2_minus_wire.visible = false;
+                }
+                ploha3_plus_wire.visible = false;
+                ploha3_minus_wire.visible = false;
+                $("#infoRavnina").html("<img src='kvadrike_slike/dvoplohi_hiperboloid_Y.png'>");
+                $("#info_xos").html("<i>a</i> - faktor rastezanja duž <i>x</i>-osi");
+                $("#info_yos").html("<i>b</i> - duljina poluosi duž <i>y</i>-osi");
+                $("#info_zos").html("<i>c</i> - faktor rastezanja duž <i>z</i>-osi");
+                render();
+            });
+
+            var ploha_z = os_plohe.add(controls,'plohaZ').name('z-varijabla').listen();
+            ploha_z.onChange( function() {
+                controls.plohaX = false;
+                controls.plohaY = false;
+                controls.plohaZ = true;
+                if (!controls.mreza) {
+                    ploha1_plus.visible = true;
+                    ploha1_minus.visible = true;
+                } else {
+                    ploha1_plus.visible = false;
+                    ploha1_minus.visible = false;
+                }
+                ploha2_plus.visible = false;
+                ploha2_minus.visible = false;
+                ploha3_plus.visible = false;
+                ploha3_minus.visible = false;
+                if (!controls.ploha) {
+                    ploha1_plus_wire.visible = true;
+                    ploha1_minus_wire.visible = true;
+                } else {
+                    ploha1_plus_wire.visible = false;
+                    ploha1_minus_wire.visible = false;
+                }
+                ploha2_plus_wire.visible = false;
+                ploha2_minus_wire.visible = false;
+                ploha3_plus_wire.visible = false;
+                ploha3_minus_wire.visible = false;
+                $("#infoRavnina").html("<img src='kvadrike_slike/dvoplohi_hiperboloid_Z.png'>");
+                $("#info_xos").html("<i>a</i> - faktor rastezanja duž <i>x</i>-osi");
+                $("#info_yos").html("<i>b</i> - faktor rastezanja duž <i>y</i>-osi");
+                $("#info_zos").html("<i>c</i> - duljina poluosi duž <i>z</i>-osi");
+                render();
+            });
+
+            os_plohe.open();
+
+            gui.add(controls,'help');
+
+            render();
+
+            function render() {
+                renderer.render(scene, camera);
+            }
+
+            $(window).resize( function() {
+                camera.aspect = (window.innerWidth) / (window.innerHeight);
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight);
+                render();
+            });
+
+            function vektor(h1, r1, h2, r2) {
+                var valjakGeometry = new THREE.CylinderGeometry(r1,r1,h1,10);
+                var stozacGeometry = new THREE.CylinderGeometry(0,r2,h2,12);
+                var valjak = new THREE.Mesh(valjakGeometry);
+                var stozac = new THREE.Mesh(stozacGeometry);
+                var vek = new THREE.Geometry();
+                stozac.translateY((h1+h2)/2);
+                valjak.updateMatrix();
+                stozac.updateMatrix();
+                vek.merge(valjak.geometry, valjak.matrix);
+                vek.merge(stozac.geometry, stozac.matrix);
+                return vek;
+            }
+
+            function createText(text, params) {
+                var textGeo = new THREE.TextGeometry(text, params);
+                textGeo.computeBoundingBox();
+                textGeo.computeVertexNormals();
+                var material = [new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false}),
+                                new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false})];
+                var textMesh = new THREE.Mesh(textGeo, material);
+                return textMesh;
+            }
+        }//init
+        </script>
+    </body>
+</html>

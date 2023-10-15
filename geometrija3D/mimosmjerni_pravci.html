@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>mimosmjerni pravci</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <script src="../lib/dat.gui.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+        <style>
+            body {margin: 0; overflow: hidden}
+            button:focus {outline:0 !important;}
+            .btn.btn-custom-sm {
+                border-radius: 0;
+            }
+            .dg.a { margin-right:0px !important; }
+            .center {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .card {
+                background-color: rgba(255,255,255, 0.9) !important;
+                font-size: 95%;
+            }
+            hr.divider { 
+                margin: 2px;
+            } 
+        </style>
+    </head>
+
+    <body>
+
+    <div style="position: absolute; left:0px; top: 0px;">
+        <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" onclick="toggler('info');"><span class="fa fa-info-circle fa-2x" style="color:white;"></span></a>
+    </div>
+
+    <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 45px; width:350px;">
+    <div class="card-body">
+    
+    <div class="card card-body" style="margin-bottom:5px;">
+    <b>Definicija</b>
+    <hr class="divider">
+    <p style="margin-bottom:0px;">Pravci <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo2.png' style='vertical-align: text-bottom;'> su mimosmjerni jer se ne sijeku i nisu paralelni. Pravac <img src='data/mimo11.png' style='vertical-align: baseline;'> siječe i okomit je na oba mimosmjerna pravca.</p>
+    </div>
+
+    <div class="collapse show" id="colps1">
+    <div class="card card-body" style="margin-bottom:5px;">
+    <b>Paralelne ravnine</b>
+    <hr class="divider">
+    <p style="margin-bottom:0px;">Mimosmjerni pravci <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo2.png' style='vertical-align: text-bottom;'> leže u paralelnim ravninama <img src='data/mimo4.png' style='vertical-align: sub;'> i <img src='data/mimo5.png' style='vertical-align: sub;'>.</p>
+    </div>
+    </div>
+
+    <div class="collapse" id="colps2">
+    <div class="card card-body" style="margin-bottom:5px;">
+    <b>Paralelni pravci</b>
+    <hr class="divider">
+    <p style="margin-bottom:0px;">Pravac <img src='data/mimo7.png' style='vertical-align: text-bottom;'> prolazi nekom točkom <img src='data/mimo8.png' style='vertical-align: sub;'> pravca <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo20.png' style='vertical-align: text-bottom;'>&thinsp;. Pravac <img src='data/mimo9.png' style='vertical-align: text-bottom;'> prolazi nekom točkom <img src='data/mimo10.png' style='vertical-align: sub;'> pravca <img src='data/mimo2.png' style='vertical-align: text-bottom;'> i <img src='data/mimo21.png' style='vertical-align: text-bottom;'>&thinsp;.
+    </div>
+    </div>
+
+    <div class="collapse" id="colps3">
+    <div class="card card-body" style="margin-bottom:5px;">
+    <b>Zajednička normala</b>
+    <hr class="divider">
+    <p style="margin-bottom:0px;">Zajednička normala <img src='data/mimo11.png' style='vertical-align: baseline;'> pravaca <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo2.png' style='vertical-align: text-bottom;'>&thinsp; je presjek ravnina <img src='data/mimo12.png' style='vertical-align: sub;'> i <img src='data/mimo13.png' style='vertical-align: sub;'>.</p>
+    </div>
+    </div>
+
+    <div class="collapse" id="colps4">
+    <div class="card card-body">
+    <b>Paralelepiped</b>
+    <hr class="divider">
+    <p style="margin-bottom:0px;">Paralelepiped preko kojeg se izvodi formula <img src='data/mimo19.png' style='margin-top: 10px; margin-bottom: 10px;' class="center"></p>
+    </div>
+    </div>
+
+    </div>
+    </div>
+
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+     <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="exampleModalLabel">Mimosmjerni pravci</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+          <ul style="padding:8px;">
+            <li style="margin-bottom:5px;">Neka su u prostoru zadani pravci <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo2.png' style='vertical-align: text-bottom;'> svojim vektorskim jednadžbama <img src='data/mimo3.png' style='margin-top: 10px; margin-bottom: 10px;' class="center"></li>
+            <li style="margin-bottom:5px;">Kažemo da su pravci <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo2.png' style='vertical-align: text-bottom;'> mimosmjerni ako se ne sijeku i nisu paralelni. Drugim riječima, dva pravca u prostoru su mimosmjerni ako ne postoji ravnina koja sadrži oba pravca.</li>
+            <li style="margin-bottom:5px;">Mimosmjerni pravci <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo2.png' style='vertical-align: text-bottom;'> leže u paralelnim ravninama <img src='data/mimo4.png' style='vertical-align: sub;'> i <img src='data/mimo5.png' style='vertical-align: sub;'> čije normale su kolinearne s vektorom <img src='data/mimo6.png' style='vertical-align: sub;'>&thinsp;.</li>
+            <li style="margin-bottom:5px;">Ravnina <img src='data/mimo4.png' style='vertical-align: sub;'> je ravnina koja sadrži pravce <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo7.png' style='vertical-align: text-bottom;'> pri čemu pravac <img src='data/mimo7.png' style='vertical-align: text-bottom;'> prolazi nekom točkom <img src='data/mimo8.png' style='vertical-align: sub;'> pravca <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i paralelan je s pravcem <img src='data/mimo2.png' style='vertical-align: text-bottom;'>.</li>
+            <li style="margin-bottom:5px;">Ravnina <img src='data/mimo5.png' style='vertical-align: sub;'> je ravnina koja sadrži pravce <img src='data/mimo2.png' style='vertical-align: text-bottom;'> i <img src='data/mimo9.png' style='vertical-align: text-bottom;'> pri čemu pravac <img src='data/mimo9.png' style='vertical-align: text-bottom;'> prolazi nekom točkom <img src='data/mimo10.png' style='vertical-align: sub;'> pravca <img src='data/mimo2.png' style='vertical-align: text-bottom;'> i paralelan je s pravcem <img src='data/mimo1.png' style='vertical-align: text-bottom;'>.</li>
+            <li style="margin-bottom:8px;">Mimosmjerni pravci <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo2.png' style='vertical-align: text-bottom;'> imaju jedinstvenu zajedničku normalu, tj. u prostoru postoji točno jedan pravac <img src='data/mimo11.png' style='vertical-align: baseline;'> koji siječe oba pravca <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo2.png' style='vertical-align: text-bottom;'> pod pravim kutom. Pravac <img src='data/mimo11.png' style='vertical-align: baseline;'> je određen kao presjek dvije ravnine <img src='data/mimo12.png' style='vertical-align: sub;'> i <img src='data/mimo13.png' style='vertical-align: sub;'>.</li>
+            <li style="margin-bottom:8px;">Ravnina <img src='data/mimo12.png' style='vertical-align: sub;'> prolazi točkom <img src='data/mimo8.png' style='vertical-align: sub;'> i razapeta je s vektorima <img src='data/mimo14.png' style='vertical-align: sub;'> i <img src='data/mimo6.png' style='vertical-align: sub;'> pa ima jednadžbu <img src='data/mimo15.png' style='margin-top: 10px; margin-bottom: 10px;' class="center"></li>
+            <li style="margin-bottom:8px;">Ravnina <img src='data/mimo13.png' style='vertical-align: sub;'> prolazi točkom <img src='data/mimo10.png' style='vertical-align: sub;'> i razapeta je s vektorima <img src='data/mimo16.png' style='vertical-align: sub;'> i <img src='data/mimo6.png' style='vertical-align: sub;'> pa ima jednadžbu <img src='data/mimo17.png' style='margin-top: 10px; margin-bottom: 10px;' class="center"></li>
+
+            <li style="margin-bottom:8px;">Zajednička normala <img src='data/mimo11.png' style='vertical-align: baseline;'> mimosmjernih pravaca <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo2.png' style='vertical-align: text-bottom;'> zadana je kao presjek ravnina <img src='data/mimo12.png' style='vertical-align: sub;'> i <img src='data/mimo13.png' style='vertical-align: sub;'>, tj. <img src='data/mimo18.png' style='margin-top: 10px; margin-bottom: 10px;' class="center"></li>
+            <hr>
+            <li style="margin-bottom:5px;">U gornjem desnom kutu prozora mogu se uključiti ili isključiti sljedeće opcije:</li>
+            <ul>
+                <li><i>paralelneRavnine:</i> prikazuje ravnine <img src='data/mimo4.png' style='vertical-align: sub;'> i <img src='data/mimo5.png' style='vertical-align: sub;'> u kojima se nalaze mimosmjerni pravci <img src='data/mimo1.png' style='vertical-align: text-bottom;'> i <img src='data/mimo2.png' style='vertical-align: text-bottom;'>.</li>
+                <li><i>paralelniPravci:</i> prikazuje pravce <img src='data/mimo9.png' style='vertical-align: text-bottom;'> i <img src='data/mimo7.png' style='vertical-align: text-bottom;'>.</li>
+                <li><i>normalaPresjekRavnina:</i> prikazuje ravnine <img src='data/mimo12.png' style='vertical-align: sub;'> i <img src='data/mimo13.png' style='vertical-align: sub;'> koje određuju zajedničku normalu <img src='data/mimo11.png' style='vertical-align: baseline;'>.</li>
+                <li><i>paralelepiped:</i> prikazuje paralelepiped preko kojeg se izvodi formula <img src='data/mimo19.png' style='margin-top: 10px; margin-bottom: 10px;' class="center"> za udaljenost dvaju mimosmjernih pravaca.</li>
+            </ul>
+            <li style="margin-bottom:5px;">U gornjem lijevom kutu su prikazane kratke informacije ovisno o uključenim opcijama. Prozor s informacijama možete po želji otvoriti ili zatvoriti klikom na tipku <span class="badge badge-secondary"><i class="fa fa-info-circle" aria-hidden="true"></i></span>.</li>
+            <li>Pomoću srednje tipke miša možete približavati ili udaljavati kameru od objekta, a pomoću lijeve tipke miša možete se kretati oko objekta.</li>
+          </ul>
+         </div>
+         <div class="modal-footer">
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+       </div>
+     </div>
+    </div>
+
+    <div id="WebGL-output"></div>
+
+    <script language="JavaScript">
+        function toggler(divId) {
+            $("#" + divId).slideToggle(500);
+        }
+    </script>
+
+
+    <script language="JavaScript" type="module">
+    import * as THREE from '../lib/three.module.js';
+    import { OrbitControls } from '../lib/OrbitControls.js';
+
+    var fontloader = new THREE.FontLoader();
+
+    fontloader.load("../lib/helvetiker_regular.typeface.json", function(font) {
+
+        var scene = new THREE.Scene();
+
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.x = 0;
+        camera.position.y = 25;
+        camera.position.z = 100;
+        camera.lookAt(scene.position);
+
+        var renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setClearColor(0xA9A9A9, 1);
+        renderer.setPixelRatio(window.devicePixelRatio);    
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        $("#WebGL-output").append(renderer.domElement);
+
+        var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffe0, side:THREE.DoubleSide, transparent: true, opacity:0.6, depthWrite: false});
+        var planeMaterial2 = new THREE.MeshLambertMaterial({color: 0x9fb9b2, side:THREE.DoubleSide, transparent: true, opacity:0.3, depthWrite: false});
+        var planeMaterial3 = new THREE.MeshLambertMaterial({color: 0xffffe0, side:THREE.DoubleSide, transparent: true, opacity:0.6});
+
+        var donjaRavnina = new THREE.Mesh(new THREE.PlaneBufferGeometry(100,100,20,20), planeMaterial3);
+        donjaRavnina.rotation.x = -Math.PI /2;
+        scene.add(donjaRavnina);
+
+        var komad = true;
+
+        var gornjaRavnina = new THREE.Mesh(new THREE.PlaneBufferGeometry(100,100,20,20), planeMaterial3);
+        gornjaRavnina.rotation.x = -Math.PI /2;
+        gornjaRavnina.translateZ(30);
+        scene.add(gornjaRavnina);
+
+        var plane1GEO = new THREE.BufferGeometry();
+        var vertices1 = new Float32Array([-50,0,-30, 0,0,0, 50,0,-30, 50,0,-50, -50,0,-50]);
+        var normals1 = new Float32Array([0,1,0, 0,1,0, 0,1,0, 0,1,0, 0,1,0]);
+        var indeksi1 = new Uint16Array([0,1,2, 0,2,3, 0,3,4]);
+
+        plane1GEO.setAttribute( 'position', new THREE.BufferAttribute( vertices1, 3 ) );
+        plane1GEO.setAttribute( 'normal', new THREE.BufferAttribute( normals1, 3 ) );
+        plane1GEO.setIndex(new THREE.BufferAttribute( indeksi1, 1 ) );
+
+        var plane1goreGEO = new THREE.BufferGeometry();
+        var vertices1GORE = new Float32Array([-50,30,-30, 0,30,0, 50,30,-30, 50,30,-50, -50,30,-50]);
+
+        plane1goreGEO.setAttribute( 'position', new THREE.BufferAttribute( vertices1GORE, 3 ) );
+        plane1goreGEO.setAttribute( 'normal', new THREE.BufferAttribute( normals1, 3 ) );
+        plane1goreGEO.setIndex(new THREE.BufferAttribute( indeksi1, 1 ) );
+
+        var plane1GORE = new THREE.Mesh(plane1goreGEO, planeMaterial);
+        scene.add(plane1GORE);
+        plane1GORE.visible = false;
+
+        var plane1 = new THREE.Mesh(plane1GEO, planeMaterial);
+        scene.add(plane1);
+        plane1.visible = false;
+
+        var presjek1GEO =  new THREE.BufferGeometry();
+        var vertices5 = new Float32Array([0,-17.5,0, 0,47.5,0, -50,47.5,-30, -50,-17.5,-30]);
+        var vek1 = odredi_normalu([0,1,0], [-5,0,-3]);
+        var normals5 = new Float32Array([vek1[0],vek1[1],vek1[2], vek1[0],vek1[1],vek1[2], vek1[0],vek1[1],vek1[2], vek1[0],vek1[1],vek1[2]]);
+        var indeksi5 = new Uint16Array([0,1,3, 1,2,3]);
+
+        presjek1GEO.setAttribute( 'position', new THREE.BufferAttribute( vertices5, 3 ) );
+        presjek1GEO.setAttribute( 'normal', new THREE.BufferAttribute( normals5, 3 ) );
+        presjek1GEO.setIndex(new THREE.BufferAttribute( indeksi5, 1 ) );
+
+        var presjek1 = new THREE.Mesh(presjek1GEO, planeMaterial2);
+        scene.add(presjek1);
+        presjek1.visible = false;
+
+        var presjek2GEO =  new THREE.BufferGeometry();
+        var vertices6 = new Float32Array([0,-17.5,0, 50,-17.5,-30, 50,47.5,-30, 0,47.5,0]);
+        var vek2 = odredi_normalu([5,0,-3], [0,1,0]);
+        var normals6 = new Float32Array([vek2[0],vek2[1],vek2[2], vek2[0],vek2[1],vek2[2], vek2[0],vek2[1],vek2[2], vek2[0],vek2[1],vek2[2]]);
+
+        presjek2GEO.setAttribute( 'position', new THREE.BufferAttribute( vertices6, 3 ) );
+        presjek2GEO.setAttribute( 'normal', new THREE.BufferAttribute( normals6, 3 ) );
+        presjek2GEO.setIndex(new THREE.BufferAttribute( indeksi5, 1 ) );
+
+        var presjek2 = new THREE.Mesh(presjek2GEO, planeMaterial2);
+        scene.add(presjek2);
+        presjek2.visible = false;
+
+        var plane2GEO = new THREE.BufferGeometry();
+        var vertices2 = new Float32Array([0,0,0, -50,0,-30, -50,0,30]);
+        var normals2 = new Float32Array([0,1,0, 0,1,0, 0,1,0]);
+
+        plane2GEO.setAttribute( 'position', new THREE.BufferAttribute( vertices2, 3 ) );
+        plane2GEO.setAttribute( 'normal', new THREE.BufferAttribute( normals2, 3 ) );
+
+        var plane2 = new THREE.Mesh(plane2GEO, planeMaterial);
+        scene.add(plane2);
+        plane2.visible = false;
+
+        var plane4GEO = new THREE.BufferGeometry();
+        var vertices4 = new Float32Array([0,0,0, 50,0,30, 50,0,-30]);
+
+        plane4GEO.setAttribute( 'position', new THREE.BufferAttribute( vertices4, 3 ) );
+        plane4GEO.setAttribute( 'normal', new THREE.BufferAttribute( normals2, 3 ) );
+
+        var plane4 = new THREE.Mesh(plane4GEO, planeMaterial);
+        scene.add(plane4);
+        plane4.visible = false;
+
+        var plane2goreGEO = new THREE.BufferGeometry();
+        var vertices2GORE = new Float32Array([0,30,0, -50,30,-30, -50,30,30]);
+
+        plane2goreGEO.setAttribute( 'position', new THREE.BufferAttribute( vertices2GORE, 3 ) );
+        plane2goreGEO.setAttribute( 'normal', new THREE.BufferAttribute( normals1, 3 ) );
+
+        var plane2GORE = new THREE.Mesh(plane2goreGEO, planeMaterial);
+        scene.add(plane2GORE);
+        plane2GORE.visible = false;
+
+        var plane4goreGEO = new THREE.BufferGeometry();
+        var vertices4GORE = new Float32Array([0,30,0, 50,30,30, 50,30,-30]);
+
+        plane4goreGEO.setAttribute( 'position', new THREE.BufferAttribute( vertices4GORE, 3 ) );
+        plane4goreGEO.setAttribute( 'normal', new THREE.BufferAttribute( normals1, 3 ) );
+
+        var plane4GORE = new THREE.Mesh(plane4goreGEO, planeMaterial);
+        scene.add(plane4GORE);
+        plane4GORE.visible = false;
+
+        var presjek4GEO =  new THREE.BufferGeometry();
+        var vertices7 = new Float32Array([0,-17.5,0, 0,47.5,0, -50,47.5,30, -50,-17.5,30]);
+
+        presjek4GEO.setAttribute( 'position', new THREE.BufferAttribute( vertices7, 3 ) );
+        presjek4GEO.setAttribute( 'normal', new THREE.BufferAttribute( normals6, 3 ) );
+        presjek4GEO.setIndex(new THREE.BufferAttribute( indeksi5, 1 ) );
+
+        var presjek4 = new THREE.Mesh(presjek4GEO, planeMaterial2);
+        scene.add(presjek4);
+        presjek4.visible = false;
+
+        var presjek3GEO =  new THREE.BufferGeometry();
+        var vertices8 = new Float32Array([0,-17.5,0, 50,-17.5,30, 50,47.5,30, 0,47.5,0]);
+
+        presjek3GEO.setAttribute( 'position', new THREE.BufferAttribute( vertices8, 3 ) );
+        presjek3GEO.setAttribute( 'normal', new THREE.BufferAttribute( normals5, 3 ) );
+        presjek3GEO.setIndex(new THREE.BufferAttribute( indeksi5, 1 ) );
+
+        var presjek3 = new THREE.Mesh(presjek3GEO, planeMaterial2);
+        scene.add(presjek3);
+        presjek3.visible = false;
+
+        var plane3GEO = new THREE.BufferGeometry();
+        var vertices3 = new Float32Array([50,0,30, 0,0,0, -50,0,30, -50,0,50, 50,0,50]);
+
+        plane3GEO.setAttribute( 'position', new THREE.BufferAttribute( vertices3, 3 ) );
+        plane3GEO.setAttribute( 'normal', new THREE.BufferAttribute( normals1, 3 ) );
+        plane3GEO.setIndex(new THREE.BufferAttribute( indeksi1, 1 ) );
+
+        var plane3 = new THREE.Mesh(plane3GEO, planeMaterial);
+        scene.add(plane3);
+        plane3.visible = false;
+
+        var plane3goreGEO = new THREE.BufferGeometry();
+        var vertices3GORE = new Float32Array([50,30,30, 0,30,0, -50,30,30, -50,30,50, 50,30,50]);
+
+        plane3goreGEO.setAttribute( 'position', new THREE.BufferAttribute( vertices3GORE, 3 ) );
+        plane3goreGEO.setAttribute( 'normal', new THREE.BufferAttribute( normals1, 3 ) );
+        plane3goreGEO.setIndex(new THREE.BufferAttribute( indeksi1, 1 ) );
+
+        var plane3GORE = new THREE.Mesh(plane3goreGEO, planeMaterial);
+        scene.add(plane3GORE);
+        plane3GORE.visible = false;
+
+        var lineGeometry = new THREE.CylinderGeometry(0.2,0.2,120,6);
+        var mat3 = new THREE.MeshLambertMaterial({color: 0x0000FF, emissive: 0x666666, flatShading: false});
+        var mat4 = new THREE.MeshLambertMaterial({color: 0xFF0000, emissive: 0x444444, flatShading: false});
+        var mat5 = new THREE.MeshLambertMaterial({color: 0xFF00FF, emissive: 0x444444, flatShading: false});
+
+        var pravac1 = new THREE.Mesh(lineGeometry, mat3);
+        pravac1.rotation.order = 'ZXY';
+        pravac1.rotation.z = Math.PI/2;
+        pravac1.rotation.x = Math.atan(3/5);
+        scene.add(pravac1);
+
+        var pravac4 = new THREE.Mesh(lineGeometry, mat5);
+        pravac4.rotation.order = 'ZXY';
+        pravac4.translateY(30);
+        pravac4.rotation.z = Math.PI/2;
+        pravac4.translateZ(9);
+        pravac4.translateY(-15);
+        pravac4.rotation.x = Math.atan(3/5);
+        pravac4.translateY(15);
+        scene.add(pravac4);
+        pravac4.visible = false;
+
+        var pravac2 = new THREE.Mesh(lineGeometry, mat3);
+        pravac2.rotation.order = 'ZXY';
+        pravac2.rotation.z = Math.PI/2;
+        pravac2.rotation.x = Math.atan(-3/5);
+        pravac2.translateX(30);
+        scene.add(pravac2);
+
+        var pravac5 = new THREE.Mesh(lineGeometry, mat5);
+        pravac5.rotation.order = 'ZXY';
+        pravac5.rotation.z = Math.PI/2;
+        pravac5.translateZ(-7.5);
+        pravac5.translateY(-12.5);
+        pravac5.rotation.x = Math.atan(-3/5);
+        pravac5.translateY(12.5);
+        scene.add(pravac5);
+        pravac5.visible = false;
+
+        var normala = new THREE.Mesh(lineGeometry, mat4);
+        normala.translateY(15);
+        normala.scale.y = 0.6;
+        scene.add(normala);
+
+        var tockaGeometrija = new THREE.SphereGeometry(0.6,10,10);
+        var tockaMaterijal = new THREE.MeshLambertMaterial({color: 0xe6b800, emissive: 0x666666, flatShading: false});
+
+        var tockaN1 = new THREE.Mesh(tockaGeometrija, tockaMaterijal);
+        scene.add(tockaN1);
+        var tockaN2 = new THREE.Mesh(tockaGeometrija, tockaMaterijal);
+        tockaN2.translateY(30);
+        scene.add(tockaN2);
+        var tockaT1 = new THREE.Mesh(tockaGeometrija, tockaMaterijal);
+        tockaT1.translateX(12.5);
+        tockaT1.translateZ(-7.5);
+        scene.add(tockaT1);
+        var tockaT2 = new THREE.Mesh(tockaGeometrija, tockaMaterijal);
+        tockaT2.translateX(15);
+        tockaT2.translateZ(9);
+        tockaT2.translateY(30);
+        scene.add(tockaT2);
+
+        var mat2 = new THREE.MeshPhongMaterial({color: 0x98fb98, specular: 0x93fb93, flatShading: false});
+        var mat5 = new THREE.MeshLambertMaterial({color: 0x663399, emissive: 0x333333, flatShading: false});
+
+        var pointLight = new THREE.PointLight("#eeeeee");
+        pointLight.distance = 250;
+        pointLight.position.set(0,100,0);
+        scene.add(pointLight);
+
+        var pointLight2 = new THREE.PointLight("#eeeeee");
+        pointLight2.distance = 250;
+        pointLight2.position.set(20,-100,20);
+        scene.add(pointLight2);
+
+        var directionalLight1 = new THREE.DirectionalLight("#eeeeee", 0.5);
+        directionalLight1.position.set(1,0,0);
+        scene.add(directionalLight1);
+
+        var directionalLight2 = new THREE.DirectionalLight("#eeeeee", 0.5);
+        directionalLight2.position.set(-1,0,0);
+        scene.add(directionalLight2);
+
+        var oznake_options = {
+            size: 3,
+            height: 0.3,
+            font: font,
+            curveSegments: 12
+        };
+
+        var minioznake_options = {
+            size: 2.5,
+            height: 0.3,
+            font: font,
+            curveSegments: 12
+        };
+
+        var minioznake2_options = {
+            size: 2,
+            height: 0.3,
+            font: font,
+            curveSegments: 12
+        };
+
+        var tekstA = createText('p', oznake_options);
+        tekstA.rotation.y = Math.atan(3/5);
+        tekstA.translateX(62);
+        tekstA.translateY(-1);
+        scene.add(tekstA);
+
+        var tekstB = createText('1', minioznake_options);
+        tekstB.rotation.y = Math.atan(3/5);
+        tekstB.translateX(64);
+        tekstB.translateY(-3);
+        scene.add(tekstB);
+
+        var tekstC = createText('p', oznake_options);
+        tekstC.rotation.y = Math.atan(-3/5);
+        tekstC.translateX(62);
+        tekstC.translateY(29);
+        scene.add(tekstC);
+
+        var tekstD = createText('2', minioznake_options);
+        tekstD.rotation.y = Math.atan(-3/5);
+        tekstD.translateX(64);
+        tekstD.translateY(27);
+        scene.add(tekstD);
+
+        var tekstE = createText('n', oznake_options);
+        tekstE.translateY(52);
+        scene.add(tekstE);
+
+        var tekstN11 = createText('N', oznake_options);
+        tekstN11.rotation.y = Math.atan(3/5);
+        tekstN11.translateX(1);
+        tekstN11.translateY(-4);
+        scene.add(tekstN11);
+
+        var tekstN12 = createText('1', minioznake_options);
+        tekstN12.rotation.y = Math.atan(3/5);
+        tekstN12.translateX(3.5);
+        tekstN12.translateY(-5);
+        scene.add(tekstN12);
+
+        var tekstN21 = createText('N', oznake_options);
+        tekstN21.rotation.y = Math.atan(-3/5);
+        tekstN21.translateX(1);
+        tekstN21.translateY(32);
+        scene.add(tekstN21);
+
+        var tekstN22 = createText('2', minioznake_options);
+        tekstN22.rotation.y = Math.atan(-3/5);
+        tekstN22.translateX(3.8);
+        tekstN22.translateY(31);
+        scene.add(tekstN22);
+
+        var tekstT11 = createText('T', oznake_options);
+        tekstT11.rotation.y = Math.atan(3/5);
+        tekstT11.translateX(13.5);
+        tekstT11.translateY(-4.5);
+        scene.add(tekstT11);
+
+        var tekstT12 = createText('1', minioznake_options);
+        tekstT12.rotation.y = Math.atan(3/5);
+        tekstT12.translateX(15);
+        tekstT12.translateY(-5.5);
+        scene.add(tekstT12);
+
+        var tekstT21 = createText('T', oznake_options);
+        tekstT21.rotation.y = Math.atan(-3/5);
+        tekstT21.translateX(16.2);
+        tekstT21.translateY(32);
+        scene.add(tekstT21);
+
+        var tekstT22 = createText('2', minioznake_options);
+        tekstT22.rotation.y = Math.atan(-3/5);
+        tekstT22.translateX(18.3);
+        tekstT22.translateY(31);
+        scene.add(tekstT22);
+
+        var tekstS11 = createText('p', oznake_options);
+        tekstS11.rotation.y = Math.atan(3/5);
+        tekstS11.translateX(55);
+        tekstS11.translateY(29);
+        tekstS11.translateZ(15.25);
+        scene.add(tekstS11);
+        tekstS11.visible = false;
+
+        var tekstS12 = createText('1', minioznake_options);
+        tekstS12.rotation.y = Math.atan(3/5);
+        tekstS12.translateX(57);
+        tekstS12.translateY(27);
+        tekstS12.translateZ(15.25);
+        scene.add(tekstS12);
+        tekstS12.visible = false;
+
+        var tekstS13 = createText("'", oznake_options);
+        tekstS13.rotation.y = Math.atan(3/5);
+        tekstS13.translateX(57.5);
+        tekstS13.translateY(28.5);
+        tekstS13.translateZ(15.25);
+        scene.add(tekstS13);
+        tekstS13.visible = false;
+
+        var tekstS21 = createText('p', oznake_options);
+        tekstS21.rotation.y = Math.atan(-3/5);
+        tekstS21.translateX(56);
+        tekstS21.translateY(-1);
+        tekstS21.translateZ(-13);
+        scene.add(tekstS21);
+        tekstS21.visible = false;
+
+        var tekstS22 = createText('2', minioznake_options);
+        tekstS22.rotation.y = Math.atan(-3/5);
+        tekstS22.translateX(58);
+        tekstS22.translateY(-2.5);
+        tekstS22.translateZ(-13);
+        scene.add(tekstS22);
+        tekstS22.visible = false;
+
+        var tekstS23 = createText("'", oznake_options);
+        tekstS23.rotation.y = Math.atan(-3/5);
+        tekstS23.translateX(58.5);
+        tekstS23.translateY(-1.5);
+        tekstS23.translateZ(-13);
+        scene.add(tekstS23);
+        tekstS23.visible = false;
+
+        var tekstPI11 = createText(decodeURI('%CF%80'), oznake_options);
+        tekstPI11.rotation.x = -Math.PI/2;
+        tekstPI11.translateX(-48);
+        tekstPI11.translateY(-48);
+        scene.add(tekstPI11);
+
+        var tekstPI12 = createText('1', minioznake_options);
+        tekstPI12.rotation.x = -Math.PI/2;
+        tekstPI12.translateX(-45.5);
+        tekstPI12.translateY(-49);
+        scene.add(tekstPI12);
+
+        var tekstPI21 = createText(decodeURI('%CF%80'), oznake_options);
+        tekstPI21.rotation.x = -Math.PI/2;
+        tekstPI21.translateX(44);
+        tekstPI21.translateY(-48);
+        tekstPI21.translateZ(30);
+        scene.add(tekstPI21);
+
+        var tekstPI22 = createText('2', minioznake_options);
+        tekstPI22.rotation.x = -Math.PI/2;
+        tekstPI22.translateX(46.7);
+        tekstPI22.translateY(-49);
+        tekstPI22.translateZ(30);
+        scene.add(tekstPI22);
+
+        var tekstSIGMA11 = createText(decodeURI('%CE%A3'), oznake_options);
+        tekstSIGMA11.rotation.y = Math.atan(3/5);
+        tekstSIGMA11.translateX(-57);
+        tekstSIGMA11.translateY(43);
+        scene.add(tekstSIGMA11);
+        tekstSIGMA11.visible = false;
+
+        var tekstSIGMA12 = createText('1', minioznake_options);
+        tekstSIGMA12.rotation.y = Math.atan(3/5);
+        tekstSIGMA12.translateX(-55);
+        tekstSIGMA12.translateY(42.2);
+        scene.add(tekstSIGMA12);
+        tekstSIGMA12.visible = false;
+
+        var tekstSIGMA21 = createText(decodeURI('%CE%A3'), oznake_options);
+        tekstSIGMA21.rotation.y = Math.atan(-3/5);
+        tekstSIGMA21.translateX(53);
+        tekstSIGMA21.translateY(43);
+        scene.add(tekstSIGMA21);
+        tekstSIGMA21.visible = false;
+
+        var tekstSIGMA22 = createText('2', minioznake_options);
+        tekstSIGMA22.rotation.y = Math.atan(-3/5);
+        tekstSIGMA22.translateX(55.5);
+        tekstSIGMA22.translateY(42);
+        scene.add(tekstSIGMA22);
+        tekstSIGMA22.visible = false;
+
+        var orbitControls = new OrbitControls(camera, renderer.domElement);
+        orbitControls.minDistance = 40;
+        orbitControls.maxDistance = 180;
+        orbitControls.enablePan = false;
+        orbitControls.maxPolarAngle = 3.14;
+        orbitControls.minPolarAngle = 0;
+        orbitControls.target = new THREE.Vector3(0,15,0);//scene.position;
+
+        orbitControls.update();
+        orbitControls.addEventListener('change', render);
+
+        var controls = new function() {
+            this.paralelneRavnine = true;
+            this.paralelniPravci = false;
+            this.normalaPresjekRavnina = false;
+            this.paralelepiped = false;
+            this.help = function() {
+                $("#infoModal").modal();
+            };
+        }
+
+        var gui = new dat.GUI({resizable: false, width: 350});
+
+        var opcijaParalelneRavnine = gui.add(controls, 'paralelneRavnine').listen();
+        opcijaParalelneRavnine.onChange( function() {
+            if (controls.paralelneRavnine) {
+              if (komad) {
+                donjaRavnina.visible = true;
+                gornjaRavnina.visible = true;
+              } else {
+                prikazi_komade(true);
+              }
+              tekstPI11.visible = true;
+              tekstPI12.visible = true;
+              tekstPI21.visible = true;
+              tekstPI22.visible = true;
+            } else {
+              prikazi_komade(false);
+              donjaRavnina.visible = false;
+              gornjaRavnina.visible = false;
+              tekstPI11.visible = false;
+              tekstPI12.visible = false;
+              tekstPI21.visible = false;
+              tekstPI22.visible = false;
+            }
+            render();
+            $('#colps1').collapse('toggle');
+        });
+
+        var opcijaParalelniPravci = gui.add(controls, 'paralelniPravci').listen();
+        opcijaParalelniPravci.onChange( function() {
+            if (controls.paralelniPravci) {
+                pravac4.visible = true;
+                pravac5.visible = true;
+                tekstS11.visible = true;
+                tekstS12.visible = true;
+                tekstS13.visible = true;
+                tekstS21.visible = true;
+                tekstS22.visible = true;
+                tekstS23.visible = true;
+            } else {
+                pravac4.visible = false;
+                pravac5.visible = false;
+                tekstS11.visible = false;
+                tekstS12.visible = false;
+                tekstS13.visible = false;
+                tekstS21.visible = false;
+                tekstS22.visible = false;
+                tekstS23.visible = false;
+            }
+            render();
+            $('#colps2').collapse('toggle');
+        });
+
+        var opcijaNormalaPresjekRavnina = gui.add(controls, 'normalaPresjekRavnina').listen();
+        opcijaNormalaPresjekRavnina.onChange( function() {
+          if (controls.normalaPresjekRavnina) {
+              komad = false;
+              presjek1.visible = true;
+              presjek2.visible = true;
+              presjek4.visible = true;
+              presjek3.visible = true;
+              if (controls.paralelneRavnine) {
+                prikazi_komade(true);
+                donjaRavnina.visible = false;
+                gornjaRavnina.visible = false;
+              }
+              tekstSIGMA11.visible = true;
+              tekstSIGMA12.visible = true;
+              tekstSIGMA21.visible = true;
+              tekstSIGMA22.visible = true;
+            } else {
+              komad = true;
+              presjek1.visible = false;
+              presjek2.visible = false;
+              presjek4.visible = false;
+              presjek3.visible = false;
+              if (controls.paralelneRavnine) {
+                prikazi_komade(false);
+                donjaRavnina.visible = true;
+                gornjaRavnina.visible = true;
+              }
+              tekstSIGMA11.visible = false;
+              tekstSIGMA12.visible = false;
+              tekstSIGMA21.visible = false;
+              tekstSIGMA22.visible = false;
+            }
+            render();
+            $('#colps3').collapse('toggle');
+        });
+
+        var opcijaParalelepiped = gui.add(controls, 'paralelepiped').listen();
+        opcijaParalelepiped.onChange( function() {
+          if (controls.paralelepiped) prikazi_paralelepiped(true);
+          else prikazi_paralelepiped(false);
+          render();
+          $('#colps4').collapse('toggle');
+        });
+
+        gui.add(controls,'help');
+
+        var T1 = [12.5,0,-7.5];
+        var T2 = [15,30,9];
+        var T1T2 = [T2[0]-T1[0], T2[1]-T1[1], T2[2]-T1[2]];
+        var duljina = Math.sqrt(T1T2[0]*T1T2[0] + T1T2[1]*T1T2[1] + T1T2[2]*T1T2[2]);
+        var duljina2 = Math.sqrt(T1T2[0]*T1T2[0] + T1T2[2]*T1T2[2])
+        var pocetak = [T1[0]+0.47*T1T2[0], T1[1]+0.47*T1T2[1], T1[2]+0.47*T1T2[2]];
+        var vektor1 = new THREE.Mesh(vektor(duljina-3, 0.2, 2, 0.8), mat2);
+        var os = new THREE.Vector3(T1T2[2]/duljina2, 0, -T1T2[0]/duljina2);
+        var kut =Math.acos(T1T2[1]/duljina);
+        vektor1.rotateOnAxis(os, kut);
+        vektor1.position.set(pocetak[0], pocetak[1], pocetak[2]);
+        scene.add(vektor1);
+        vektor1.visible = false;
+
+        var T3 = [35,0,-21];
+        pocetak = [T3[0]+0.5*T1T2[0], T3[1]+0.5*T1T2[1], T3[2]+0.5*T1T2[2]];
+        var vektor2 = new THREE.Mesh(vektor(duljina, 0.1, 0, 0), mat5);
+        vektor2.rotateOnAxis(os, kut);
+        vektor2.position.set(pocetak[0], pocetak[1], pocetak[2]);
+        scene.add(vektor2);
+        vektor2.visible = false;
+
+        var T4 = [25,30,15];
+        pocetak = [T4[0]-0.5*T1T2[0], T4[1]-0.5*T1T2[1], T4[2]-0.5*T1T2[2]];
+        var vektor3 = new THREE.Mesh(vektor(duljina, 0.1, 0, 0), mat5);
+        vektor3.rotateOnAxis(os, kut);
+        vektor3.position.set(pocetak[0], pocetak[1], pocetak[2]);
+        scene.add(vektor3);
+        vektor3.visible = false;
+
+        var T1T3 = [T3[0]-T1[0], T3[1]-T1[1], T3[2]-T1[2]];
+        var T2T4 = [T4[0]-T2[0], T4[1]-T2[1], T4[2]-T2[2]];
+        var T5 = [T1[0]+T1T3[0]+T2T4[0], T1[1]+T1T3[1]+T2T4[1], T1[2]+T1T3[2]+T2T4[2]];
+
+        pocetak = [T5[0]+0.5*T1T2[0], T5[1]+0.5*T1T2[1], T5[2]+0.5*T1T2[2]];
+        var vektor4 = new THREE.Mesh(vektor(duljina, 0.1, 0, 0), mat5);
+        vektor4.rotateOnAxis(os, kut);
+        vektor4.position.set(pocetak[0], pocetak[1], pocetak[2]);
+        scene.add(vektor4);
+        vektor4.visible = false;
+
+        var duljina3 = Math.sqrt(T2T4[0]*T2T4[0] + T2T4[1]*T2T4[1] + T2T4[2]*T2T4[2]);
+        var duljina4 = Math.sqrt(T2T4[0]*T2T4[0] + T2T4[2]*T2T4[2]);
+        pocetak = [T1[0]+0.41*T2T4[0], T1[1]+0.41*T2T4[1], T1[2]+0.41*T2T4[2]];
+        var vektor5 = new THREE.Mesh(vektor(duljina3-3, 0.2, 2, 0.8), mat2);
+        var os2 = new THREE.Vector3(T2T4[2]/duljina4, 0, -T2T4[0]/duljina4);
+        var kut2 =Math.acos(T2T4[1]/duljina3);
+        vektor5.rotateOnAxis(os2, kut2);
+        vektor5.position.set(pocetak[0], pocetak[1], pocetak[2]);
+        scene.add(vektor5);
+        vektor5.visible = false;
+
+        var tockaT5 = new THREE.Mesh(tockaGeometrija, tockaMaterijal);
+        tockaT5.translateX(T5[0]);
+        tockaT5.translateZ(T5[2]);
+        scene.add(tockaT5);
+        tockaT5.visible = false;
+
+        var tockaT3 = new THREE.Mesh(tockaGeometrija, tockaMaterijal);
+        tockaT3.translateX(T3[0]);
+        tockaT3.translateZ(T3[2]);
+        scene.add(tockaT3);
+        tockaT3.visible = false;
+
+        var tockaT4 = new THREE.Mesh(tockaGeometrija, tockaMaterijal);
+        tockaT4.translateX(T4[0]);
+        tockaT4.translateZ(T4[2]);
+        tockaT4.translateY(T4[1]);
+        scene.add(tockaT4);
+        tockaT4.visible = false;
+
+        var T6 = [T3[0]+T1T2[0], T3[1]+T1T2[1], T3[2]+T1T2[2]];
+        var tockaT6 = new THREE.Mesh(tockaGeometrija, tockaMaterijal);
+        tockaT6.translateX(T6[0]);
+        tockaT6.translateZ(T6[2]);
+        tockaT6.translateY(T6[1]);
+        scene.add(tockaT6);
+        tockaT6.visible = false;
+
+        var T7 = [T6[0]+T2T4[0], T6[1]+T2T4[1], T6[2]+T2T4[2]];
+        var tockaT7 = new THREE.Mesh(tockaGeometrija, tockaMaterijal);
+        tockaT7.translateX(T7[0]);
+        tockaT7.translateZ(T7[2]);
+        tockaT7.translateY(T7[1]);
+        scene.add(tockaT7);
+        tockaT7.visible = false;
+
+        var T8 = [T1[0]+T2T4[0], T1[1]+T2T4[1], T1[2]+T2T4[2]];
+        var tockaT8 = new THREE.Mesh(tockaGeometrija, tockaMaterijal);
+        tockaT8.translateX(T8[0]);
+        tockaT8.translateZ(T8[2]);
+        tockaT8.translateY(T8[1]);
+        scene.add(tockaT8);
+        tockaT8.visible = false;
+
+        pocetak = [T3[0]+0.5*T2T4[0], T3[1]+0.5*T2T4[1], T3[2]+0.5*T2T4[2]];
+        var vektor6 = new THREE.Mesh(vektor(duljina3, 0.1, 0, 0), mat5);
+        vektor6.rotateOnAxis(os2, kut2);
+        vektor6.position.set(pocetak[0], pocetak[1], pocetak[2]);
+        scene.add(vektor6);
+        vektor6.visible = false;
+
+        pocetak = [T6[0]+0.5*T2T4[0], T6[1]+0.5*T2T4[1], T6[2]+0.5*T2T4[2]];
+        var vektor7 = new THREE.Mesh(vektor(duljina3, 0.1, 0, 0), mat5);
+        vektor7.rotateOnAxis(os2, kut2);
+        vektor7.position.set(pocetak[0], pocetak[1], pocetak[2]);
+        scene.add(vektor7);
+        vektor7.visible = false;
+
+        var duljina5 = Math.sqrt(T1T3[0]*T1T3[0] + T1T3[1]*T1T3[1] + T1T3[2]*T1T3[2]);
+        var duljina6 = Math.sqrt(T1T3[0]*T1T3[0] + T1T3[2]*T1T3[2]);
+        pocetak = [T8[0]+0.46*T1T3[0], T8[1]+0.46*T1T3[1], T8[2]+0.46*T1T3[2]];
+        var vektor8 = new THREE.Mesh(vektor(duljina5-3, 0.2, 2, 0.8), mat2);
+        var os3 = new THREE.Vector3(T1T3[2]/duljina6, 0, -T1T3[0]/duljina6);
+        var kut3 =Math.acos(T1T3[1]/duljina5);
+        vektor8.rotateOnAxis(os3, kut3);
+        vektor8.position.set(pocetak[0], pocetak[1], pocetak[2]);
+        scene.add(vektor8);
+        vektor8.visible = false;
+
+        pocetak = [T2[0]+0.5*T1T3[0], T2[1]+0.5*T1T3[1], T2[2]+0.5*T1T3[2]];
+        var vektor9 = new THREE.Mesh(vektor(duljina5, 0.1, 0, 0), mat5);
+        vektor9.rotateOnAxis(os3, kut3);
+        vektor9.position.set(pocetak[0], pocetak[1], pocetak[2]);
+        scene.add(vektor9);
+        vektor9.visible = false;
+
+        pocetak = [T4[0]+0.5*T1T3[0], T4[1]+0.5*T1T3[1], T4[2]+0.5*T1T3[2]];
+        var vektor10 = new THREE.Mesh(vektor(duljina5, 0.1, 0, 0), mat5);
+        vektor10.rotateOnAxis(os3, kut3);
+        vektor10.position.set(pocetak[0], pocetak[1], pocetak[2]);
+        scene.add(vektor10);
+        vektor10.visible = false;
+
+        var tekstVek11 = createText('s', oznake_options);
+        tekstVek11.rotation.y = Math.atan(-3/5);
+        tekstVek11.position.set((T1[0]+0.8*T8[0])/1.8,-3,(T1[2]+0.8*T8[2])/1.8);
+        scene.add(tekstVek11);
+        tekstVek11.visible = false;
+
+        var tekstVek12 = createText('2', minioznake2_options);
+        tekstVek12.rotation.y = Math.atan(-3/5);
+        tekstVek12.position.set((T1[0]+1.5*T8[0])/2.5,-4,(T1[2]+1.5*T8[2])/2.5);
+        scene.add(tekstVek12);
+        tekstVek12.visible = false;
+
+        var tekstVek21 = createText('s', oznake_options);
+        tekstVek21.rotation.y = Math.atan(3/5);
+        tekstVek21.position.set((T8[0]+0.8*T5[0])/1.8,-3,(T8[2]+0.8*T5[2])/1.8);
+        scene.add(tekstVek21);
+        tekstVek21.visible = false;
+
+        var tekstVek22 = createText('1', minioznake2_options);
+        tekstVek22.rotation.y = Math.atan(3/5);
+        tekstVek22.position.set((T8[0]+1.05*T5[0])/2.05,-4,(T8[2]+1.05*T5[2])/2.05);
+        scene.add(tekstVek22);
+        tekstVek22.visible = false;
+
+        render();
+
+        function render() {
+            renderer.render( scene, camera );
+        }                
+
+        $(window).resize( function() {
+            camera.aspect = (window.innerWidth) / (window.innerHeight);
+            camera.updateProjectionMatrix();
+            renderer.setSize( window.innerWidth, window.innerHeight);
+            render();
+        });
+
+        function vektor(h1, r1, h2, r2) {
+            var valjakGeometry = new THREE.CylinderGeometry(r1,r1,h1,10);
+            var stozacGeometry = new THREE.CylinderGeometry(0,r2,h2,12);
+            var valjak = new THREE.Mesh(valjakGeometry);
+            var stozac = new THREE.Mesh(stozacGeometry);
+            var vek = new THREE.Geometry();
+            stozac.translateY((h1+h2)/2);
+            valjak.updateMatrix();
+            stozac.updateMatrix();
+            vek.merge(valjak.geometry, valjak.matrix);
+            vek.merge(stozac.geometry, stozac.matrix);
+            return vek;
+        }
+
+        function createText(text, params) {
+            var textGeo = new THREE.TextGeometry(text, params);
+            textGeo.computeBoundingBox();
+            textGeo.computeVertexNormals();
+            var material = [new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false}),
+                            new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false})];
+            var textMesh = new THREE.Mesh(textGeo, material);
+            return textMesh;
+        }
+
+        function odredi_normalu(u,v) {
+            var vek = [0,0,0];
+            vek[0] = u[1]*v[2] - u[2]*v[1];
+            vek[1] = u[2]*v[0] - u[0]*v[2];
+            vek[2] = u[0]*v[1] - u[1]*v[0];
+            var norma = Math.sqrt(vek[0]*vek[0] + vek[1]*vek[1] + vek[2]*vek[2]);
+            vek[0] /= norma;
+            vek[1] /= norma;
+            vek[2] /= norma;
+            return vek;
+        }
+
+        function prikazi_komade(yesno) {
+            plane1GORE.visible = yesno;
+            plane1.visible = yesno;
+            plane2.visible = yesno;
+            plane4.visible = yesno;
+            plane2GORE.visible = yesno;
+            plane4GORE.visible = yesno;
+            plane3.visible = yesno;
+            plane3GORE.visible = yesno;
+        }
+
+        function prikazi_paralelepiped(yesno) {
+            tockaT3.visible = yesno;
+            tockaT4.visible = yesno;
+            tockaT5.visible = yesno;
+            tockaT6.visible = yesno;
+            tockaT7.visible = yesno;
+            tockaT8.visible = yesno;
+            tekstVek11.visible = yesno;
+            tekstVek12.visible = yesno;
+            tekstVek21.visible = yesno;
+            tekstVek22.visible = yesno;
+            vektor1.visible = yesno;
+            vektor2.visible = yesno;
+            vektor3.visible = yesno;
+            vektor4.visible = yesno;
+            vektor5.visible = yesno;
+            vektor6.visible = yesno;
+            vektor7.visible = yesno;
+            vektor8.visible = yesno;
+            vektor9.visible = yesno;
+            vektor10.visible = yesno;
+        }
+    });
+    </script>
+
+    </body>
+
+</html>

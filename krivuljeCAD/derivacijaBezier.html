@@ -1,0 +1,397 @@
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>B&eacute;zier derivacija</title>
+         <link rel="stylesheet" type="text/css" href="../vendor/jsxgraph.css"/>
+         <script src="../vendor/jsxgraphcore.js"></script>
+         <script src="../noUISlider/nouislider.min.js"></script>
+         <link rel="stylesheet" type="text/css" href="../noUISlider/nouislider.css"/>
+         <script src="../lib/jquery-3.3.1.min.js"></script>
+         <script src="../lib/bootstrap.min.js"></script>
+         <link rel="stylesheet" href="../lib/bootstrap.min.css">
+         <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+         <link href="../vendor/simple-sidebar.css" rel="stylesheet">
+         <link rel="stylesheet" type="text/css" href="../vendor/page.css">
+         <style>
+          .btn:focus, .btn:active, label.btn {
+          outline: none !important;
+          box-shadow: none !important;
+          -webkit-box-shadow: none !important;
+          }
+          .btn.btn-custom-sm {
+            border-radius: 0;
+          }
+         </style>
+    </head>
+
+    <body>
+       
+      <div id="container" style="height:700px;">
+
+        <div id="wrapper">
+
+      
+        <div id="sidebar-wrapper">
+          <ul class="sidebar-nav">
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B&eacute;zierove krivulje</b></li>
+          <li><a href="bernsteinovi_polinomi.html">Bernsteinovi polinomi</a></li>
+          <li><a href="deCasteljau.html">De Casteljaunov algoritam</a></li>
+          <li><a href="partBezier.html">Subdivizija B&eacute;zierove krivulje</a></li>
+          <li><a href="#" style="color:yellow;">Derivacija B&eacute;zierove krivulje</a></li>
+          <li><a href="podizanje_stupnja_Bezier.html">Podizanje stupnja</a></li>
+          <li><a href="G2neprekidnost.html">Geometrijska neprekidnost</a></li>
+          <li><a href="G2gamma.html">G<sup>2</sup> neprekidnost</a></li>
+          <li><a href="konike.html">Konike</a></li>
+          <li><a href="kruznica.html">Kružnica</a></li>
+          <li><a href="racionalni_deCasteljau.html">Racionalne B&eacute;zierove krivulje</a></li>
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B-splajnovi</b></li>
+           <li><a href="bspline_basis.html">Bazne funkcije</a></li>
+           <li><a href="lokalni_deboor.html">Lokalni De Boorov algoritam</a></li>
+           <li><a href="globalni_deboor.html">Globalni De Boorov algoritam</a></li>
+           <li><a href="kubicna_Bsplajn_krivulja.html">Kubična B-splajn krivulja</a></li>
+           <li><a href="periodicna_Bsplajn_krivulja.html">Zatvorena B-splajn krivulja</a></li>
+          </ul>
+        </div>
+
+        <div class="row">
+
+          <div class="col">
+            <a style="position:absolute; left:15px; padding:5px 5px;" href="#menu-toggle" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" id="menu-toggle"><span class="fas fa-th-list fa-2x" style="color:white;"></span></a>
+
+        <div id="content" style="width:1100px;">
+           <div id="box" class="jxgbox" style="width:500px; height:500px; margin-bottom:20px; margin-right:40px; z-index:100; display: inline-block;"></div>
+           <div id="box2" class="jxgbox" style="width:500px; height:500px; margin-bottom:20px; z-index:100; display: inline-block;"></div>
+           <div class="alert alert-secondary" role="alert" style="width:450px; margin-top:20px; margin-left:250px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div style="margin-top:25px;"><i>t</i>&nbsp; <div id="t-slider-elem" style="width:80%; display: inline-block;"></div>
+            <button type="button" class="btn btn-sm btn-danger" id="refresh" style="position:relative; left:30px; top:0px; border-radius:7px;"><span class="fas fa-sync-alt" style="color:white;"></span></button>
+            </div>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-top:20px;">
+              <span><span class="badge badge-primary" style="display: inline-block; height:20px; padding-bottom:2px;">1.</span>&nbsp;derivacija&nbsp;&nbsp;</span> <label class="btn btn-sm btn-secondary">
+                <input type="radio" value="0" name="der1_view" id="option1" autocomplete="off"> hide all
+              </label>
+              <label class="btn btn-sm btn-secondary">
+                <input type="radio" value="1" name="der1_view" id="option2" autocomplete="off"> show
+              </label>
+              <label class="btn btn-sm btn-secondary active">
+                <input type="radio" value="2" name="der1_view" id="option3" autocomplete="off" checked> show all
+              </label>
+            </div>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-top:20px;">
+              <span><span class="badge badge-primary" style="display: inline-block; height:20px; padding-bottom:2px;">2.</span>&nbsp;derivacija&nbsp;&nbsp;</span> <label class="btn btn-sm btn-secondary">
+                <input type="radio" value="0" name="der2_view" id="option4" autocomplete="off"> hide all
+              </label>
+              <label class="btn btn-sm btn-secondary">
+                <input type="radio" value="1" name="der2_view" id="option5" autocomplete="off"> show
+              </label>
+              <label class="btn btn-sm btn-secondary active">
+                <input type="radio" value="2" name="der2_view" id="option6" autocomplete="off" checked> show all
+              </label>
+            </div>
+           </div>
+        </div>
+
+      </div>      
+
+      <div class="col">
+
+        <a style="position:absolute;top:0px; right:15px; margin:0; padding:5px 5px;" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" data-toggle="collapse" href="#pomoc" aria-expanded="false" aria-controls="collapseExample"><span class="far fa-image fa-2x" style="color:white;"></span></a>
+
+      <div class="collapse" id="pomoc" style="width:650; position: absolute; top: 50; right:30; z-index:100;">
+       <div class="card card-body">
+       <p style="text-align:center;">
+        <a style="position:absolute; top:0px; left:0px;" href="slike/bezierDerivacija.pdf" target="_blank"><button type="button" class="btn btn-danger btn-sm btn-custom-sm" style="vertical-align:top;"><span class="fas fa-file-pdf" style="color:white;"></span></button></a>
+        <img src="slike/bezierDerivacija.png" width="600"></p>
+      </div>
+     </div> 
+
+
+        <div class="alert alert-secondary" role="alert" style="width:450px; margin-top:80px; margin-left:40px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <p><b>Derivacija B&eacute;zierove krivulje</b></p>
+            <hr>
+            <p><img src="slike/derBezier2.png"></p>
+            <p><img src="slike/derBezier3.png"></p>
+            <hr>  
+            <p><span class="badge badge-warning">Na segmentu&nbsp; <img src="slike/deCasteljau1.png"></span>&nbsp;&nbsp; <img src="slike/derBezier5.png"></p>
+            <p><img src="slike/deCasteljau5.png"></p>
+            <p><img src="slike/derBezier7.png"></p>
+            <p><img src="slike/derBezier1.png"></p> 
+            <p><img src="slike/derBezier4.png"></p>
+            <hr>
+            <p><span class="badge badge-warning">Na segmentu&nbsp; <img src="slike/deCasteljau1a.png"></span>&nbsp;&nbsp; <img src="slike/derBezier6.png"></p>
+            <p><img src="slike/deCasteljau5a.png"></p>
+          </div>
+      </div>
+
+      </div>
+    </div>
+        
+      </div>
+
+      <script language="JavaScript">
+            var t_slider_elem = document.getElementById('t-slider-elem');
+            var t_slider = 0.42;
+
+            noUiSlider.create(t_slider_elem, {start: [0.42], connect: 'lower', tooltips:[true], step: 0.01, 
+                                         range: {'min': 0, 'max': 1}});
+
+            var pDer1 = 2; //opcija za prikaz prve derivacije
+            var pDer2 = 2; //opcija za prikaz druge derivacije
+
+            function tocka(p1, p2, delta) {
+              let vekX = p2.X() - p1.X();
+              let vekY = p2.Y() - p1.Y();
+              let dist = Math.sqrt(vekX**2 + vekY**2);
+              vekX /= dist;
+              vekY /= dist;
+              return [p2.X() - vekX * delta, p2.Y() - vekY * delta];
+            }
+            
+            var control = [];
+            
+            var aplet = JXG.JSXGraph.initBoard('box', {boundingbox: [-2, 7, 7, -2], grid:false,  
+                                                       showCopyright:false, keepaspectratio: false,
+                                                       showNavigation:false,axis:true,
+                                                       zoom:{wheel:false},
+                                                       pan:{enabled:false}});
+
+            JXG.Options.axis.ticks.minorTicks = 1;
+            JXG.Options.axis.ticks.insertTicks = false;
+            JXG.Options.axis.ticks.ticksDistance = 2;
+
+            var aplet2 = JXG.JSXGraph.initBoard('box2', {boundingbox: [-10, 10, 10, -10], grid:false,  
+                                                       showCopyright:false, keepaspectratio: false,
+                                                       showNavigation:false,axis:true,
+                                                       zoom:{wheel:false},
+                                                       pan:{enabled:false}});
+
+            aplet.addChild(aplet2);
+            
+            aplet.highlightInfobox = function (x, y, el) {
+                aplet.infobox.setText('');
+            };
+            aplet2.highlightInfobox = function (x, y, el) {
+                aplet2.infobox.setText('');
+            };  
+
+            control[0] = aplet.create('point', [-1.1,-0.5], {'name':'<span style="background-color:white; opacity:0.7;">b_0</span>', size:3, color:'#009900', label:{offset:[-5,-17]}});
+            control[1] = aplet.create('point', [-0.6,5.7], {'name':'<span style="background-color:white; opacity:0.7;">b_1</span>', size:3, color:'#009900', label:{offset:[-5,17]}});
+            control[2] = aplet.create('point', [4.7,4.7], {'name':'<span style="background-color:white; opacity:0.7;">b_2</span>', size:3, color:'#009900', label:{offset:[-5,17]}}); 
+            control[3] = aplet.create('point', [6,1.3], {'name':'<span style="background-color:white; opacity:0.7;">b_3</span>', size:3, color:'#009900', label:{offset:[-5,-17]}});
+
+            var b1Hide = aplet.create('point', [function(){return tocka(control[0], control[1], 0.08);}], {visible:false});
+            var b2Hide = aplet.create('point', [function(){return tocka(control[1], control[2], 0.08);}], {visible:false});
+            var b3Hide = aplet.create('point', [function(){return tocka(control[2], control[3], 0.08);}], {visible:false});
+
+            var Z0 = aplet.create('point', [function(){return control[0].X() - control[1].X() + control[2].X();}, 
+                                            function(){return control[0].Y() - control[1].Y() + control[2].Y();}],
+                                            {face:'square', color:'#78c2ec', size:2, name:'',visible: function(){return (pDer2 > 1);}});
+            var Z0hide = aplet.create('point', [function(){return tocka(control[1], Z0, 0.08);}], {visible:false});
+
+            var Z1 = aplet.create('point', [function(){return control[1].X() - control[2].X() + control[3].X();}, 
+                                            function(){return control[1].Y() - control[2].Y() + control[3].Y();}],
+                                            {face:'square', color:'#aa73ec', size:2, name:'',visible: function(){return (pDer2 > 1);}});
+            var Z1hide = aplet.create('point', [function(){return tocka(control[2], Z1, 0.08);}], {visible:false});
+
+            var B01 = aplet.create('point', [function(){return (1 - t_slider) * control[0].X() + t_slider * control[1].X();},
+                                             function(){return (1 - t_slider) * control[0].Y() + t_slider * control[1].Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_0^1</span>', face:'square', color:'#30c5dc', size:2, label:{offset:[-5,-17]}});
+            var B11 = aplet.create('point', [function(){return (1 - t_slider) * control[1].X() + t_slider * control[2].X();},
+                                             function(){return (1 - t_slider) * control[1].Y() + t_slider * control[2].Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_1^1</span>', face:'square', color:'#30c5dc', size:2, label:{offset:[-5,17]}});
+            var B21 = aplet.create('point', [function(){return (1 - t_slider) * control[2].X() + t_slider * control[3].X();},
+                                             function(){return (1 - t_slider) * control[2].Y() + t_slider * control[3].Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_2^1</span>', face:'square', color:'#30c5dc', size:2, label:{offset:[-5,-17]}});
+            var Dder2 = aplet.create('point', [function(){return B01.X() - B11.X() + B21.X();},
+                                               function(){return B01.Y() - B11.Y() + B21.Y();}],
+                                        {'name':'', face:'square', color:'#30c5dc', size:2, label:{offset:[-5,-17]},
+                                         visible: function(){return (pDer2 > 0);}});
+            var Dder2hide = aplet.create('point', [function(){return tocka(B11, Dder2, 0.08);}], {visible:false});
+
+            var segment1 = aplet.create('arrow', [control[0],b1Hide], {strokeColor:'#9999cc',dash:0,strokeWidth:2,opacity:1,visible: function(){return (pDer1 > 1);}});
+            var segment2 = aplet.create('arrow', [control[1],b2Hide], {strokeColor:'#99cccc',dash:0,strokeWidth:2,opacity:1,visible: function(){return (pDer1 > 1);}});
+            var segment3 = aplet.create('arrow', [control[2],b3Hide], {strokeColor:'#999966',dash:0,strokeWidth:2,opacity:1,visible: function(){return (pDer1 > 1);}});
+
+            var segm1 = aplet.create('segment', [control[0],b1Hide], {strokeColor:'magenta',dash:1,strokeWidth:1,opacity:1,visible: function(){return (pDer1 < 2);}});
+            var segm2 = aplet.create('segment', [control[1],b2Hide], {strokeColor:'magenta',dash:1,strokeWidth:1,opacity:1,visible: function(){return (pDer1 < 2);}});
+            var segm3 = aplet.create('segment', [control[2],b3Hide], {strokeColor:'magenta',dash:1,strokeWidth:1,opacity:1,visible: function(){return (pDer1 < 2);}});
+            
+            var segment4 = aplet.create('segment', [B01,B11], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+            var segment5 = aplet.create('segment', [B11,B21], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+            var segment7 = aplet.create('segment', [B01,Dder2], {strokeColor:'#0033ff',dash:1,strokeWidth:1,visible: function(){return (pDer2 > 0);}});
+            var segment8 = aplet.create('segment', [B21,Dder2], {strokeColor:'#0033ff',dash:1,strokeWidth:1,visible: function(){return (pDer2 > 0);}});
+            var segment9 = aplet.create('segment', [control[0],Z0], {strokeColor:'#b6a873',dash:1,strokeWidth:1,visible: function(){return (pDer2 > 1);}});
+            var segment10 = aplet.create('segment', [control[2],Z0], {strokeColor:'#b6a873',dash:1,strokeWidth:1,visible: function(){return (pDer2 > 1);}});
+            var segment11 = aplet.create('segment', [control[1],Z1], {strokeColor:'#e8b944',dash:1,strokeWidth:1,visible: function(){return (pDer2 > 1);}});
+            var segment12 = aplet.create('segment', [control[3],Z1], {strokeColor:'#e8b944',dash:1,strokeWidth:1,visible: function(){return (pDer2 > 1);}});
+
+            var B02 = aplet.create('point', [function(){return (1 - t_slider) * B01.X() + t_slider * B11.X();},
+                                             function(){return (1 - t_slider) * B01.Y() + t_slider * B11.Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_0^2</span>', face:'square', color:'#6c8cff', size:2, label:{offset:[-5,-17]}});
+            var B12 = aplet.create('point', [function(){return (1 - t_slider) * B11.X() + t_slider * B21.X();},
+                                             function(){return (1 - t_slider) * B11.Y() + t_slider * B21.Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_1^2</span>', face:'square', color:'#6c8cff', size:2, label:{offset:[-5,-17]}});
+
+            var segment6 = aplet.create('segment', [B02,B12], {strokeColor:'#25976f',dash:2,strokeWidth:1,visible: function(){return (pDer1 < 1);}});
+
+            var B12Hide = aplet.create('point', [function(){return tocka(B02, B12, 0.08);}], {visible:false});
+            
+            var Z0_vek = aplet.create('arrow', [control[1],Z0hide], {strokeColor:'#c6c3bf',dash:0,strokeWidth:2,opacity:1,visible: function(){return (pDer2 > 1);}});
+            var Z1_vek = aplet.create('arrow', [control[2],Z1hide], {strokeColor:'#ed6cc0',dash:0,strokeWidth:2,opacity:1,visible: function(){return (pDer2 > 1);}});
+
+            var der2_vek = aplet.create('arrow', [B11,Dder2hide], {strokeColor:'#008800',dash:0,strokeWidth:2,opacity:1,
+                                                                   visible: function(){return (pDer2 > 0);}});
+            var der_vek = aplet.create('arrow', [B02,B12Hide], {strokeColor:'blue',dash:0,strokeWidth:2,opacity:1,
+                                                                visible: function(){return (pDer1 > 0);}});
+
+            var B03 = aplet.create('point', [function(){return (1 - t_slider) * B02.X() + t_slider * B12.X();},
+                                             function(){return (1 - t_slider) * B02.Y() + t_slider * B12.Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">b_0^3</span>', color:'#ffff00', size:2, label:{offset:[-5,-17]}});
+
+            segment1.setAttribute({fixed:true,highlight:false});
+            segment2.setAttribute({fixed:true,highlight:false});
+            segment3.setAttribute({fixed:true,highlight:false});
+            segm1.setAttribute({fixed:true,highlight:false});
+            segm2.setAttribute({fixed:true,highlight:false});
+            segm3.setAttribute({fixed:true,highlight:false});
+            segment4.setAttribute({fixed:true,highlight:false});
+            segment5.setAttribute({fixed:true,highlight:false});
+            segment6.setAttribute({fixed:true,highlight:false});
+            segment7.setAttribute({fixed:true,highlight:false});
+            segment8.setAttribute({fixed:true,highlight:false});
+            segment9.setAttribute({fixed:true,highlight:false});
+            segment10.setAttribute({fixed:true,highlight:false});
+            segment11.setAttribute({fixed:true,highlight:false});
+            segment12.setAttribute({fixed:true,highlight:false});
+            B01.setAttribute({highlight:false});
+            B11.setAttribute({highlight:false});
+            B21.setAttribute({highlight:false});
+            B02.setAttribute({highlight:false});
+            B12.setAttribute({highlight:false});
+            Z0.setAttribute({highlight:false});
+            Z1.setAttribute({highlight:false});
+            B03.setAttribute({strokeColor: 'black'});
+            Dder2.setAttribute({highlight:false});
+            Z0_vek.setAttribute({highlight:false});
+            Z1_vek.setAttribute({highlight:false});
+
+            var krivulja = aplet.create('curve', JXG.Math.Numerics.bezier(control), {strokeWidth:3,strokeColor:'red',doAdvancedPlot:false});
+
+            var db0 = aplet2.create('point', [function() {return control[1].X() - control[0].X();}, function() {return control[1].Y() - control[0].Y();}], 
+                      {'name':'<span style="background-color:white; opacity:0.7;">&Delta;b_0</span>', size:3, 
+                       color:'#ff9900', label:{offset:[-5,17]},visible: function(){return (pDer1 > 0);}});
+            var db1 = aplet2.create('point', [function() {return control[2].X() - control[1].X();}, function() {return control[2].Y() - control[1].Y();}], 
+                      {'name':'<span style="background-color:white; opacity:0.7;">&Delta;b_1</span>', size:3, 
+                       color:'#ff9900', label:{offset:[-5,-17]},visible: function(){return (pDer1 > 0);}});
+            var db2 = aplet2.create('point', [function() {return control[3].X() - control[2].X();}, function() {return control[3].Y() - control[2].Y();}], 
+                      {'name':'<span style="background-color:white; opacity:0.7;">&Delta;b_2</span>', size:3, 
+                       color:'#ff9900', label:{offset:[-5,-17]},visible: function(){return (pDer1 > 0);}});
+
+            var d2b0 = aplet2.create('point', [function() {return db1.X() - db0.X();}, function() {return db1.Y() - db0.Y();}], 
+                      {'name':'<span style="background-color:white; opacity:0.7;">&Delta;^2b_0</span>',size:3, 
+                      color:'#ff9900', label:{offset:[-5,17]},visible: function(){return (pDer2 > 1);}});
+            var d2b1 = aplet2.create('point', [function() {return db2.X() - db1.X();}, function() {return db2.Y() - db1.Y();}], 
+                      {'name':'<span style="background-color:white; opacity:0.7;">&Delta;^2b_1</span>', size:3, 
+                       color:'#ff9900', label:{offset:[-5,17]},visible: function(){return (pDer2 > 1);}});
+
+            var ishodiste = aplet2.create('point', [0,0], {color:'white', name:'', size:2});
+            var db0Hide = aplet2.create('point', [function(){return tocka(ishodiste, db0, 0.18);}], {visible:false});
+            var db1Hide = aplet2.create('point', [function(){return tocka(ishodiste, db1, 0.18);}], {visible:false});
+            var db2Hide = aplet2.create('point', [function(){return tocka(ishodiste, db2, 0.18);}], {visible:false});
+            var d2b0Hide = aplet2.create('point', [function(){return tocka(ishodiste, d2b0, 0.18);}], {visible:false});
+            var d2b1Hide = aplet2.create('point', [function(){return tocka(ishodiste, d2b1, 0.18);}], {visible:false});
+
+            var seg_db1 = aplet2.create('segment', [db0,db1], {strokeColor:'#336699',dash:1,strokeWidth:1,visible: function(){return (pDer1 > 0);}});
+            var seg_db2 = aplet2.create('segment', [db1,db2], {strokeColor:'#336699',dash:1,strokeWidth:1,visible: function(){return (pDer1 > 0);}});
+
+            var vek1 = aplet2.create('arrow', [ishodiste,db0Hide], 
+                                     {strokeColor:'#9999cc',dash:0,strokeWidth:2,opacity:1,
+                                      visible: function(){return (pDer1 > 1);}});
+            var vek2 = aplet2.create('arrow', [ishodiste,db1Hide], {
+                                     strokeColor:'#99cccc',dash:0,strokeWidth:2,opacity:1,
+                                     visible: function(){return (pDer1 > 1);}});
+            var vek3 = aplet2.create('arrow', [ishodiste,db2Hide], 
+                                     {strokeColor:'#999966',dash:0,strokeWidth:2,opacity:1,
+                                      visible: function(){return (pDer1 > 1);}});
+            var vek6 = aplet2.create('arrow', [ishodiste,d2b0Hide], 
+                                     {strokeColor:'#c6c3bf',dash:0,strokeWidth:2,opacity:1,
+                                      visible: function(){return (pDer2 > 1);}});
+            var vek7 = aplet2.create('arrow', [ishodiste,d2b1Hide], 
+                                     {strokeColor:'#ed6cc0',dash:0,strokeWidth:2,opacity:1,
+                                      visible: function(){return (pDer2 > 1);}});
+
+            var db03 = aplet2.create('point', [function(){return (1-t_slider)**2*db0.X() + 2*t_slider*(1-t_slider)*db1.X() + t_slider**2*db2.X();},
+                                               function(){return (1-t_slider)**2*db0.Y() + 2*t_slider*(1-t_slider)*db1.Y() + t_slider**2*db2.Y();}],
+                                        {'name':'', color:'#ffff00', size:2, visible: function(){return (pDer1 > 0);}});
+            var db03Hide = aplet2.create('point', [function(){return tocka(ishodiste, db03, 0.18);}], {visible:false});
+
+            var d2b2 = aplet2.create('point', [function(t){return (1-t_slider)*d2b0.X() + t_slider*d2b1.X();},
+                                                      function(t){return (1-t_slider)*d2b0.Y() + t_slider*d2b1.Y();}],
+                                        {'name':'', color:'#ffff00', size:2, visible: function(){return (pDer2 > 0);}});
+            var d2b2Hide = aplet2.create('point', [function(){return tocka(ishodiste, d2b2, 0.18);}], {visible:false});
+
+            var vek4 = aplet2.create('arrow', [ishodiste,db03Hide], 
+                                     {strokeColor:'blue',dash:0,strokeWidth:2,opacity:1,
+                                      visible: function(){return (pDer1 > 0);}});
+            var vek5 = aplet2.create('arrow', [ishodiste,d2b2Hide], 
+                                     {strokeColor:'#008800',dash:0,strokeWidth:2,opacity:1,
+                                      visible: function(){return (pDer2 > 0);}});
+
+            var krivulja3 = aplet2.create('curve', [function(t){return (1-t)*d2b0.X() + t*d2b1.X();},
+                                                      function(t){return (1-t)*d2b0.Y() + t*d2b1.Y();}, 0, 1], 
+                                                      {strokeWidth:3,strokeColor:'#9966ff',doAdvancedPlot:false,
+                                                       visible: function(){return (pDer2 > 0);}});
+
+            var krivulja2 = aplet2.create('curve', [function(t){return (1-t)**2*db0.X() + 2*t*(1-t)*db1.X() + t**2*db2.X();},
+                                                    function(t){return (1-t)**2*db0.Y() + 2*t*(1-t)*db1.Y() + t**2*db2.Y();}, 0, 1], 
+                                                    {strokeWidth:3,strokeColor:'magenta',doAdvancedPlot:false,
+                                                     visible: function(){return (pDer1 > 0);}});
+
+            seg_db1.setAttribute({highlight:false});
+            seg_db2.setAttribute({highlight:false});
+            vek1.setAttribute({highlight:false});
+            vek2.setAttribute({highlight:false});
+            vek3.setAttribute({highlight:false});
+            vek6.setAttribute({highlight:false});
+            vek7.setAttribute({highlight:false});
+            ishodiste.setAttribute({strokeColor: 'black', highlight:false, fixed:true});
+            db03.setAttribute({strokeColor: 'black'});
+            d2b2.setAttribute({strokeColor: 'black'});
+            
+            $("#menu-toggle").click(function(event) {
+              event.preventDefault();
+              $("#wrapper").toggleClass("toggled");
+            });
+
+            t_slider_elem.noUiSlider.on('update', function() {
+              t_slider = Number(t_slider_elem.noUiSlider.get());
+              aplet.update();
+            });
+
+            $('#refresh').on('click', function(event) {
+              event.preventDefault();
+              control[0].moveTo([-1.1,-0.5]);
+              control[1].moveTo([-0.6,5.7]);
+              control[2].moveTo([4.7,4.7]);
+              control[3].moveTo([6,1.3]);
+              t_slider = 0.42;
+              t_slider_elem.noUiSlider.set(0.42);
+              $("#option3").prop("checked", true).trigger("click");
+              $("#option6").prop("checked", true).trigger("click");
+              aplet.update();
+            });
+
+            $('input[name=der2_view]').on('change', function() {
+              pDer2 = parseInt($(this).val());
+              aplet.update();
+            });
+
+            $('input[name=der1_view]').on('change', function() {
+              pDer1 = parseInt($(this).val());
+              aplet.update();
+            });
+        </script>
+
+    </body>
+
+</html>

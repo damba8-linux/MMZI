@@ -1,0 +1,7 @@
+#cement.jpg je 512x124
+
+convert -flop cement.jpg cement2.jpg
+convert cement.jpg -crop 511x1024+1+0 cement1.jpg
+convert cement2.jpg cement1.jpg +append cement3.jpg
+convert cement3.jpg -resize 1024x1024! -quality 100 cement4.jpg
+

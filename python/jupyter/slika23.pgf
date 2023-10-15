@@ -1,0 +1,23 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[scale=1, line width=0.8pt]
+\draw (-2.4,1)--(2,-1);
+\draw (-1.9,-1.2)--(1.2,1.5);
+\path[name path=pr1] (-2.4,1) -- (2,-1) node[below] {$p_1$};
+\path[name path=pr2] (-1.9,-1.2) -- (1.2,1.5) node[right=-1pt] {$p_2$};
+\path[name intersections={of=pr1 and pr2, by=S}];
+\draw[fill=white] (S) circle[radius=2pt] node[below=1pt] {$S$};
+\end{tikzpicture}

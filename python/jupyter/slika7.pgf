@@ -1,0 +1,46 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[line width=0.8pt]
+\tikzstyle{vrh}=[draw,circle,inner sep=1.5pt,fill=white]
+\node[inner sep=0pt] at (0.8,3.05) {};
+\node[inner sep=0pt] at (3,-1.2) {};
+\pgfmathsetmacro{\kut}{atan(1.8/4)}
+\pgfmathsetmacro{\k}{\kut-45}
+\coordinate (kT1) at (0,0);
+\coordinate (kT2) at (4,1.8);
+\coordinate (kA) at (1.55,2);
+\coordinate (kS) at ($(kT1)!(kA)!(kT2)$);
+\coordinate (kA1) at ($(kS)!1.9!(kA)$);
+\coordinate (kAc) at ($(kA)!2!(kS)$);
+\coordinate (kA2) at ($(kS)!1.9!(kAc)$);
+\coordinate (kV1) at ($(kT1)!0.65!(kT2)$);
+\coordinate (kV2) at ($(kT1)!0.85!(kT2)$);
+\draw (kA1)--(kA);
+%\draw<1-3 | handout:0> (kS)--(kAc);
+\draw (kAc)--(kA2);
+\node[vrh,label={[xshift=4pt,yshift=-2pt]above:$A$}] (A) at (kA) {};
+\draw[shorten >=-0.5cm,shorten <=-0.5cm] (kT1)--(kT2);
+\node[vrh,label={[xshift=-4pt,yshift=0pt]below:$S$}] (S) at (kS) {};
+\node[vrh,label={[xshift=-5pt,yshift=1pt]below:$A'$}] (Ac) at (kAc) {};
+\draw[line width=0.5pt] (S) ++(\kut:0.3) arc (\kut:(\kut-90):0.3);
+\filldraw ($(S)+((\k:0.18)$) circle (0.5pt);
+\node[below right] at ($(kT2)+(4pt,5pt)$) {$p$};
+\node[below right] at ($(kAc)+(8pt,-12pt)$) {$n$};
+\draw[red,line width=1.5pt,->,>=stealth'] (A)--(S);
+\draw[blue,line width=1.5pt,->,>=stealth'] (S)--(Ac);
+\draw[red,line width=1.5pt,->,>=stealth'] (kV1)--(kV2);
+\node at ($(kV1)+(12pt,-5pt)$) {$\vec{s}_p$};
+\end{tikzpicture}

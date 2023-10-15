@@ -1,0 +1,122 @@
+<html> 
+<head> 
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">  
+  <title>kvadrike</title> 			
+  <script src="lib/jquery-3.3.1.min.js"></script>
+  <script src="lib/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="lib/bootstrap.min.css">
+  <style>
+  body {
+    margin: 0px;
+    background-color: #FFF5EE;
+  }
+  </style>
+</head> 
+          
+<body>
+<div class="alert alert-dark" role="alert" style="margin-bottom:30px; position:sticky; top:0px; z-index:10; display:flex; padding-bottom:0px;">
+<div><h3 style="text-align:left;">Kvadrike</h3></div>
+</div>
+
+<div class="container">
+  <div class="row">
+
+    <div class="col-sm" style="margin-bottom: 30px;">
+      <div class="card" style="width: 18rem;">
+        <a href="kvadrike/elipsoid.html"><img src="kvadrike/kvadrike_slike/elipsoid_small.png" class="card-img-top" alt="elipsoid"></a>
+          <div class="card-body">
+            <p class="card-text" style="text-align:center;"><b>Elipsoid</b></p>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm" style="margin-bottom: 30px;">
+      <div class="card" style="width: 18rem;">
+        <a href="kvadrike/jednoplohi_hiperboloid.html"><img src="kvadrike/kvadrike_slike/jednoplohi_hiperboloid_small.png" class="card-img-top" alt="jednoplohi_hiperboloid"></a>
+          <div class="card-body">
+            <p class="card-text" style="text-align:center;"><b>Jednoplohi hiperboloid</b></p>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm" style="margin-bottom: 30px;">
+      <div class="card" style="width: 18rem;">
+        <a href="kvadrike/dvoplohi_hiperboloid.html"><img src="kvadrike/kvadrike_slike/dvoplohi_hiperboloid_small.png" class="card-img-top" alt="dvoplohi_hiperboloid"></a>
+          <div class="card-body">
+            <p class="card-text" style="text-align:center;"><b>Dvoplohi hiperboloid</b></p>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm" style="margin-bottom: 30px;">
+      <div class="card" style="width: 18rem;">
+        <a href="kvadrike/elipticki_paraboloid.html"><img src="kvadrike/kvadrike_slike/elipticki_paraboloid_small.png" class="card-img-top" alt="elipticki_paraboloid"></a>
+          <div class="card-body">
+            <p class="card-text" style="text-align:center;"><b>Eliptički paraboloid</b></p>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm" style="margin-bottom: 30px;">
+      <div class="card" style="width: 18rem;">
+        <a href="kvadrike/hiperbolicki_paraboloid.html"><img src="kvadrike/kvadrike_slike/hiperbolicki_paraboloid_small.png" class="card-img-top" alt="hiperbolicki_paraboloid"></a>
+          <div class="card-body">
+            <p class="card-text" style="text-align:center;"><b>Hiperbolički paraboloid</b></p>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm" style="margin-bottom: 30px;">
+      <div class="card" style="width: 18rem;">
+        <a href="kvadrike/konus.html"><img src="kvadrike/kvadrike_slike/konus_small.png" class="card-img-top" alt="konus"></a>
+          <div class="card-body">
+            <p class="card-text" style="text-align:center;"><b>Konus</b></p>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm" style="margin-bottom: 30px;">
+      <div class="card" style="width: 18rem;">
+        <a href="kvadrike/elipticki_cilindar.html"><img src="kvadrike/kvadrike_slike/elipticki_cilindar_small.png" class="card-img-top" alt="elipticki_cilindar"></a>
+          <div class="card-body">
+            <p class="card-text" style="text-align:center;"><b>Eliptički cilindar</b></p>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm" style="margin-bottom: 30px;">
+      <div class="card" style="width: 18rem;">
+        <a href="kvadrike/hiperbolicki_cilindar.html"><img src="kvadrike/kvadrike_slike/hiperbolicki_cilindar_small.png" class="card-img-top" alt="hiperbolicki_cilindar"></a>
+          <div class="card-body">
+            <p class="card-text" style="text-align:center;"><b>Hiperbolički cilindar</b></p>
+          </div>
+      </div>
+    </div>
+
+    <div class="col-sm" style="margin-bottom: 30px;">
+      <div class="card" style="width: 18rem;">
+        <a href="kvadrike/parabolicki_cilindar.html"><img src="kvadrike/kvadrike_slike/parabolicki_cilindar_small.png" class="card-img-top" alt="parabolicki_cilindar"></a>
+          <div class="card-body">
+            <p class="card-text" style="text-align:center;"><b>Parabolički cilindar</b></p>
+          </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+$(document).ready(function() {
+  $( ".card" ).hover(
+  function() {
+    $(this).addClass('shadow-lg');
+  }, function() {
+    $(this).removeClass('shadow-lg');
+  }
+);
+});
+</script>
+  
+</body>
+</html>

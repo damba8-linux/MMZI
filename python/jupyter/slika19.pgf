@@ -1,0 +1,38 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[line width=0.8pt,x={(0.95cm,-0.32cm)},y={(-0.72cm,-0.69cm)},z={(0cm,1cm)},scale=1.5]
+\tikzstyle{vrh}=[draw,circle,inner sep=1.2pt,fill=white,draw=black!50]
+\node[vrh,label={[xshift=-7pt,yshift=-5pt]above:\color{black!60}\small$A$}] (N) at (0,0,0) {};
+\node[vrh,label={[xshift=-7pt,yshift=4pt]below:\color{black!60}\small$B$}] (M) at (0,1,0) {};
+\node[vrh,label={[xshift=-7pt,yshift=4pt]below:\color{black!60}\small$C$}] (T3) at (1,0.8,0) {};
+\node[vrh,label={[xshift=-7pt,yshift=4pt]below:\color{black!60}\small$D$}] (T4) at (1.4,0.1,0) {};
+\node[vrh,draw=black,label={[xshift=0pt,yshift=-2pt]above:\color{black}\small$E$}] (T5) at (1.1,0.1,1) {};
+\shadedraw[opacity=0.3,top color=white,bottom color=gray,shading angle=105,line width=0.5pt]
+(-0.6,-0.4,0)--(2,-0.4,0)--(2,1.6,0)--(-0.6,1.6,0)--cycle;
+%\draw[->,>=stealth',red!60] (M)--(N);
+%\draw[->,>=stealth',red!60] (M)--(0.64,0.6,0);
+%\draw[->,>=stealth',blue] (1.6,0,0)--(1.6,0,0.8);
+%\draw[->,>=stealth',red,line width=1.5pt] (0,0,0.8)--(0.64,-0.4,0.8);
+%\draw (-1.2,0.75,0.8)--(0,0,0.8);
+%\draw (0.64,-0.4,0.8)--(1.2,-0.75,0.8);
+%\node[black!50,sloped,xslant=.4] at (1.85,1.45,0) {\rotatebox{-20}{$\pi$}};
+%\node[right] at (1.58,0,0.7) {$\vec{n}_{\pi}$};
+%\node at (0.32,-0.2,1.05) {$\vec{j}$};
+%\node[black!50] at (0.45,1.05,0) {\small$\vec{j}$};
+%\node at (0,1.8,2.1) {$y$-os};
+%\draw [line width=0.5pt,domain=0:90] plot ({1.6+0.15*cos(-60)*sin(\x)}, {0.15*sin(-60)*sin(\x)}, {0.13*cos(\x)});
+%\filldraw ($(1.6,0,0.07)+(-20:0.07)$) circle (0.2pt);
+\end{tikzpicture}

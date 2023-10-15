@@ -1,0 +1,176 @@
+<html>
+
+    <head>
+        <meta charset="utf-8"> 
+        <title>bernstein polinomi</title>
+         <link rel="stylesheet" type="text/css" href="../vendor/jsxgraph.css"/>
+         <script src="../vendor/jsxgraphcore.js"></script>
+         <script src="../noUISlider/nouislider.min.js"></script>
+         <link rel="stylesheet" type="text/css" href="../noUISlider/nouislider.css"/>
+         <script src="../lib/jquery-3.3.1.min.js"></script>
+         <script src="../lib/bootstrap.min.js"></script>
+         <link rel="stylesheet" href="../lib/bootstrap.min.css">
+         <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+         <link href="../vendor/simple-sidebar.css" rel="stylesheet">
+         <link rel="stylesheet" type="text/css" href="../vendor/page.css">
+         <style>
+          .btn:focus, .btn:active {
+          outline: none !important;
+          box-shadow: none !important;
+          -webkit-box-shadow: none !important;
+          }
+          .btn.btn-custom-sm {
+            border-radius: 0;
+          }
+         </style>
+    </head>
+
+    <body>
+       
+      <div id="container" style="height:700px;">
+
+        <div id="wrapper">
+
+        <div id="sidebar-wrapper">
+          <ul class="sidebar-nav">
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B&eacute;zierove krivulje</b></li>
+          <li><a href="#" style="color:yellow;">Bernsteinovi polinomi</a></li>
+          <li><a href="deCasteljau.html">De Casteljaunov algoritam</a></li>
+          <li><a href="partBezier.html">Subdivizija B&eacute;zierove krivulje</a></li>
+          <li><a href="derivacijaBezier.html">Derivacija B&eacute;zierove krivulje</a></li>
+          <li><a href="podizanje_stupnja_Bezier.html">Podizanje stupnja</a></li>
+          <li><a href="G2neprekidnost.html">Geometrijska neprekidnost</a></li>
+          <li><a href="G2gamma.html">G<sup>2</sup> neprekidnost</a></li>
+          <li><a href="konike.html">Konike</a></li>
+          <li><a href="kruznica.html">Kružnica</a></li>
+          <li><a href="racionalni_deCasteljau.html">Racionalne B&eacute;zierove krivulje</a></li>
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B-splajnovi</b></li>
+           <li><a href="bspline_basis.html">Bazne funkcije</a></li>
+           <li><a href="lokalni_deboor.html">Lokalni De Boorov algoritam</a></li>
+           <li><a href="globalni_deboor.html">Globalni De Boorov algoritam</a></li>
+           <li><a href="kubicna_Bsplajn_krivulja.html">Kubična B-splajn krivulja</a></li>
+           <li><a href="periodicna_Bsplajn_krivulja.html">Zatvorena B-splajn krivulja</a></li>
+          </ul>
+        </div>
+
+        <div class="row">
+
+          <div class="col">
+            <a style="position:absolute; left:15px; padding:5px 5px;" href="#menu-toggle" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" id="menu-toggle"><span class="fas fa-th-list fa-2x" style="color:white;"></span></a>
+       
+        <div id="content" style="width:800px;">
+           <div id="box" class="jxgbox" style="width:800px; height:600px; z-index:100;"></div> 
+        </div>
+
+      </div>
+
+      <div class="col">
+        <div class="alert alert-secondary" role="alert" style="width:450px; margin-top:100px; margin-left:80px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+          <p><b>Bernsteinovi polinomi</b></p>
+            <p style="text-align: center;"><img src="slike/bernstein_formula.png"></p>
+            <hr>
+            <p><b>Rekurzija</b></p>
+            <p style="text-align: center;"><img src="slike/bernstein_rekurzija.png"></p>
+            <p style="text-align: center;"><img src="slike/bernstein_rekurzija0.png"></p>
+            <hr>
+            <div style="margin-top:25px;"><i>n</i> <div id="n-slider-elem" style="width:80%; display: inline-block;"></div></div>
+            <div style="margin-top:25px;"><i>i</i>&nbsp; <div id="i-slider-elem" style="width:80%; display: inline-block;"></div></div>
+          </div>
+      </div>
+
+      </div>
+    </div>
+        
+      </div>
+
+      <script language="JavaScript">
+            var n_slider_elem = document.getElementById('n-slider-elem');
+            var i_slider_elem = document.getElementById('i-slider-elem');
+            var n_slider = 2;
+            var i_slider = 1;
+
+            noUiSlider.create(n_slider_elem, {start: [2], connect: 'lower', tooltips:[{to: value => parseInt(value)}], step: 1, 
+                                         range: {'min': 0, 'max': 10}});
+            noUiSlider.create(i_slider_elem, {start: [1], connect: 'lower', tooltips:[{to: value => parseInt(value)}], step: 1, 
+                                         range: {'min': 0, 'max': 10}});
+
+            var boje = ['#e91e63','#5c6bc0','#26a69a','#99cc66','#be9b7b','#0099ff','#a80fff','#008744','#0057e7','#4f5b66','#ffa700'];
+            
+            var aplet = JXG.JSXGraph.initBoard('box', {boundingbox: [-0.2, 1.1, 1.2, -0.3], grid:true,  
+                                                       showCopyright:false, keepaspectratio: false,
+                                                       showNavigation:false,axis:true,
+                                                       zoom:{wheel:false},
+                                                       pan:{enabled:false}});
+            
+            aplet.highlightInfobox = function (x, y, el) {
+                aplet.infobox.setText('');
+            };
+
+            var ime1 = aplet.create('text',[0.5,0.8,'<span style="background-color:white;">B</span>'],{anchorX:'middle',anchorY:'middle',fontSize:36, highlight:false});
+            var ime2 = aplet.create('text',[0.52,0.77,function(){return i_slider;}],{anchorX:'left',anchorY:'middle',fontSize:18, highlight:false});
+            var ime3 = aplet.create('text',[0.52,0.82,function(){return n_slider;}],{anchorX:'left',anchorY:'middle',fontSize:18, highlight:false});
+            ime1.setAttribute({fixed:true});
+            ime2.setAttribute({fixed:true});
+            ime3.setAttribute({fixed:true});
+
+            function bernstein(i,n,t) {
+              return bin[n][i] * t**i * (1-t)**(n-i);
+            }
+
+            var bin = [    
+                       [1,0,0,0,0,0,0,0,0,0,0],
+                       [1,1,0,0,0,0,0,0,0,0,0],
+                       [1,2,1,0,0,0,0,0,0,0,0],
+                       [1,3,3,1,0,0,0,0,0,0,0],
+                       [1,4,6,4,1,0,0,0,0,0,0],
+                       [1,5,10,10,5,1,0,0,0,0,0],
+                       [1,6,15,20,15,6,1,0,0,0,0],
+                       [1,7,21,35,35,21,7,1,0,0,0],
+                       [1,8,28,56,70,56,28,8,1,0,0],
+                       [1,9,36,84,126,126,84,36,9,1,0],
+                       [1,10,45,120,210,252,210,120,45,10,1] 
+                      ];
+
+            var grf_list = [];
+
+            for(let i=0; i <= 10; i++) {
+              grf_list[i] = aplet.create('functiongraph', 
+              [function(x){return bernstein(i,n_slider,x);},0,1],{strokeColor:boje[i], strokeWidth:1, highlight:false, doAdvancedPlot:false, strokeOpacity:0.6, visible: function(){return i <= n_slider;}});
+            }
+           
+
+            var grf = aplet.create('functiongraph', 
+              [function(x){return bernstein(i_slider,n_slider,x);},0,1],{strokeColor: function() {return boje[i_slider];}, strokeWidth:4, highlight:false, doAdvancedPlot:false});
+
+            $("#menu-toggle").click(function(event) {
+              event.preventDefault();
+              $("#wrapper").toggleClass("toggled");
+            });
+
+            n_slider_elem.noUiSlider.on('update', function() {
+              n_slider = Number(n_slider_elem.noUiSlider.get());
+              aplet.update();
+            });
+
+            n_slider_elem.noUiSlider.on('end', function() {
+              aplet.updateQuality = aplet.BOARD_QUALITY_HIGH;
+              aplet.update();
+              aplet.updateQuality = aplet.BOARD_QUALITY_LOW;
+            });
+
+            i_slider_elem.noUiSlider.on('update', function() {
+              i_slider = Number(i_slider_elem.noUiSlider.get());
+              aplet.update();
+            });
+
+            i_slider_elem.noUiSlider.on('end', function() {
+              aplet.updateQuality = aplet.BOARD_QUALITY_HIGH;
+              aplet.update();
+              aplet.updateQuality = aplet.BOARD_QUALITY_LOW;
+            });
+        </script>
+
+    </body>
+
+</html>
+

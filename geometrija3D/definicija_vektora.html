@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html>
+   
+    <head>
+        <meta charset="UTF-8">
+        <title>vektor</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <script src="../lib/dat.gui.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <style>
+            body {margin: 0; overflow: hidden}
+            .card{
+                background-color: rgba(255,255,255, 0.95) !important;
+                font-size: 95%;
+            }
+            .dg.a { margin-right:0px !important; }
+            ul {font-size: 95%;}
+        </style>   
+    </head>
+    
+    <body>
+
+        <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 5px; width:350px;">
+        <div id="infoHead" class="card-header">
+        Vektor u prostoru
+        </div>
+        <div id="infoBody" class="card-body">
+        <ul style="padding:8px;">
+        <li>Cilj je vizualizirati definiciju vektora u prostoru.</li>
+        <li>Vektor je skup svih nacrtanih ekvivalentnih orijentiranih dužina. Nisu nacrtane sve orijentirane dužine koje pripadaju tom vektoru iz razloga jer ih ima neprebrojivo beskonačno mnogo.</li>
+        <li>Pomoću srednje tipke miša možete približavati ili udaljavati kameru od objekta, a pomoću lijeve tipke miša možete se kretati oko objekta.</li>
+        <li>U gornjem desnom kutu su dodatne četiri opcije za interakciju s nacrtanim vektorom.</li>
+        </ul>
+        </div>
+        </div>
+        
+        <div id="WebGL-output"></div>
+        
+        <script language="JavaScript" type="module">
+        import * as THREE from '../lib/three.module.js';
+        import { OrbitControls } from '../lib/OrbitControls.js';
+
+        $("#info").hide();                
+                        
+        var controls = new function() {
+            this.azimut = 0;
+            this.elevacija = 0;
+            this.objektAzimut = 0;
+            this.objektElevacija = 0;
+            this.help = function() {
+                $("#info").slideToggle(500);
+            };
+        }
+        
+        var gui = new dat.GUI({resizable : false});
+        
+        var foldw = gui.addFolder('Grupna rotacija');
+        foldw.add(controls, 'azimut', 0, 360).step(1).onChange( function(value) { 
+            vektor_grupa.rotation.y = Math.PI / 180 * value;
+            render(); 
+        });
+        foldw.add(controls, 'elevacija', 0, 360).step(1).onChange( function(value) { 
+            vektor_grupa.rotation.z = Math.PI / 180 * value;
+            render(); 
+        });
+        
+        foldw.open();
+        
+        var foldo = gui.addFolder('Rotacija po objektima');
+        foldo.add(controls, 'objektAzimut', 0, 360).step(1).onChange( function(value) { 
+            vektor_grupa.children.forEach( function(e) {
+                e.rotation.y = Math.PI / 180 * value;
+            });
+            render();
+        });
+        foldo.add(controls, 'objektElevacija', 0, 360).step(1).onChange( function(value) { 
+            vektor_grupa.children.forEach( function(e) {
+                e.rotation.z = Math.PI / 180 * value;
+            });
+            render();
+        });
+            
+        foldo.open();
+
+        gui.add(controls,'help');
+                        
+        var scene = new THREE.Scene();
+        
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        
+        var renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.setPixelRatio( window.devicePixelRatio );
+        renderer.setClearColor(0xA9A9A9, 1);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        $("#WebGL-output").append(renderer.domElement);
+        
+        var planeGeometry = new THREE.PlaneGeometry(200,200,20,20);
+        var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffe0, side:THREE.FrontSide, transparent: true, opacity:0.6});
+        var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+        
+        plane.rotation.x = -0.5*Math.PI;
+        plane.position.y = -10;
+        scene.add(plane);
+        
+        var edges = new THREE.EdgesGeometry(planeGeometry);
+        var rub = new THREE.LineSegments(edges, new THREE.LineBasicMaterial( { color: 0x0000ff } ) );
+        rub.rotation.x = -0.5*Math.PI;
+        rub.position.y = -10;
+        scene.add(rub);
+        
+        var valjakMaterial = new THREE.MeshPhongMaterial({color: 0x7fffd4, specular: 0x7777ff,  emissive:0xb22222, flatShading: false});
+        
+        camera.position.x = 0;
+        camera.position.y = 60;
+        camera.position.z = 50;
+        camera.lookAt(scene.position);
+                
+        var pointLight = new THREE.PointLight("#eeeeee");
+        pointLight.distance = 250;
+        pointLight.position.set(10,100,-50);
+        scene.add(pointLight);
+        
+                        
+        var pointLight2 = new THREE.PointLight("#cccccc");
+        pointLight2.distance = 100;
+        pointLight2.intensity = 1;
+        pointLight2.position.set(10,20,50);
+        scene.add(pointLight2);
+        
+        
+        var orbitControls = new OrbitControls(camera, renderer.domElement);
+        orbitControls.minDistance = 7;
+        orbitControls.maxDistance = 160;
+        orbitControls.enablePan = false;
+        orbitControls.maxPolarAngle = 1.5;
+        orbitControls.minPolarAngle = 0.5;
+        //orbitControls.autoRotate = true;
+
+        orbitControls.addEventListener('change', render); // call this only in static scenes (if there is no animation loop)
+                
+        var vek = vektor();
+        var vektor_objekt = new THREE.Mesh(vek, valjakMaterial);
+        var vektor_grupa = new THREE.Object3D();
+        
+        for (var i=-48; i <= 48; i += 8) {
+            for (var j=-48; j <= 48; j += 8) {
+                var klon = vektor_objekt.clone();
+                klon.position.set(i-2+4*Math.random(),0,j-2+4*Math.random());
+                vektor_grupa.add(klon);
+            }
+        }
+        
+        for (var i=-48; i <= 48; i += 8) {
+            for (var j=-48; j <= 48; j += 8) {
+                var klon = vektor_objekt.clone();
+                klon.position.set(i-2+4*Math.random(),20,j-2+4*Math.random());
+                vektor_grupa.add(klon);
+            }
+        }
+            
+        scene.add(vektor_grupa);
+
+        $(window).resize( function() {
+            camera.aspect = (window.innerWidth) / (window.innerHeight);
+            camera.updateProjectionMatrix();
+            renderer.setSize( window.innerWidth, window.innerHeight);
+            render();
+        });
+
+        render();
+
+        function render() {
+            renderer.render( scene, camera );
+        }   
+                
+        //animacija();
+                
+        /*function animacija() {                        
+            requestAnimationFrame(animacija);
+            orbitControls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+            renderer.render(scene, camera);
+        }*/
+                 
+        function vektor() {
+            var valjakGeometry = new THREE.CylinderGeometry(0.2,0.2,14,10);
+            var stozacGeometry = new THREE.CylinderGeometry(0,0.6,2,12);
+            var valjak = new THREE.Mesh(valjakGeometry);
+            var stozac = new THREE.Mesh(stozacGeometry);
+            
+            var vek = new THREE.Geometry();
+            
+            stozac.translateY(8);
+            
+            valjak.updateMatrix();
+            stozac.updateMatrix();
+        
+            vek.merge(valjak.geometry, valjak.matrix);
+            vek.merge(stozac.geometry, stozac.matrix);
+            
+            return vek;   
+        }
+        </script>
+        
+    </body>
+
+</html>

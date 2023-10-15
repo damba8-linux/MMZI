@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>koordinatni sustav 3D</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <script src="../lib/dat.gui.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <style>
+            body {margin: 0; overflow: hidden}
+            .card{
+                background-color: rgba(255,255,255, 0.95) !important;
+                font-size: 95%;
+            }
+            .dg.a { margin-right:0px !important; }
+            ul {font-size: 95%;}
+        </style>
+    </head>
+
+    <body>
+
+        <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 5px; width:400px;">
+        <div id="infoHead" class="card-header">
+        Kartezijev koordinatni sustav u prostoru
+        </div>
+        <div id="infoBody" class="card-body">
+        <ul style="padding:8px;">
+        <li>Crvena točka je neka točka <span style="color:#ff0000;"><b>T<sub>0</sub>&thinsp;(x<sub>0</sub>,&thinsp;y<sub>0</sub>,&thinsp;z<sub>0</sub>)</b></span> u prostoru.</li>
+        <li>Plave točke su ortogonalne projekcije točke <span style="color:#ff0000;"><b>T<sub>0</sub></b></span> na koordinatne osi.
+            <ul>
+            <li>ortogonalna projekcija na <i>x</i>-os: <span style="color:#0000ff;"><b>(x<sub>0</sub>,&thinsp;0,&thinsp;0)</b></span></li>
+            <li>ortogonalna projekcija na <i>y</i>-os: <span style="color:#0000ff;"><b>(0,&thinsp;y<sub>0</sub>,&thinsp;0)</b></span></li>
+            <li>ortogonalna projekcija na <i>z</i>-os: <span style="color:#0000ff;"><b>(0,&thinsp;0,&thinsp;z<sub>0</sub>)</b></span></li>
+            </ul>
+        </li>
+        <li>Zelene točke su ortogonalne projekcije točke <span style="color:#ff0000;"><b>T<sub>0</sub></b></span> na koordinatne ravnine.
+            <ul>
+            <li>ortogonalna projekcija na <i>xy</i>-ravninu: <span style="color:#4dc805;"><b>(x<sub>0</sub>,&thinsp;y<sub>0</sub>,&thinsp;0)</b></span></li>
+            <li>ortogonalna projekcija na <i>xz</i>-os: <span style="color:#4dc805;"><b>(x<sub>0</sub>,&thinsp;0,&thinsp;z<sub>0</sub>)</b></span></li>
+            <li>ortogonalna projekcija na <i>yz</i>-os: <span style="color:#4dc805;"><b>(0,&thinsp;y<sub>0</sub>,&thinsp;z<sub>0</sub>)</b></span></li>
+            </ul>
+        </li>
+        <li>Pomoću srednje tipke miša možete približavati ili udaljavati kameru od objekta, a pomoću lijeve tipke miša možete se kretati oko objekta.</li>
+        <li>U gornjem desnom kutu su dodatne opcije za interakciju s prikazanim objektom.</li>
+        </ul>
+        </div>
+        </div>
+
+        <div id="WebGL-output"></div>
+
+        <script language="JavaScript" type="module">
+        import * as THREE from '../lib/three.module.js';
+        import { OrbitControls } from '../lib/OrbitControls.js';
+        
+        $("#info").hide();
+
+        var manager = new THREE.LoadingManager();
+        manager.onLoad = function() { // when all resources are loaded
+            init();
+        }
+
+        var font = null;
+        var texture = null;
+
+        var fontloader = new THREE.FontLoader(manager);
+        fontloader.load("../lib/helvetiker_regular.typeface.json", function(response) {font = response;});
+
+        var textureloader = new THREE.TextureLoader(manager);
+        textureloader.load('cement4.jpg', function(response) {texture = response});
+
+        function init() {
+
+            var tocka; //prikazana tocka u odabranom oktantu
+            var tockaX, tockaY, tockaZ; //projekcije tocke na koordinatne osi
+            var tockaXY, tockaXZ, tockaYZ; //projekcije tocke na koordinatne ravnine
+
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            var renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setPixelRatio( window.devicePixelRatio );
+            renderer.setClearColor(0xA9A9A9, 1);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            $("#WebGL-output").append(renderer.domElement);
+
+            camera.position.x = 50;
+            camera.position.y = 14;
+            camera.position.z = 50;
+            //camera.up = new THREE.Vector3(0,1,0);
+            //camera.lookAt(new THREE.Vector3(0,10,40));
+
+            scene.add(camera);
+
+            var pointLight = new THREE.PointLight("#ffaaaa");
+            pointLight.distance = 300;
+            pointLight.position.set(50,14,50);
+            camera.add(pointLight);
+            pointLight.intensity = 1;
+
+            var pointLight1 = new THREE.PointLight("#eeeeee");
+            pointLight1.distance = 250;
+            pointLight1.position.set(60,60,100);
+            scene.add(pointLight1);
+
+            var pointLight2 = new THREE.PointLight("#eeeeee");
+            pointLight2.distance = 250;
+            pointLight2.position.set(-60,-60,-100);
+            scene.add(pointLight2);
+
+            var mat1 = new THREE.MeshPhongMaterial({color: 0x7fffd4, specular: 0x7777ff,  emissive:0xb22222, flatShading: false});
+            var mat2 = new THREE.MeshLambertMaterial({color: 0xffffe0, emissive:0x222222, side:THREE.DoubleSide, transparent: true, opacity:0.6, map:texture});
+            var mat3 = new THREE.MeshPhongMaterial({color: 0x0000ff, emissive: 0x555555,  flatShading: false});
+            var mat4 = new THREE.MeshPhongMaterial({color: 0x00ff00, emissive: 0x222222,  flatShading: false});
+            var mat5 = new THREE.MeshPhongMaterial({color: 0xe0ffff, specular: 0xffd700,  emissive:0x666666, flatShading: false});
+            var mat6 = new THREE.MeshNormalMaterial({flatShading: false});
+
+            var Zos = new THREE.Mesh(vektor(48), mat1);
+            scene.add(Zos);
+
+            var Yos = new THREE.Mesh(vektor(48), mat1);
+            Yos.rotation.z = -Math.PI / 2;
+            scene.add(Yos);
+
+            var Xos = new THREE.Mesh(vektor(48), mat1);
+            Xos.rotation.x = Math.PI / 2;
+            scene.add(Xos);
+
+            var tekst_options = {
+                size: 2,
+                height: 0.3,
+                font: font,
+                curveSegments: 12
+            };
+
+            var tekst_Zos = createText('z', tekst_options);
+            tekst_Zos.translateX(1);
+            tekst_Zos.translateY(25);
+            scene.add(tekst_Zos);
+
+            var tekst_Yos = createText('y', tekst_options);
+            tekst_Yos.translateX(26);
+            scene.add(tekst_Yos);
+
+            var tekst_Xos = createText('x', tekst_options);
+            tekst_Xos.translateY(-0.5);
+            tekst_Xos.translateZ(27.3);
+            tekst_Xos.rotation.y = Math.PI / 2;
+            scene.add(tekst_Xos);
+
+            var ravninaXYmm = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaXYmm.translateX(-12);
+            ravninaXYmm.translateZ(-12);
+            ravninaXYmm.rotation.x = Math.PI / 2;
+            scene.add(ravninaXYmm);
+
+            var ravninaYZmp = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaYZmp.translateX(-12);
+            ravninaYZmp.translateY(12);
+            scene.add(ravninaYZmp);
+
+            var ravninaXZmp = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaXZmp.translateZ(-12);
+            ravninaXZmp.translateY(12);
+            ravninaXZmp.rotation.y = Math.PI / 2;
+            scene.add(ravninaXZmp);
+
+            var ravninaYZmm = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaYZmm.translateX(-12);
+            ravninaYZmm.translateY(-12);
+            scene.add(ravninaYZmm);
+
+            var ravninaXZmm = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaXZmm.translateZ(-12);
+            ravninaXZmm.translateY(-12);
+            ravninaXZmm.rotation.y = Math.PI / 2;
+            scene.add(ravninaXZmm);
+
+            var ravninaXYpm = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaXYpm.translateX(-12);
+            ravninaXYpm.translateZ(12);
+            ravninaXYpm.rotation.x = Math.PI / 2;
+            scene.add(ravninaXYpm);
+
+            var ravninaXZpp = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaXZpp.translateZ(12);
+            ravninaXZpp.translateY(12);
+            ravninaXZpp.rotation.y = Math.PI / 2;
+            scene.add(ravninaXZpp);
+
+            var ravninaXYmp = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaXYmp.translateX(12);
+            ravninaXYmp.translateZ(-12);
+            ravninaXYmp.rotation.x = Math.PI / 2;
+            scene.add(ravninaXYmp);
+
+            var ravninaYZpp = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaYZpp.translateX(12);
+            ravninaYZpp.translateY(12);
+            scene.add(ravninaYZpp);
+
+            var ravninaXZpm = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaXZpm.translateZ(12);
+            ravninaXZpm.translateY(-12);
+            ravninaXZpm.rotation.y = Math.PI / 2;
+            scene.add(ravninaXZpm);
+
+            var ravninaYZpm = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaYZpm.translateX(12);
+            ravninaYZpm.translateY(-12);
+            scene.add(ravninaYZpm);
+
+            var ravninaXYpp = new THREE.Mesh(new THREE.PlaneBufferGeometry(24,24,6,6), mat2);
+            ravninaXYpp.translateX(12);
+            ravninaXYpp.translateZ(12);
+            ravninaXYpp.rotation.x = Math.PI / 2;
+            scene.add(ravninaXYpp);
+
+            crtajTocku(16,14,17);
+            crtajProjekcijeNaOsi(16,14,17);
+            crtajProjekcijeNaRavnine(16,14,17);
+
+            var tockaVektor = new THREE.Vector3(tocka.position.x, tocka.position.y, tocka.position.z);
+
+            var l1 = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.18,16,10), mat5);
+            var l2 = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.18,17,10), mat5);
+            var l3 = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.18,14,10), mat5);
+            var l4 = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.18,21.26,10), mat5); //21.26=sqrt(16^2+14^2)
+            var l5 = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.18,22.02,10), mat5); //22.02=sqrt(14^2+17^2)
+            var l6 = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.18,23.34,10), mat5); //23.34=sqrt(16^2+17^2)
+            transformirajDuzine('oktant1 (+ + +)');
+            scene.add(l1); scene.add(l2); scene.add(l3);
+            scene.add(l4); scene.add(l5); scene.add(l6);
+         
+            var radijvektor = new THREE.Mesh(vektor(24.82), mat6);
+            transformirajRadijvektor('oktant1 (+ + +)');
+            scene.add(radijvektor);
+
+            var orbitControls = new OrbitControls(camera, renderer.domElement);
+            orbitControls.minDistance = 25;
+            orbitControls.maxDistance = 130;
+            orbitControls.enablePan = false;
+            orbitControls.maxPolarAngle = 3.14;
+            orbitControls.minPolarAngle = 0;
+            orbitControls.target = scene.position;
+
+            orbitControls.addEventListener('change', render);
+
+            var controls = new function() {
+                this.centarScene = true;
+                this.promatranaTocka = false;
+                this.oktant = 'oktant1 (+ + +)';
+                this.sviOktanti = true;
+                this.trenutniOktant = false;
+                this.prikaziRadijvektor = true;
+                this.prikaziDuzine = true;
+                this.help = function() {
+                    $("#info").slideToggle(500);
+                };
+            }
+
+            var gui = new dat.GUI({resizable : false});
+
+            var folderCamera = gui.addFolder('Gledanje kamere prema');
+            var opcija1 = folderCamera.add(controls, 'centarScene').listen();
+            opcija1.onChange( function() {
+                controls.centarScene = true;
+                controls.promatranaTocka = false;
+                orbitControls.target = scene.position;
+                orbitControls.update();
+                render();
+            });
+            var opcija2 = folderCamera.add(controls, 'promatranaTocka').listen();
+            opcija2.onChange( function() {
+                controls.centarScene = false;
+                controls.promatranaTocka = true;
+                orbitControls.target = tockaVektor;
+                orbitControls.update();
+                render();
+            });
+
+            folderCamera.open();
+
+            var folderOktant = gui.addFolder('Tocka se nalazi u oktantu');
+            var opcijaOktant = folderOktant.add(controls, 'oktant', ['oktant1 (+ + +)', 'oktant2 (- + +)', 'oktant3 (- - +)', 'oktant4 (+ - +)',
+                                   'oktant5 (+ + -)', 'oktant6 (- + -)', 'oktant7 (- - -)', 'oktant8 (+ - -)']);
+            opcijaOktant.onChange( function(value) {
+                switch (value) {
+
+                    case 'oktant1 (+ + +)':
+                        transformirajTocke(16,14,17);
+                        transformirajRadijvektor(controls.oktant);
+                        transformirajDuzine(controls.oktant);
+                        if (controls.promatranaTocka) {
+                            orbitControls.target = tockaVektor;
+                            orbitControls.update();
+                        }
+                        if (controls.trenutniOktant) prikaziOktant(controls.oktant);
+                        render();
+                        break;
+
+                    case 'oktant2 (- + +)':
+                        transformirajTocke(16,14,-17);
+                        transformirajRadijvektor(controls.oktant);
+                        transformirajDuzine(controls.oktant);
+                        if (controls.promatranaTocka) {
+                            orbitControls.target = tockaVektor;
+                            orbitControls.update();
+                        }
+                        if (controls.trenutniOktant) prikaziOktant(controls.oktant);
+                        render();
+                        break;
+
+                    case 'oktant3 (- - +)':
+                        transformirajTocke(-16,14,-17);
+                        transformirajRadijvektor(controls.oktant);
+                        transformirajDuzine(controls.oktant);
+                        if (controls.promatranaTocka) {
+                            orbitControls.target = tockaVektor;
+                            orbitControls.update();
+                        }
+                        if (controls.trenutniOktant) prikaziOktant(controls.oktant);
+                        render();
+                        break;
+
+                    case 'oktant4 (+ - +)':
+                        transformirajTocke(-16,14,17);
+                        transformirajRadijvektor(controls.oktant);
+                        transformirajDuzine(controls.oktant);
+                        if (controls.promatranaTocka) {
+                            orbitControls.target = tockaVektor;
+                            orbitControls.update();
+                        }
+                        if (controls.trenutniOktant) prikaziOktant(controls.oktant);
+                        render();
+                        break;
+
+                    case 'oktant5 (+ + -)':
+                        transformirajTocke(16,-14,17);
+                        transformirajRadijvektor(controls.oktant);
+                        transformirajDuzine(controls.oktant);
+                        if (controls.promatranaTocka) {
+                            orbitControls.target = tockaVektor;
+                            orbitControls.update();
+                        }
+                        if (controls.trenutniOktant) prikaziOktant(controls.oktant);
+                        render();
+                        break;
+
+                    case 'oktant6 (- + -)':
+                        transformirajTocke(16,-14,-17);
+                        transformirajRadijvektor(controls.oktant);
+                        transformirajDuzine(controls.oktant);
+                        if (controls.promatranaTocka) {
+                            orbitControls.target = tockaVektor;
+                            orbitControls.update();
+                        }
+                        if (controls.trenutniOktant) prikaziOktant(controls.oktant);
+                        render();
+                        break;
+
+                    case 'oktant7 (- - -)':
+                        transformirajTocke(-16,-14,-17);
+                        transformirajRadijvektor(controls.oktant);
+                        transformirajDuzine(controls.oktant);
+                        if (controls.promatranaTocka) {
+                            orbitControls.target = tockaVektor;
+                            orbitControls.update();
+                        }
+                        if (controls.trenutniOktant) prikaziOktant(controls.oktant);
+                        render();
+                        break;
+
+                    case 'oktant8 (+ - -)':
+                        transformirajTocke(-16,-14,17);
+                        transformirajRadijvektor(controls.oktant);
+                        transformirajDuzine(controls.oktant);
+                        if (controls.promatranaTocka) {
+                            orbitControls.target = tockaVektor;
+                            orbitControls.update();
+                        }
+                        if (controls.trenutniOktant) prikaziOktant(controls.oktant);
+                        render();
+                        break;
+
+                }
+            });
+
+            folderOktant.open();
+
+            var folderPrikaziOktant = gui.addFolder('Prikazi oktante');
+            var opcija3 = folderPrikaziOktant.add(controls, 'sviOktanti').listen();
+            opcija3.onChange( function() {
+                controls.sviOktanti = true;
+                controls.trenutniOktant = false;
+                prikaziOktant('svi');
+                render();
+            });
+            var opcija4 = folderPrikaziOktant.add(controls, 'trenutniOktant').listen();
+            opcija4.onChange( function() {
+                controls.sviOktanti = false;
+                controls.trenutniOktant = true;
+                prikaziOktant(controls.oktant);
+                render();
+            });
+
+            folderPrikaziOktant.open();
+
+            var folderOstaleOpcije = gui.addFolder('Ostale opcije');
+            folderOstaleOpcije.add(controls, 'prikaziRadijvektor').onChange( function() {
+                if (controls.prikaziRadijvektor) {radijvektor.visible = true;}
+                else {radijvektor.visible = false;}
+                render();
+            });
+            folderOstaleOpcije.add(controls, 'prikaziDuzine').onChange( function() {
+                if (controls.prikaziDuzine) {
+                    l1.visible = true;
+                    l2.visible = true;
+                    l3.visible = true;
+                    l4.visible = true;
+                    l5.visible = true;
+                    l6.visible = true;
+                }
+                else {
+                    l1.visible = false;
+                    l2.visible = false;
+                    l3.visible = false;
+                    l4.visible = false;
+                    l5.visible = false;
+                    l6.visible = false;
+                }
+                render();
+            });
+
+            folderOstaleOpcije.open();
+
+            gui.add(controls,'help');
+
+            render();
+
+            function render() {
+                renderer.render( scene, camera );
+            }   
+
+            $(window).resize( function() {
+                camera.aspect = (window.innerWidth) / (window.innerHeight);
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight);
+                render();
+            });
+
+
+            function vektor(h) {
+                var valjakGeometry = new THREE.CylinderGeometry(0.25,0.25,h,10);
+                var stozacGeometry = new THREE.CylinderGeometry(0,0.8,2,12);
+                var valjak = new THREE.Mesh(valjakGeometry);
+                var stozac = new THREE.Mesh(stozacGeometry);
+
+                var vek = new THREE.Geometry();
+
+                stozac.translateY(h/2 + 1);
+
+                valjak.updateMatrix();
+                stozac.updateMatrix();
+
+                vek.merge(valjak.geometry, valjak.matrix);
+                vek.merge(stozac.geometry, stozac.matrix);
+
+                return vek;
+            }
+
+
+            function createText(text, params) {
+                var textGeo = new THREE.TextGeometry(text, params);
+                textGeo.computeBoundingBox();
+                textGeo.computeVertexNormals();
+
+                var material = [new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false}),
+                                new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false})];
+                    
+                var textMesh = new THREE.Mesh(textGeo, material);
+                return textMesh;
+            }
+
+
+            function crtajTocku(px, py, pz) {
+                tocka = new THREE.Mesh(new THREE.SphereGeometry(0.4,20,20), mat1);
+                tocka.translateX(px);
+                tocka.translateY(py);
+                tocka.translateZ(pz);
+                scene.add(tocka);
+            }
+
+            function crtajProjekcijeNaOsi(px, py, pz) {
+                tockaX = new THREE.Mesh(new THREE.SphereGeometry(0.5,20,20), mat3);
+                tockaX.translateZ(pz);
+                scene.add(tockaX);
+                tockaY = new THREE.Mesh(new THREE.SphereGeometry(0.5,20,20), mat3);
+                tockaY.translateX(px);
+                scene.add(tockaY);
+                tockaZ = new THREE.Mesh(new THREE.SphereGeometry(0.5,20,20), mat3);
+                tockaZ.translateY(py);
+                scene.add(tockaZ);
+            }
+
+            function crtajProjekcijeNaRavnine(px, py, pz) {
+                tockaXY = new THREE.Mesh(new THREE.SphereGeometry(0.5,20,20), mat4);
+                tockaXY.translateZ(pz);
+                tockaXY.translateX(px);
+                scene.add(tockaXY);
+                tockaXZ = new THREE.Mesh(new THREE.SphereGeometry(0.5,20,20), mat4);
+                tockaXZ.translateZ(pz);
+                tockaXZ.translateY(py);
+                scene.add(tockaXZ);
+                tockaYZ = new THREE.Mesh(new THREE.SphereGeometry(0.5,20,20), mat4);
+                tockaYZ.translateY(py);
+                tockaYZ.translateX(px);
+                scene.add(tockaYZ);
+            }
+
+            function transformirajTocke(px, py, pz) {
+                tocka.position.set(0,0,0);
+                tocka.translateX(px);
+                tocka.translateY(py);
+                tocka.translateZ(pz);
+                tockaX.position.set(0,0,0);
+                tockaX.translateZ(pz);
+                tockaY.position.set(0,0,0);
+                tockaY.translateX(px);
+                tockaZ.position.set(0,0,0);
+                tockaZ.translateY(py);
+                tockaXY.position.set(0,0,0);
+                tockaXY.translateZ(pz);
+                tockaXY.translateX(px);
+                tockaXZ.position.set(0,0,0);
+                tockaXZ.translateZ(pz);
+                tockaXZ.translateY(py);
+                tockaYZ.position.set(0,0,0);
+                tockaYZ.translateY(py);
+                tockaYZ.translateX(px);
+                tockaVektor.set(tocka.position.x, tocka.position.y, tocka.position.z);
+            }
+
+            function prikaziOktant(okt) {
+                switch (okt) {
+                    case 'oktant1 (+ + +)':
+                        ravninaXYmm.visible = false; ravninaYZmp.visible = false; ravninaXZmp.visible = false; ravninaYZmm.visible = false;
+                        ravninaXZmm.visible = false; ravninaXYpm.visible = false; ravninaXZpp.visible = true; ravninaXYmp.visible = false;
+                        ravninaYZpp.visible = true; ravninaXZpm.visible = false; ravninaYZpm.visible = false; ravninaXYpp.visible = true;
+                        break;
+                    case 'oktant2 (- + +)':
+                        ravninaXYmm.visible = false; ravninaYZmp.visible = false; ravninaXZmp.visible = true; ravninaYZmm.visible = false;
+                        ravninaXZmm.visible = false; ravninaXYpm.visible = false; ravninaXZpp.visible = false; ravninaXYmp.visible = true;
+                        ravninaYZpp.visible = true; ravninaXZpm.visible = false; ravninaYZpm.visible = false; ravninaXYpp.visible = false;
+                        break;
+                    case 'oktant3 (- - +)':
+                        ravninaXYmm.visible = true; ravninaYZmp.visible = true; ravninaXZmp.visible = true; ravninaYZmm.visible = false;
+                        ravninaXZmm.visible = false; ravninaXYpm.visible = false; ravninaXZpp.visible = false; ravninaXYmp.visible = false;
+                        ravninaYZpp.visible = false; ravninaXZpm.visible = false; ravninaYZpm.visible = false; ravninaXYpp.visible = false;
+                        break;
+                    case 'oktant4 (+ - +)':
+                        ravninaXYmm.visible = false; ravninaYZmp.visible = true; ravninaXZmp.visible = false; ravninaYZmm.visible = false;
+                        ravninaXZmm.visible = false; ravninaXYpm.visible = true; ravninaXZpp.visible = true; ravninaXYmp.visible = false;
+                        ravninaYZpp.visible = false; ravninaXZpm.visible = false; ravninaYZpm.visible = false; ravninaXYpp.visible = false;
+                        break;
+                    case 'oktant5 (+ + -)':
+                        ravninaXYmm.visible = false; ravninaYZmp.visible = false; ravninaXZmp.visible = false; ravninaYZmm.visible = false;
+                        ravninaXZmm.visible = false; ravninaXYpm.visible = false; ravninaXZpp.visible = false; ravninaXYmp.visible = false;
+                        ravninaYZpp.visible = false; ravninaXZpm.visible = true; ravninaYZpm.visible = true; ravninaXYpp.visible = true;
+                        break;
+                    case 'oktant6 (- + -)':
+                        ravninaXYmm.visible = false; ravninaYZmp.visible = false; ravninaXZmp.visible = false; ravninaYZmm.visible = false;
+                        ravninaXZmm.visible = true; ravninaXYpm.visible = false; ravninaXZpp.visible = false; ravninaXYmp.visible = true;
+                        ravninaYZpp.visible = false; ravninaXZpm.visible = false; ravninaYZpm.visible = true; ravninaXYpp.visible = false;
+                        break;
+                    case 'oktant7 (- - -)':
+                        ravninaXYmm.visible = true; ravninaYZmp.visible = false; ravninaXZmp.visible = false; ravninaYZmm.visible = true;
+                        ravninaXZmm.visible = true; ravninaXYpm.visible = false; ravninaXZpp.visible = false; ravninaXYmp.visible = false;
+                        ravninaYZpp.visible = false; ravninaXZpm.visible = false; ravninaYZpm.visible = false; ravninaXYpp.visible = false;
+                        break;
+                    case 'oktant8 (+ - -)':
+                        ravninaXYmm.visible = false; ravninaYZmp.visible = false; ravninaXZmp.visible = false; ravninaYZmm.visible = true;
+                        ravninaXZmm.visible = false; ravninaXYpm.visible = true; ravninaXZpp.visible = false; ravninaXYmp.visible = false;
+                        ravninaYZpp.visible = false; ravninaXZpm.visible = true; ravninaYZpm.visible = false; ravninaXYpp.visible = false;
+                        break;
+                    case 'svi':
+                        ravninaXYmm.visible = true; ravninaYZmp.visible = true; ravninaXZmp.visible = true; ravninaYZmm.visible = true;
+                        ravninaXZmm.visible = true; ravninaXYpm.visible = true; ravninaXZpp.visible = true; ravninaXYmp.visible = true;
+                        ravninaYZpp.visible = true; ravninaXZpm.visible = true; ravninaYZpm.visible = true; ravninaXYpp.visible = true;
+                        break;
+                }
+            }
+
+            function transformirajRadijvektor(okt) {
+                var geom = vektor(24.82);
+                switch (okt) {
+                    case 'oktant1 (+ + +)':
+                        geom.translate(0,12.41,0);
+                        geom.rotateZ(-Math.acos(14/Math.sqrt(741)));
+                        geom.rotateY(-Math.atan(17/16));
+                        break;
+                    case 'oktant2 (- + +)':
+                        geom.translate(0,12.41,0);
+                        geom.rotateZ(-Math.acos(14/Math.sqrt(741)));
+                        geom.rotateY(Math.atan(17/16));
+                        break;
+                    case 'oktant3 (- - +)':
+                        geom.translate(0,12.41,0);
+                        geom.rotateZ(Math.acos(14/Math.sqrt(741)));
+                        geom.rotateY(-Math.atan(17/16));
+                        break;
+                    case 'oktant4 (+ - +)':
+                        geom.translate(0,12.41,0);
+                        geom.rotateZ(Math.acos(14/Math.sqrt(741)));
+                        geom.rotateY(Math.atan(17/16));
+                        break;
+                    case 'oktant5 (+ + -)':
+                        geom.translate(0,12.41,0);
+                        geom.rotateZ(-Math.PI + Math.acos(14/Math.sqrt(741)));
+                        geom.rotateY(-Math.atan(17/16));
+                        break;
+                    case 'oktant6 (- + -)':
+                        geom.translate(0,12.41,0);
+                        geom.rotateZ(-Math.PI + Math.acos(14/Math.sqrt(741)));
+                        geom.rotateY(Math.atan(17/16));
+                        break;
+                    case 'oktant7 (- - -)':
+                        geom.translate(0,12.41,0);
+                        geom.rotateZ(Math.PI + Math.acos(14/Math.sqrt(741)));
+                        geom.rotateY(Math.PI - Math.atan(17/16));
+                        break;
+                    case 'oktant8 (+ - -)':
+                        geom.translate(0,12.41,0);
+                        geom.rotateZ(Math.PI + Math.acos(14/Math.sqrt(741)));
+                        geom.rotateY(-Math.PI + Math.atan(17/16));
+                        break;
+                }
+               radijvektor.geometry.dispose();
+               radijvektor.geometry = geom;
+            }
+
+            function transformirajDuzine(okt) {
+                var l1Geom = new THREE.CylinderGeometry(0.18,0.18,16,10);
+                var l2Geom = new THREE.CylinderGeometry(0.18,0.18,17,10);
+                var l3Geom = new THREE.CylinderGeometry(0.18,0.18,14,10);
+                var l4Geom = new THREE.CylinderGeometry(0.18,0.18,21.26,10);
+                var l5Geom = new THREE.CylinderGeometry(0.18,0.18,22.02,10);
+                var l6Geom = new THREE.CylinderGeometry(0.18,0.18,23.34,10);
+                switch (okt) {
+                    case 'oktant1 (+ + +)':
+                        l1Geom.translate(0,8,0); l1Geom.rotateZ(-Math.PI/2); l1Geom.translate(0,14,17);
+                        l2Geom.translate(0,8.5,0); l2Geom.rotateX(Math.PI/2); l2Geom.translate(16,14,0);
+                        l3Geom.translate(16,7,17);
+                        l4Geom.translate(0,10.63,0); l4Geom.rotateZ(-Math.atan(16/14)); l4Geom.translate(0,0,17);
+                        l5Geom.translate(0,11.01,0); l5Geom.rotateX(Math.atan(17/14)); l5Geom.translate(16,0,0);
+                        l6Geom.translate(0,11.67,0); l6Geom.rotateZ(-Math.PI/2); l6Geom.rotateY(-Math.atan(17/16)); l6Geom.translate(0,14,0);
+                        break;
+                    case 'oktant2 (- + +)':
+                        l1Geom.translate(0,8,0); l1Geom.rotateZ(-Math.PI/2); l1Geom.translate(0,14,-17);
+                        l2Geom.translate(0,8.5,0); l2Geom.rotateX(-Math.PI/2); l2Geom.translate(16,14,0);
+                        l3Geom.translate(16,7,-17);
+                        l4Geom.translate(0,10.63,0); l4Geom.rotateZ(-Math.atan(16/14)); l4Geom.translate(0,0,-17);
+                        l5Geom.translate(0,11.01,0); l5Geom.rotateX(-Math.atan(17/14)); l5Geom.translate(16,0,0);
+                        l6Geom.translate(0,11.67,0); l6Geom.rotateZ(-Math.PI/2); l6Geom.rotateY(Math.atan(17/16)); l6Geom.translate(0,14,0);
+                        break;
+                    case 'oktant3 (- - +)':
+                        l1Geom.translate(0,8,0); l1Geom.rotateZ(Math.PI/2); l1Geom.translate(0,14,-17);
+                        l2Geom.translate(0,8.5,0); l2Geom.rotateX(-Math.PI/2); l2Geom.translate(-16,14,0);
+                        l3Geom.translate(-16,7,-17);
+                        l4Geom.translate(0,10.63,0); l4Geom.rotateZ(Math.atan(16/14)); l4Geom.translate(0,0,-17);
+                        l5Geom.translate(0,11.01,0); l5Geom.rotateX(-Math.atan(17/14)); l5Geom.translate(-16,0,0);
+                        l6Geom.translate(0,11.67,0); l6Geom.rotateZ(Math.PI/2); l6Geom.rotateY(-Math.atan(17/16)); l6Geom.translate(0,14,0);
+                        break;
+                    case 'oktant4 (+ - +)':
+                        l1Geom.translate(0,8,0); l1Geom.rotateZ(Math.PI/2); l1Geom.translate(0,14,17);
+                        l2Geom.translate(0,8.5,0); l2Geom.rotateX(Math.PI/2); l2Geom.translate(-16,14,0);
+                        l3Geom.translate(-16,7,17);
+                        l4Geom.translate(0,10.63,0); l4Geom.rotateZ(Math.atan(16/14)); l4Geom.translate(0,0,17);
+                        l5Geom.translate(0,11.01,0); l5Geom.rotateX(Math.atan(17/14)); l5Geom.translate(-16,0,0);
+                        l6Geom.translate(0,11.67,0); l6Geom.rotateZ(Math.PI/2); l6Geom.rotateY(Math.atan(17/16)); l6Geom.translate(0,14,0);
+                        break;
+                    case 'oktant5 (+ + -)':
+                        l1Geom.translate(0,8,0); l1Geom.rotateZ(-Math.PI/2); l1Geom.translate(0,-14,17);
+                        l2Geom.translate(0,8.5,0); l2Geom.rotateX(Math.PI/2); l2Geom.translate(16,-14,0);
+                        l3Geom.translate(16,-7,17);
+                        l4Geom.translate(0,-10.63,0); l4Geom.rotateZ(Math.atan(16/14)); l4Geom.translate(0,0,17);
+                        l5Geom.translate(0,-11.01,0); l5Geom.rotateX(-Math.atan(17/14)); l5Geom.translate(16,0,0);
+                        l6Geom.translate(0,-11.67,0); l6Geom.rotateZ(Math.PI/2); l6Geom.rotateY(-Math.atan(17/16)); l6Geom.translate(0,-14,0);
+                        break;
+                    case 'oktant6 (- + -)':
+                        l1Geom.translate(0,-8,0); l1Geom.rotateZ(Math.PI/2); l1Geom.translate(0,-14,-17);
+                        l2Geom.translate(0,-8.5,0); l2Geom.rotateX(Math.PI/2); l2Geom.translate(16,-14,0);
+                        l3Geom.translate(16,-7,-17);
+                        l4Geom.translate(0,-10.63,0); l4Geom.rotateZ(Math.atan(16/14)); l4Geom.translate(0,0,-17);
+                        l5Geom.translate(0,-11.01,0); l5Geom.rotateX(Math.atan(17/14)); l5Geom.translate(16,0,0);
+                        l6Geom.translate(0,-11.67,0); l6Geom.rotateZ(Math.PI/2); l6Geom.rotateY(Math.atan(17/16)); l6Geom.translate(0,-14,0);
+                        break;
+                    case 'oktant7 (- - -)':
+                        l1Geom.translate(0,-8,0); l1Geom.rotateZ(-Math.PI/2); l1Geom.translate(0,-14,-17);
+                        l2Geom.translate(0,-8.5,0); l2Geom.rotateX(Math.PI/2); l2Geom.translate(-16,-14,0);
+                        l3Geom.translate(-16,-7,-17);
+                        l4Geom.translate(0,-10.63,0); l4Geom.rotateZ(-Math.atan(16/14)); l4Geom.translate(0,0,-17);
+                        l5Geom.translate(0,-11.01,0); l5Geom.rotateX(Math.atan(17/14)); l5Geom.translate(-16,0,0);
+                        l6Geom.translate(0,-11.67,0); l6Geom.rotateZ(-Math.PI/2); l6Geom.rotateY(-Math.atan(17/16)); l6Geom.translate(0,-14,0);
+                        break;
+                    case 'oktant8 (+ - -)':
+                        l1Geom.translate(0,-8,0); l1Geom.rotateZ(-Math.PI/2); l1Geom.translate(0,-14,17);
+                        l2Geom.translate(0,-8.5,0); l2Geom.rotateX(-Math.PI/2); l2Geom.translate(-16,-14,0);
+                        l3Geom.translate(-16,-7,17);
+                        l4Geom.translate(0,-10.63,0); l4Geom.rotateZ(-Math.atan(16/14)); l4Geom.translate(0,0,17);
+                        l5Geom.translate(0,-11.01,0); l5Geom.rotateX(-Math.atan(17/14)); l5Geom.translate(-16,0,0);
+                        l6Geom.translate(0,-11.67,0); l6Geom.rotateZ(-Math.PI/2); l6Geom.rotateY(Math.atan(17/16)); l6Geom.translate(0,-14,0);
+                        break;
+                }
+                l1.geometry.dispose(); l2.geometry.dispose(); l3.geometry.dispose(); 
+                l4.geometry.dispose(); l5.geometry.dispose(); l6.geometry.dispose();
+                l1.geometry = l1Geom; l2.geometry = l2Geom; l3.geometry = l3Geom;
+                l4.geometry = l4Geom; l5.geometry = l5Geom; l6.geometry = l6Geom;
+            }
+        }
+    </script>
+</body>
+</html>

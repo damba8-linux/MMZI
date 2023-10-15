@@ -1,0 +1,76 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[scale=1, line width=0.7pt,x=0.6cm,y=0.6cm, font=\footnotesize]
+\coordinate (O) at (-1.98,-4.02);
+\coordinate (I) at (2,-2.76);
+\coordinate (G) at (2,1.55);
+\coordinate (H) at (-1.98,0.29);
+\coordinate (L) at (-2.8,-1.25);
+\coordinate (M) at (-2.8,3.07);
+\coordinate (Q) at (10.03,-0.21);
+\coordinate (N) at (10.03,4.1);
+\coordinate (J) at (10.5,-1.12);
+\coordinate (P) at (10.5,-5.44);
+\coordinate (R) at (-3.52,3.29);
+\coordinate (S) at (11.37,-1.4);
+\coordinate (C) at (-3.3,-4.44);
+\coordinate (T) at (11.53,0.26);
+\coordinate (T1) at ($(C)!0.05!(T)$);
+\coordinate (T2) at ($(R)!0.07!(S)$);
+\coordinate (V1) at ($(C)!0.12!(T)$);
+\coordinate (V2) at ($(C)!0.22!(T)$);
+\coordinate (V3) at ($(R)!0.12!(S)$);
+\coordinate (V4) at ($(R)!0.22!(S)$);
+\coordinate (W) at (2,4);
+\coordinate (Z) at (2,-6);
+\coordinate (V5) at (2,-5.5);
+\coordinate (V6) at (2,-4);
+
+\filldraw[deepskyblue, fill opacity=0.5] (L)--(I)--(G)--(M)--cycle;
+\filldraw[orange, fill opacity=0.5] (I)--(Q)--(N)--(G)--cycle;
+\filldraw[orange, fill opacity=0.5] (O)--(I)--(G)--(H)--cycle;
+\draw (W)--(V6);
+\draw (V5)--(Z);
+\draw[->, >=stealth', red, line width=0.8pt] (V6)--(V5);
+\draw (C)--(V1);
+\draw[->, >=stealth', red, line width=0.8pt] (V1)--(V2);
+\draw (V2)--(T);
+\filldraw[deepskyblue, fill opacity=0.5] (I)--(P)--(J)--(G);
+\draw (R)--(V3);
+\draw[->, >=stealth', red, line width=0.8pt] (V3)--(V4);
+\draw (V4)--(S);
+
+\draw[fill=white] (T1) circle(1.7pt);
+\draw[fill=white] (T2) circle(1.7pt);
+\draw[fill=white] (G) circle(1.7pt);
+\draw[fill=white] (I) circle(1.7pt);
+
+\draw[line width=0.4pt] (1.63,1.67)--(1.63,2.12)--(2,2);
+\draw[line width=0.4pt] (1.63,-2.88)--(1.63,-3.29)--(2,-3.17);
+
+\node[below] at (T) {$p_1$};
+\node[below] at ($(S)+(0,0.05)$) {$p_2$}; 
+\node[below] at ($(P)+(-0.35,0.8)$) {$\Pi_2$};
+\node[below] at ($(N)+(-0.3,-0.15)$) {$\Pi_1$};
+\node[below] at ($(T1)+(0.1,0)$) {$T_1$}; 
+\node[above] at ($(T2)+(0.15,-0.05)$) {$T_2$};
+\node[below] at ($(V1)!0.55!(V2)+(0,0.05)$) {$\vec{s}_1$}; 
+\node[above] at ($(V3)!0.55!(V4)+(0,-0.05)$) {$\vec{s}_2$};
+\node[right] at ($(V6)!0.45!(V5)+(-0.13,0)$) {$\vec{s}$};
+\node[below right] at ($(I)+(-0.15,0)$) {$N_1$};
+\node[above right] at ($(G)+(-0.15,0.04)$) {$N_2$};
+\node[right] at ($(W)+(-0.1,-0.05)$) {$n$};
+\end{tikzpicture}

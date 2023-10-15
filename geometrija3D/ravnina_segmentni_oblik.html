@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>ravnina - segmentni oblik</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <script src="../lib/dat.gui.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+        <style>
+            body {margin: 0; overflow: hidden}
+            button:focus {outline:0 !important;}
+            .btn.btn-custom-sm {
+                border-radius: 0;
+            }
+            .matBut {
+                margin-right: 14px!important; 
+                margin-bottom: 14px!important;
+                width: 80px;
+                height:80px;
+            }
+            .card {
+                background-color: rgba(255,255,255, 0.95) !important;
+                font-size: 95%;
+            }
+            .dg.a { margin-right:0px !important; }
+            .center {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div style="position: absolute; left:0px; top: 0px;">
+            <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" onclick="toggler('info');"><span class="fa fa-info-circle fa-2x" style="color:white;"></span></a>
+        </div>
+
+        <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 45px; width:350px;">
+        <div id="infoHead" class="card-header">
+        <img src='data/segment1.png' class="center">
+        </div>
+        <div id="infoBody" class="card-body">
+        <h5 id="infoRavnina" style="text-align: center;"><i>m > 0, n > 0, p > 0</i></h5>
+        <hr>
+        <p>Pomoću navedenih tipki na tastaturi mijenjajte veličine odsječaka.
+        <ul style="padding-left:20px;">
+        <li>odsječak <i>m</i> na <i>x</i>-osi: tipke <b>A</b> i <b>D</b></li>
+        <li>odsječak <i>n</i> na <i>y</i>-osi: tipke <b>Q</b> i <b>E</b></li>
+        <li>odsječak <i>p</i> na <i>z</i>-osi: tipke <b>S</b> i <b>W</b></li>
+        </ul></p>
+        <p><span class="badge badge-primary" style="font-size:100%; diplay: inline-block; width: 65px; text-align: left;"><i>m</i>&nbsp;<span class="badge badge-light" id="m_part" style="diplay: inline-block; width: 34px;">12.0</span></span>&emsp;<span class="badge badge-primary" style="font-size:100%; diplay: inline-block; width: 61px; text-align: left;"><i>n</i>&nbsp;<span class="badge badge-light" id="n_part" style="diplay: inline-block; width: 34px;">16.0</span></span>&emsp;<span class="badge badge-primary" style="font-size:100%; diplay: inline-block; width: 61px; text-align: left;"><i>p</i>&nbsp;<span class="badge badge-light" id="p_part" style="diplay: inline-block; width: 34px;">17.0</span></span></p>
+        </div>
+        </div>
+
+        <div align="center" style="position: absolute; right:30px; bottom: 30px; z-index: 2; width: 300px">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="btn-group">
+                        <button id="tipka_Q" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">Q</span></button>
+                        <button id="tipka_W" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">W</span></button>
+                        <button id="tipka_E" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">E</span></button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class=" btn-group">
+                        <button id="tipka_A" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">A</span></button>
+                        <button id="tipka_S" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">S</span></button>
+                        <button id="tipka_D" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">D</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+     <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="exampleModalLabel">Segmentni oblik jednadžbe ravnine</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+          <ul style="padding:8px;">
+            <li style="margin-bottom:5px;">Opći oblik jednadžbe ravnine u prostoru glasi <img src='data/opci1.png' style='vertical-align: text-bottom;'> pri čemu je <img src='data/opci2.png' style='vertical-align: text-bottom;'>.</li>
+            <li style="margin-bottom:5px;">U slučaju da su neki od brojeva <img src='data/opci3.png' style='vertical-align: text-bottom;'> jednaki nula, ravnina se nalazi u nekom specijalnom položaju s obzirom na koordinatni sustav.</li>
+            <li style="margin-bottom:5px;">Ukoliko je svaki od brojeva <img src='data/opci3.png' style='vertical-align: text-bottom;'> različit od nule, tada ravnina siječe koordinatne osi u tri međusobno različite točke. U tom slučaju njezin opći oblik jednadžbe može se napisati u segmentnom obliku <img src='data/segment1.png' class="center" style="margin-top:10px; margin-bottom:10px;"> pri čemu je <img src='data/segment2.png' style="vertical-align: middle;">, <img src='data/segment3.png' style="vertical-align: middle;">, <img src='data/segment4.png' style="vertical-align: middle;">&thinsp;.</li>
+            <li style="margin-bottom:5px;">Brojevi <img src='data/segment5.png' style='vertical-align: text-bottom;'> su segmenti koje ravnina odsijeca na koordinatnim osima. U tom slučaju ravnina prolazi točkama <img src='data/segment6.png' style='vertical-align: text-bottom;'>, <img src='data/segment7.png' style='vertical-align: text-bottom;'> i <img src='data/segment8.png' style='vertical-align: text-bottom;'>.</li>
+            <li style="margin-bottom:5px;">Segmentni oblik jednadžbe ravnine nam omogućuje da brzo odredimo položaj ravnine u prostoru na temelju predznaka pojedinih segmenata. Iz segmentnog oblika jednadžbe ravnine slijedi da svaka ravnina koja nije u specijalnom položaju s obzirom na koordinatni sustav se prostire kroz 7 oktanata, dok u jednom oktantu nema niti jednog djelića te ravnine.</li>
+            <li style="margin-bottom:5px;">Na primjer, ako za segmente ravnine vrijedi <img src='data/segment9.png' style='vertical-align: text-bottom;'>, tada možemo zaključiti sljedeće:
+            <ul>
+             <li>U oktantu za kojeg vrijedi <img src='data/segment10.png' style='vertical-align: text-bottom;'> ne nalazi se niti jedan djelić te ravnine.</li>
+             <li>U oktantu za kojeg vrijedi <img src='data/segment11.png' style='vertical-align: text-bottom;'> nalazi se samo dio ravnine omeđen s trokutom.</li>
+             <li>U svim ostalim oktantima se nalaze preostali neomeđeni dijelovi ravnine.</li>   
+            </ul>
+            Analogni zaključci vrijede za sve ostale kombinacije predznaka segmenata <img src='data/segment5.png' style='vertical-align: text-bottom;'>, što možete provjeriti s ovim programom. <span style="color:blue;">Napravite analogiju s pravcem u ravnini i kvadrantima.</span>
+            </li>
+            <hr>
+            <li style="margin-bottom:5px;">U gornjem desnom kutu prozora možete odabrati jednu od osam mogućih kombinacija predznaka brojeva <img src='data/segment5.png' style='vertical-align: text-bottom;'>. Automatski se vizualizira pripadna ravnina.</li>
+            <li style="margin-bottom:5px;">U gornjem lijevom kutu su prikazane informacije o trenutno odabranoj ravnini. Također, pomoću spomenutih tipki na tastaturi možete mijenjati veličine odsječaka s odabranim predznacima i pritom se automatski mijenja ravnina.</li>
+            <li style="margin-bottom:5px;">Informacije o ravnini možete po želji otvoriti ili zatvoriti klikom na tipku <span class="badge badge-secondary"><i class="fa fa-info-circle" aria-hidden="true"></i></span> u gornjem lijevom kutu prozora.</li>
+            <li>Pomoću srednje tipke miša možete približavati ili udaljavati kameru od objekta, a pomoću lijeve tipke miša možete se kretati oko objekta.</li>
+          </ul>
+         </div>
+         <div class="modal-footer">
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+       </div>
+     </div>
+    </div>
+
+        <div id="WebGL-output"></div>
+
+        <script language="JavaScript">
+            function toggler(divId) {
+                $("#" + divId).slideToggle(500);
+            }
+        </script>
+
+        <script language="JavaScript" type="module">
+        import * as THREE from '../lib/three.module.js';
+        import { OrbitControls } from '../lib/OrbitControls.js';
+
+        var manager = new THREE.LoadingManager();
+        manager.onLoad = function() { // when all resources are loaded
+            init();
+        }
+
+        var font = null;
+        var texture = null;
+
+        var fontloader = new THREE.FontLoader(manager);
+        fontloader.load("../lib/helvetiker_regular.typeface.json", function(response) {font = response;});
+
+        var textureloader = new THREE.TextureLoader(manager);
+        textureloader.load('cement4.jpg', function(response) {texture = response});
+
+        function init() {
+            var plane, m, n, p, d;
+            var fi, theta;
+
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            var renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setClearColor(0xA9A9A9, 1);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            $("#WebGL-output").append(renderer.domElement);
+
+            camera.position.x = 50;
+            camera.position.y = 14;
+            camera.position.z = 50;
+
+            var pomak;
+
+            var pointLight = new THREE.PointLight("#eeeeee");
+            pointLight.distance = 250;
+            pointLight.position.set(60,60,100);
+            scene.add(pointLight);
+
+            var pointLight2 = new THREE.PointLight("#eeeeee");
+            pointLight2.distance = 250;
+            pointLight2.position.set(-60,-60,-100);
+            scene.add(pointLight2);
+
+            var mat1 = new THREE.MeshPhongMaterial({color:0x7fffd4, specular: 0x7777ff,  emissive:0xb22222, flatShading: false});
+            var mat2 = new THREE.MeshBasicMaterial({color: 0x8fbc8f, side:THREE.DoubleSide, transparent: true, opacity:1, map:texture, flatShading: false});
+
+            var ravninaXY = new THREE.GridHelper(48, 48, 0x800000, 0x800000);
+            scene.add(ravninaXY);
+
+            var ravninaXZ = new THREE.GridHelper(48, 48, 0x000066, 0x000066);
+            ravninaXZ.rotation.z = Math.PI / 2;
+            scene.add(ravninaXZ);
+
+            var ravninaYZ = new THREE.GridHelper(48, 48, 0x000000, 0x000000);
+            ravninaYZ.rotation.x = Math.PI / 2;
+            scene.add(ravninaYZ);
+
+            var Zos = new THREE.Mesh(vektor(48), mat1);
+            scene.add(Zos);
+
+            var Yos = new THREE.Mesh(vektor(48), mat1);
+            Yos.rotation.z = -Math.PI / 2;
+            scene.add(Yos);
+
+            var Xos = new THREE.Mesh(vektor(48), mat1);
+            Xos.rotation.x = Math.PI / 2;
+            scene.add(Xos);
+
+            var tekst_options = {
+                size: 2,
+                height: 0.3,
+                font: font,
+                curveSegments: 12
+            };
+
+            var tekst_Zos = createText('z', tekst_options);
+            tekst_Zos.translateX(1);
+            tekst_Zos.translateY(25);
+            scene.add(tekst_Zos);
+
+            var tekst_Yos = createText('y', tekst_options);
+            tekst_Yos.translateX(26);
+            scene.add(tekst_Yos);
+
+            var tekst_Xos = createText('x', tekst_options);
+            tekst_Xos.translateY(-0.5);
+            tekst_Xos.translateZ(27.3);
+            tekst_Xos.rotation.y = Math.PI / 2;
+            scene.add(tekst_Xos);
+
+            var quaternion = new THREE.Quaternion();
+
+            plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(48,48,12,12), mat2);
+            m = 12; n = 16; p = 17;
+            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+            plane.rotation.order = 'YZX';
+            plane.translateZ(m*Math.pow(n*p,2) / d);
+            plane.translateX(n*Math.pow(m*p,2) / d);
+            plane.translateY(p*Math.pow(m*n,2) / d);
+            plane.rotation.y = Math.atan(m / n);
+            plane.rotation.x = Math.atan(-m*n / (p*Math.sqrt(m*m + n*n)));
+            scene.add(plane);
+
+            var orbitControls = new OrbitControls(camera, renderer.domElement);
+            orbitControls.minDistance = 25;
+            orbitControls.maxDistance = 130;
+            orbitControls.enablePan = false;
+            orbitControls.maxPolarAngle = 3.14;
+            orbitControls.minPolarAngle = 0;
+            orbitControls.target = scene.position;
+
+            orbitControls.addEventListener('change', render);
+
+            var controls = new function() {
+                this.ravnina = '* m>0, n>0, p>0';
+                this.help = function() {
+                    $("#infoModal").modal();
+                };
+            }
+
+            var gui = new dat.GUI({resizable : false});
+
+            var opcijaRavnina = gui.add(controls, 'ravnina', ['* m>0, n>0, p>0', '* m>0, n>0, p<0', '* m>0, n<0, p>0', '* m<0, n>0, p>0',
+                                                                  '* m>0, n<0, p<0', '* m<0, n>0, p<0', '* m<0, n<0, p>0', '* m<0, n<0, p<0']);
+
+            opcijaRavnina.onChange(function(value) {
+               switch (value) {
+                    case '* m>0, n>0, p>0':
+                        m = 12; n = 16; p = 17;
+                        d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                        $("#infoRavnina").html("<i>m > 0, n > 0, p > 0</i>");
+                        transformirajRavninu(-1);
+                        break;
+                    case '* m>0, n>0, p<0':
+                        m = 12; n = 16; p = -17;
+                        d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                        $("#infoRavnina").html("<i>m > 0, n > 0, p < 0</i>");
+                        transformirajRavninu(-1);
+                        break;
+                    case '* m>0, n<0, p>0':
+                        m = 12; n = -16; p = 17;
+                        d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                        $("#infoRavnina").html("<i>m > 0, n < 0, p > 0</i>");
+                        transformirajRavninu(1);
+                        break;
+                    case '* m<0, n>0, p>0':
+                        m = -12; n = 16; p = 17;
+                        d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                        $("#infoRavnina").html("<i>m < 0, n > 0, p > 0</i>");
+                        transformirajRavninu(-1);
+                        break;
+                    case '* m>0, n<0, p<0':
+                        m = 12; n = -16; p = -17;
+                        d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                        $("#infoRavnina").html("<i>m > 0, n < 0, p < 0</i>");
+                        transformirajRavninu(1);
+                        break;
+                    case '* m<0, n>0, p<0':
+                        m = -12; n = 16; p = -17;
+                        d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                        $("#infoRavnina").html("<i>m < 0, n > 0, p < 0</i>");
+                        transformirajRavninu(-1);
+                        break;
+                    case '* m<0, n<0, p>0':
+                        m = -12; n = -16; p = 17;
+                        d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                        $("#infoRavnina").html("<i>m < 0, n < 0, p > 0</i>");
+                        transformirajRavninu(1);
+                        break;
+                    case '* m<0, n<0, p<0':
+                        m = -12; n = -16; p = -17;
+                        d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                        $("#infoRavnina").html("<i>m < 0, n < 0, p < 0</i>");
+                        transformirajRavninu(1);
+                        break;
+                }
+                render();
+            });
+
+            gui.add(controls,'help');
+
+            render();
+
+            function render() {
+                renderer.render( scene, camera );
+            }
+
+            $(window).resize( function() {
+                camera.aspect = (window.innerWidth) / (window.innerHeight);
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight);
+                render();
+            });
+
+            function vektor(h) {
+                var valjakGeometry = new THREE.CylinderGeometry(0.25,0.25,h,10);
+                var stozacGeometry = new THREE.CylinderGeometry(0,0.8,2,12);
+                var valjak = new THREE.Mesh(valjakGeometry);
+                var stozac = new THREE.Mesh(stozacGeometry);
+                var vek = new THREE.Geometry();
+                stozac.translateY(h/2 + 1);
+                valjak.updateMatrix();
+                stozac.updateMatrix();
+                vek.merge(valjak.geometry, valjak.matrix);
+                vek.merge(stozac.geometry, stozac.matrix);
+                return vek;
+            }
+
+            function createText(text, params) {
+                var textGeo = new THREE.TextGeometry(text, params);
+                textGeo.computeBoundingBox();
+                textGeo.computeVertexNormals();
+                var material = [new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false}),
+                                new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false})];
+                var textMesh = new THREE.Mesh(textGeo, material);
+                return textMesh;
+            }
+
+            function tipka_A(opcija, dm) {//smanjuje m
+                switch (opcija) {
+                    case '* m>0, n>0, p>0':
+                        if (m > 3) {
+                            if (m-3 >= dm) pomak = -dm;
+                            else pomak = 3-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n>0, p<0':
+                        if (m > 3) {
+                            if (m-3 >= dm) pomak = -dm;
+                            else pomak = 3-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p>0':
+                        if (m > 3) {
+                            if (m-3 >= dm) pomak = -dm;
+                            else pomak = 3-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p>0':
+                        if (m < -3) {
+                            if (-3-m >= dm) pomak = dm;
+                            else pomak = -3-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p<0':
+                        if (m > 3) {
+                            if (m-3 >= dm) pomak = -dm;
+                            else pomak = 3-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p<0':
+                        if (m < -3) {
+                            if (-3-m >= dm) pomak = dm;
+                            else pomak = -3-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p>0':
+                        if (m < -3) {
+                            if (-3-m >= dm) pomak = dm;
+                            else pomak = -3-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p<0':
+                        if (m < -3) {
+                            if (-3-m >= dm) pomak = dm;
+                            else pomak = -3-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                }
+            }
+
+            function tipka_D(opcija,dm) {//povecava m
+                switch (opcija) {
+                    case '* m>0, n>0, p>0':
+                        if (m < 21) {
+                            if (21-m >= dm) pomak = dm;
+                            else pomak = 21-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n>0, p<0':
+                        if (m < 21) {
+                            if (21-m >= dm) pomak = dm;
+                            else pomak = 21-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p>0':
+                        if (m < 21) {
+                            if (21-m >= dm) pomak = dm;
+                            else pomak = 21-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p>0':
+                        if (m > -21) {
+                            if (21+m >= dm) pomak = -dm;
+                            else pomak = -21-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p<0':
+                        if (m < 21) {
+                            if (21-m >= dm) pomak = dm;
+                            else pomak = 21-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p<0':
+                        if (m > -21) {
+                            if (21+m >= dm) pomak = -dm;
+                            else pomak = -21-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p>0':
+                        if (m > -21) {
+                            if (21+m >= dm) pomak = -dm;
+                            else pomak = -21-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p<0':
+                        if (m > -21) {
+                            if (21+m >= dm) pomak = -dm;
+                            else pomak = -21-m;
+                            m += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                }
+            }
+
+            function tipka_S(opcija,dp) {//smanjuje p
+                switch (opcija) {
+                    case '* m>0, n>0, p>0':
+                        if (p > 3) {
+                            if (p-3 >= dp) pomak = -dp;
+                            else pomak = 3-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n>0, p<0':
+                        if (p < -3) {
+                            if (-3-p >= dp) pomak = dp;
+                            else pomak = -3-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p>0':
+                        if (p > 3) {
+                            if (p-3 >= dp) pomak = -dp;
+                            else pomak = 3-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p>0':
+                        if (p > 3) {
+                            if (p-3 >= dp) pomak = -dp;
+                            else pomak = 3-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p<0':
+                        if (p < -3) {
+                            if (-3-p >= dp) pomak = dp;
+                            else pomak = -3-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p<0':
+                        if (p < -3) {
+                            if (-3-p >= dp) pomak = dp;
+                            else pomak = -3-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p>0':
+                        if (p > 3) {
+                            if (p-3 >= dp) pomak = -dp;
+                            else pomak = 3-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p<0':
+                        if (p < -3) {
+                            if (-3-p >= dp) pomak = dp;
+                            else pomak = -3-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                }
+            }
+
+            function tipka_W(opcija,dp) {//povecava p
+                switch (opcija) {
+                    case '* m>0, n>0, p>0':
+                        if (p < 21) {
+                            if (21-p >= dp) pomak = dp;
+                            else pomak = 21-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n>0, p<0':
+                        if (p > -21) {
+                            if (21+p >= dp) pomak = -dp;
+                            else pomak = -21-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p>0':
+                        if (p < 21) {
+                            if (21-p >= dp) pomak = dp;
+                            else pomak = 21-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p>0':
+                        if (p < 21) {
+                            if (21-p >= dp) pomak = dp;
+                            else pomak = 21-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p<0':
+                        if (p > -21) {
+                            if (21+p >= dp) pomak = -dp;
+                            else pomak = -21-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p<0':
+                        if (p > -21) {
+                            if (21+p >= dp) pomak = -dp;
+                            else pomak = -21-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p>0':
+                        if (p < 21) {
+                            if (21-p >= dp) pomak = dp;
+                            else pomak = 21-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p<0':
+                        if (p > -21) {
+                            if (21+p >= dp) pomak = -dp;
+                            else pomak = -21-p;
+                            p += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                }
+            }
+
+            function tipka_Q(opcija, dn) {//smanjuje n
+                switch (opcija) {
+                    case '* m>0, n>0, p>0':
+                        if (n > 3) {
+                            if (n-3 >= dn) pomak = -dn;
+                            else pomak = 3-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n>0, p<0':
+                        if (n > 3) {
+                            if (n-3 >= dn) pomak = -dn;
+                            else pomak = 3-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p>0':
+                        if (n < -3) {
+                            if (-3-n >= dn) pomak = dn;
+                            else pomak = -3-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p>0':
+                        if (n > 3) {
+                            if (n-3 >= dn) pomak = -dn;
+                            else pomak = 3-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p<0':
+                        if (n < -3) {
+                            if (-3-n >= dn) pomak = dn;
+                            else pomak = -3-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p<0':
+                        if (n > 3) {
+                            if (n-3 >= dn) pomak = -dn;
+                            else pomak = 3-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p>0':
+                        if (n < -3) {
+                            if (-3-n >= dn) pomak = dn;
+                            else pomak = -3-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p<0':
+                        if (n < -3) {
+                            if (-3-n >= dn) pomak = dn;
+                            else pomak = -3-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                }
+            }
+
+            function tipka_E(opcija, dn) {//povecava n
+                switch (opcija) {
+                    case '* m>0, n>0, p>0':
+                        if (n < 21) {
+                            if (21-n >= dn) pomak = dn;
+                            else pomak = 21-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n>0, p<0':
+                        if (n < 21) {
+                            if (21-n >= dn) pomak = dn;
+                            else pomak = 21-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p>0':
+                        if (n > -21) {
+                            if (21+n >= dn) pomak = -dn;
+                            else pomak = -21-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p>0':
+                        if (n < 21) {
+                            if (21-n >= dn) pomak = dn;
+                            else pomak = 21-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m>0, n<0, p<0':
+                        if (n > -21) {
+                            if (21+n >= dn) pomak = -dn;
+                            else pomak = -21-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n>0, p<0':
+                        if (n < 21) {
+                            if (21-n >= dn) pomak = dn;
+                            else pomak = 21-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(-1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p>0':
+                        if (n > -21) {
+                            if (21+n >= dn) pomak = -dn;
+                            else pomak = -21-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                    case '* m<0, n<0, p<0':
+                        if (n > -21) {
+                            if (21+n >= dn) pomak = -dn;
+                            else pomak = -21-n;
+                            n += pomak;
+                            d = Math.pow(n*p, 2) + Math.pow(m*p, 2) + Math.pow(m*n, 2);
+                            transformirajRavninu(1);
+                            render();
+                        }
+                        break;
+                }
+            }
+
+            function transformirajRavninu(predznak) {
+                plane.position.copy(scene.position);
+                plane.quaternion.copy(quaternion);
+                plane.translateZ(m*Math.pow(n*p,2) / d);
+                plane.translateX(n*Math.pow(m*p,2) / d);
+                plane.translateY(p*Math.pow(m*n,2) / d);
+                plane.rotation.y = Math.atan(m / n);
+                plane.rotation.x = Math.atan(predznak*m*n / (p*Math.sqrt(m*m + n*n)));
+                $("#m_part").html(`${m.toFixed(1)}`);
+                $("#n_part").html(`${n.toFixed(1)}`);
+                $("#p_part").html(`${p.toFixed(1)}`);
+            }
+
+            $("#tipka_A").click(function() {
+                tipka_A(controls.ravnina,2);
+            });
+
+            $("#tipka_D").click(function() {
+                tipka_D(controls.ravnina,2);
+            });
+
+            $("#tipka_S").click(function() {
+                tipka_S(controls.ravnina,2);
+            });
+
+            $("#tipka_W").click(function() {
+                tipka_W(controls.ravnina,2);
+            });
+
+            $("#tipka_Q").click(function() {
+                tipka_Q(controls.ravnina,2);
+            });
+
+            $("#tipka_E").click(function() {
+                tipka_E(controls.ravnina,2);
+            });
+
+            window.addEventListener("keydown", event => {
+                if (!$('#infoModal').is(':visible')) {
+                    switch (event.key) {
+                        case 'a':
+                        tipka_A(controls.ravnina,0.5);
+                        break;
+                        case 'd':
+                        tipka_D(controls.ravnina,0.5);
+                        break;
+                        case 'q':
+                        tipka_Q(controls.ravnina,0.5);
+                        break;
+                        case 'e':
+                        tipka_E(controls.ravnina,0.5);
+                        break;
+                        case 's':
+                        tipka_S(controls.ravnina,0.5);
+                        break;
+                        case 'w':
+                        tipka_W(controls.ravnina,0.5);
+                        break;
+                    }
+                }   
+            });
+        }//init
+        </script>
+
+    </body>
+</html>

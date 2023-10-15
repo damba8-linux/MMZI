@@ -1,0 +1,63 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[scale=1.2,line width=0.8pt]
+\tikzstyle{vrh}=[draw,circle,inner sep=1.2pt,fill=white]
+\coordinate (P1) at (-7cm,1.5cm);
+\coordinate (P2) at (8cm,0cm);
+\coordinate (A1) at (0,-1cm);
+\coordinate (A2) at (0,-4.8cm);
+\coordinate (A3) at ($(P1)!.6!(A2)$); 
+\coordinate (A4) at ($(P1)!.6!(A1)$);
+\coordinate (A7) at ($(P2)!.5!(A2)$);
+\coordinate (A8) at ($(P2)!.5!(A1)$);
+\coordinate (A5) at
+  (intersection cs: first line={(A8) -- (P1)},
+		    second line={(A4) -- (P2)});
+\coordinate (A6) at
+  (intersection cs: first line={(A7) -- (P1)}, 
+		    second line={(A3) -- (P2)});
+\coordinate (O) at
+  (intersection cs: first line={(A2) -- (A5)}, 
+		    second line={(A4) -- (A7)});
+%\draw[->,>=stealth',magenta,line width=1pt] ($0.05*(A3)+0.05*(A6)+0.9*(A2)+(0,-0.23cm)$)--($0.05*(A3)+0.05*(A6)+0.9*(A2)+(0,-0.6cm)$);
+%\draw[magenta!40,line width=1pt] ($0.05*(A3)+0.05*(A6)+0.9*(A2)$)--($0.05*(A3)+0.05*(A6)+0.9*(A2)+(0,-0.23cm)$);
+%\draw[->,>=stealth',blue,line width=1pt] ($0.25*(A3)+0.1*(A6)+0.65*(A2)+(0,-0.46cm)$)--($0.25*(A3)+0.1*(A6)+0.65*(A2)+(0,-1cm)$);
+%\draw[blue!40,line width=1pt] ($0.25*(A3)+0.1*(A6)+0.65*(A2)$)--($0.25*(A3)+0.1*(A6)+0.65*(A2)+(0,-0.46cm)$);
+%\node[right] at ($0.25*(A3)-0.51*(A6)+0.8*(A2)+(0,-1cm)$) {$-\vec{n}$};
+%\node[right] at ($0.05*(A3)+0.05*(A6)+0.9*(A2)+(0,-0.6cm)$) {$-\vec{n}_0$};
+\draw[line width=0.5pt,domain=-90:-20,black!40] plot ({0.92+0.22*cos(\x)}, {-0.25+0.2*sin(\x)});
+\filldraw[black!40] ($(O)+(2.5pt,0.95cm)$) circle (0.2pt);
+\draw[red] ($(O)+(0,-1.04cm)$)--($(O)+(0,0.415cm)$);
+\draw[red!30] ($(O)+(0,0.415cm)$)--($(O)+(0,1.04cm)$);
+%\node[red!40,right] at ($(O)+(-2pt,0.65cm)$) {$\delta$};
+\shadedraw[opacity=0.3,top color=white,bottom color=gray,shading angle=105,line width=0.5pt] (A1) -- (A4) -- (A5) -- (A8) -- cycle;
+\shadedraw[opacity=0.4,top color=white,bottom color=gray,shading angle=105,line width=0.5pt] (A2) -- (A3) -- (A6) -- (A7) -- cycle;
+%\draw[green!80] (O)--($(O)+(0,-1.04cm)$);
+\node[vrh,draw=black!40,label={[xshift=0pt,yshift=1pt]below:\small\color{black!40}$T$}] (nO) at ($(O)+(-0.8,0.8)$) {};
+\draw[->,>=stealth',blue,line width=1pt] ($0.86*(A4)+0.06*(A5)+0.08*(A1)$)--($0.86*(A4)+0.06*(A5)+0.08*(A1)+(0,1cm)$);
+\draw[->,>=stealth',blue,line width=1pt] ($0.88*(A3)+0.06*(A6)+0.06*(A2)$)--($0.88*(A3)+0.06*(A6)+0.06*(A2)+(0,1cm)$);
+\node[right] at ($0.86*(A4)+0.04*(A5)+0.06*(A1)+(0,1cm)$) {$\vec{n}$};
+\node[right] at ($0.88*(A3)+0.04*(A6)+0.06*(A2)+(0,1cm)$) {$\vec{n}$}; 
+%\draw[->,>=stealth',magenta,line width=1pt] ($0.7*(A4)+0.1*(A5)+0.2*(A1)$)--($0.7*(A4)+0.1*(A5)+0.2*(A1)+(0,0.6cm)$);
+%\draw[->,>=stealth',magenta,line width=1pt] ($0.7*(A3)+0.2*(A6)+0.1*(A2)$)--($0.7*(A3)+0.2*(A6)+0.1*(A2)+(0,0.6cm)$);
+%\node[right] at ($0.7*(A4)+0.06*(A5)+0.16*(A1)+(0,0.6cm)$) {$\vec{n}_0$};
+%\node[right] at ($0.7*(A3)+0.16*(A6)+0.1*(A2)+(0,0.6cm)$) {$\vec{n}_0$};
+\node [coordinate, pin={[line width=0.4pt,draw=gray,fill=lightyellow,inner sep=2pt,pin distance=0.5cm,pin edge={gray,line width=0.4pt}]70:$\pi'$}] at ($0.01*(A4)+2.8*(A5)+0.5*(A1)$) {};
+\node [coordinate, pin={[line width=0.4pt,draw=gray,fill=lightyellow,inner sep=2pt,pin distance=0.5cm,pin edge={gray,line width=0.4pt}]70:$\pi$}] at ($0.01*(A3)+2.9*(A6)-0.35*(A2)$) {};
+\draw[line width=0.5pt,domain=10:90] plot ({0.92+0.22*cos(\x)}, {-2.4+0.2*sin(\x)});
+\filldraw ($(O)+(2.5pt,-1cm)$) circle (0.2pt);
+%\node[green!80,right] at ($(O)+(-2pt,-0.5cm)$) {$\delta$};
+\end{tikzpicture}

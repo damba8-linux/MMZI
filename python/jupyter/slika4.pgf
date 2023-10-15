@@ -1,0 +1,35 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[line width=0.8pt,x={(0.95cm,-0.32cm)},y={(-0.72cm,-0.69cm)},z={(0cm,1cm)},scale=1.5]
+\tikzstyle{vrh}=[draw,circle,inner sep=1.2pt,fill=white,draw=black!50]
+%\node[vrh,label={[xshift=-7pt,yshift=-5pt]above:\color{black!60}\small$N$}] (N) at (-0.2,0,0) {};
+%\node[vrh,label={[xshift=-7pt,yshift=-5pt]above:\color{black!60}\small$O$}] (O)  at (1.4,1.4,0) {};
+%\node[vrh,label={[xshift=-7pt,yshift=4pt]below:\color{black!60}\small$M$}] (M) at (-0.4,1.25,0) {};
+\coordinate (M) at (-0.4,1.25,0);
+\coordinate (Q) at (2.5*0.64,0.5*0.6,0);
+\coordinate (N) at (-0.2,0,0);
+\coordinate (P) at (1.4,1.4,0);
+\shadedraw[opacity=0.3,top color=white,bottom color=gray,shading angle=105,line width=0.5pt]
+(-0.6,-0.4,0)--(2,-0.4,0)--(2,1.6,0)--(-0.6,1.6,0)--cycle;
+\draw[-,black!60,line width=0.6pt] (M)--(Q) node[below,pos=0.97] {\small$p_1$};
+\draw[-,black!60,line width=0.6pt] (N)--(P) node[left=-3pt,pos=0.95] {\rotatebox{-65}{\small$p_2$}};
+\draw[->,>=stealth',red!60] ($(M)!0.05!(Q)$)--($(M)!0.25!(Q)$) node[pos=0.5,below] {\color{black!60}\small$\vec{s}_1$};
+\draw[->,>=stealth',red!60] ($(N)!0.1!(P)$)--($(N)!0.4!(P)$) node[pos=0.3,right=-2pt] {\color{black!60}\small\rotatebox{-65}{$\vec{s}_2$}};
+\filldraw[black!60] ($(M)!0.8!(Q)$) circle (0.7pt) node[below] {\small\color{black!60}$T_1$};
+\draw[->,>=stealth',black] (1.7,0,0)--(1.7,0,1) node[right,pos=0.95] {$\vec{n}_{\pi}$};
+%\draw (0.64,-0.4,0.8)--(1.2,-0.75,0.8);
+\node[black!50,sloped,xslant=.4] at (1.85,1.45,0) {\rotatebox{-20}{$\pi$}};
+\end{tikzpicture}

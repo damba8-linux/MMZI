@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Elipsoid</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <script src="../lib/dat.gui.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+        <style>
+            body {margin: 0; overflow: hidden}
+            button:focus {outline:0 !important;}
+            .btn.btn-custom-sm {
+                border-radius: 0;
+            }
+            .card {
+                background-color: rgba(255,255,255, 0.95) !important;
+                font-size: 95%;
+            }
+            .dg.a { margin-right:0px !important; }
+        </style>
+    </head>
+
+    <body>
+        <div style="position: absolute; left:0px; top: 0px;">
+        <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" onclick="toggler('info');"><span class="fa fa-info-circle fa-2x" style="color:white;"></span></a>
+        </div>
+
+        <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 45px; width:280px;">
+        <div id="infoHead" class="card-header">Elipsoid</div>
+        <div id="infoBody" class="card-body">
+        <center><p id="infoRavnina"><img src='kvadrike_slike/elipsoid.png'></p></center>
+        <p id="info_xos"><i>a</i> - duljina poluosi duž <i>x</i>-osi</p>
+        <p id="info_yos"><i>b</i> - duljina poluosi duž <i>y</i>-osi</p>
+        <p id="info_zos"><i>c</i> - duljina poluosi duž <i>z</i>-osi</p>
+        <p>Za&nbsp; <img src='kvadrike_slike/sfera.png' style='vertical-align: baseline;'>&nbsp; dobivamo <b>sferu</b>.</p>
+        </div>
+        </div>
+
+        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Help</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <ul>
+                 <li>Lijeva tipka miša - rotiranje kamere oko objekta</li>
+                 <li>Srednja tipka miša - približavanje i udaljavanje od objekta</li>
+                 <li>S lijeve strane su informacije o plohi koje možete zatvoriti i ponovo otvoriti klikom na tipku <span class="badge badge-secondary"><i class="fa fa-info-circle" aria-hidden="true"></i></span> u gornjem lijevom kutu.</li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="WebGL-output"></div>
+
+        <script language="JavaScript">
+        function toggler(divId) {
+            $("#" + divId).slideToggle(500);
+        }
+        </script>
+
+        <script language="JavaScript" type="module">
+        import * as THREE from '../lib/three.module.js';
+        import { OrbitControls } from '../lib/OrbitControls.js';
+            
+        var manager = new THREE.LoadingManager();
+        manager.onLoad = function() { // when all resources are loaded
+            init();
+        }
+
+        var font = null;
+        var texture = null;
+        var normalMap = null;
+
+        var fontloader = new THREE.FontLoader(manager);
+        fontloader.load("../lib/helvetiker_regular.typeface.json", function(response) {font = response;});
+
+        var textureloader = new THREE.TextureLoader(manager);
+        textureloader.load('cement4.jpg', function(response) {texture = response});
+
+        var normalMaploader = new THREE.TextureLoader(manager);
+        normalMaploader.load('cement4_normal.jpg', function(response) {normalMap = response});
+
+        function init() {
+            var a = 3;
+            var b = 5;
+            var c = 5;
+
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            var renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setClearColor(0xA9A9A9, 1);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            $("#WebGL-output").append(renderer.domElement);
+
+            camera.position.x = 50;
+            camera.position.y = 30;
+            camera.position.z = 50;
+
+            scene.add(camera);
+
+            var pointLight = new THREE.PointLight("#ffaaaa");
+            pointLight.distance = 150;
+            pointLight.position.set(50,30,50);
+            camera.add(pointLight);
+            pointLight.intensity = 1;
+
+            var pointLight1 = new THREE.PointLight("#eeeeee");
+            pointLight1.distance = 100;
+            pointLight1.position.set(50,5,5);
+            scene.add(pointLight1);
+            pointLight1.intensity = 0.8;
+
+            var pointLight2 = new THREE.PointLight("#eeeeee");
+            pointLight2.distance = 100;
+            pointLight2.position.set(-50,-5,-5);
+            scene.add(pointLight2);
+            pointLight2.intensity = 0.8;
+
+            var pointLight3 = new THREE.PointLight("#eeeeee");
+            pointLight3.distance = 100;
+            pointLight3.position.set(-5,50,5);
+            scene.add(pointLight3);
+            pointLight3.intensity = 0.8;
+
+            var pointLight4 = new THREE.PointLight("#eeeeee");
+            pointLight4.distance = 100;
+            pointLight4.position.set(5,-50,-5);
+            scene.add(pointLight4);
+            pointLight4.intensity = 0.8;
+
+            var pointLight5 = new THREE.PointLight("#eeeeee");
+            pointLight5.distance = 100;
+            pointLight5.position.set(5,-5,50);
+            scene.add(pointLight5);
+            pointLight5.intensity = 0.8;
+
+            var pointLight6 = new THREE.PointLight("#eeeeee");
+            pointLight6.distance = 100;
+            pointLight6.position.set(0,0,-50);
+            scene.add(pointLight6);
+            pointLight6.intensity = 0.8;
+
+            var mat1 = new THREE.MeshLambertMaterial({color: 0x7fffd4, emissive:0xb22222, flatShading: false});
+            var mat2tex = new THREE.MeshPhongMaterial({color:0xffff00, emissive:0x777777, 
+                                                       side:THREE.DoubleSide, 
+                                                       map:texture, 
+                                                       normalMap:normalMap, 
+                                                       flatShading: false,
+                                                       polygonOffset: true,
+                                                       polygonOffsetFactor: 1.0,
+                                                       polygonOffsetUnits: 4.0});
+            var mat2wire = new THREE.LineBasicMaterial( { color: 0x555555, linewidth: 1.2, polygonOffset: false} );
+
+            var Zos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+            scene.add(Zos);
+
+            var Yos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+            Yos.rotation.z = -Math.PI / 2;
+            scene.add(Yos);
+
+            var Xos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+            Xos.rotation.x = Math.PI / 2;
+            scene.add(Xos);
+
+            var tekst_options = {
+                size: 2,
+                height: 0.3,
+                font: font,
+                curveSegments: 12
+            };
+
+            var tekst_Zos = createText('z', tekst_options);
+            tekst_Zos.translateX(1);
+            tekst_Zos.translateY(25);
+            scene.add(tekst_Zos);
+
+            var tekst_Yos = createText('y', tekst_options);
+            tekst_Yos.translateX(26);
+            scene.add(tekst_Yos);
+
+            var tekst_Xos = createText('x', tekst_options);
+            tekst_Xos.translateY(-0.5);
+            tekst_Xos.translateZ(27.3);
+            tekst_Xos.rotation.y = Math.PI / 2;
+            scene.add(tekst_Xos);
+
+            var ravninaXY = new THREE.GridHelper(48, 24, 0x800000, 0x800000);
+            scene.add(ravninaXY);
+
+            var ravninaXZ = new THREE.GridHelper(48, 24, 0x000066, 0x000066);
+            ravninaXZ.rotation.z = Math.PI / 2;
+            scene.add(ravninaXZ);
+            ravninaXZ.visible = false;
+
+            var ravninaYZ = new THREE.GridHelper(48, 24, 0x006600, 0x006600);
+            ravninaYZ.rotation.x = Math.PI / 2;
+            scene.add(ravninaYZ);
+            ravninaYZ.visible = false;
+
+            var plohaFUN1 = function(u,v,target) {
+               u = 2 * Math.PI * u - Math.PI; 
+               v = 2 * Math.PI / 2 * v - Math.PI / 2;
+               var z = 2 * a * Math.cos(u) * Math.cos(v);
+               var x = 2 * b * Math.sin(u) * Math.cos(v);
+               var y = 2 * c * Math.sin(v);
+               target.set(x,y,z);
+            }
+
+            var ploha1 = new THREE.Mesh(new THREE.ParametricGeometry(plohaFUN1, 51, 30, false), mat2tex);
+            var ploha1wire = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.ParametricGeometry(plohaFUN1, 51, 30, false),0.3), mat2wire);
+            scene.add(ploha1);
+            scene.add(ploha1wire);
+
+            var orbitControls = new OrbitControls(camera, renderer.domElement);
+            orbitControls.minDistance = 40;
+            orbitControls.maxDistance = 100;
+            orbitControls.enablePan = false;
+            orbitControls.maxPolarAngle = 3.14;
+            orbitControls.minPolarAngle = 0;
+            
+            orbitControls.addEventListener('change', render);
+
+            var controls = new function() {
+                this.a = 3;
+                this.b = 5;
+                this.c = 5;
+                this.mreza = false;
+                this.ploha = false;
+                this.oboje = true;
+                this.xy = true;
+                this.yz = false;
+                this.xz = false;
+                this.help = function() {
+                    $("#infoModal").modal();
+                };
+            }
+
+            var gui = new dat.GUI({resizable : false});
+
+            var hiper_parametri = gui.addFolder('Parametri elipsoida');
+            hiper_parametri.add(controls, 'a', 2, 9).step(1).onChange( function(value) { 
+                a = value;
+                ploha1.scale.z = a / 3;
+                ploha1wire.scale.z = a / 3;
+                render();} ); // 2*a / 6
+            hiper_parametri.add(controls, 'b', 2, 9).step(1).onChange( function(value) { 
+                b = value;
+                ploha1.scale.x = b / 5;
+                ploha1wire.scale.x = b / 5;
+                render();} ); // 2*b / 10
+            hiper_parametri.add(controls, 'c', 2, 9).step(1).onChange( function(value) { 
+                c = value;
+                ploha1.scale.y = c / 5;
+                ploha1wire.scale.y = c / 5;
+                render();} );
+                
+            hiper_parametri.open();
+
+            var prikaz = gui.addFolder('Prikaz');
+            var MREZA = prikaz.add(controls,'mreza').listen();
+            MREZA.onChange( function() {
+                controls.mreza = true;
+                controls.ploha = false;
+                controls.oboje = false;
+                ploha1wire.visible = true;
+                ploha1.visible = false;
+                render();  
+            });
+            var SURF = prikaz.add(controls,'ploha').listen();
+            SURF.onChange( function() {
+                controls.mreza = false;
+                controls.ploha = true;
+                controls.oboje = false;
+                ploha1wire.visible = false;
+                ploha1.visible = true;
+                render();  
+            });
+            var OBOJE = prikaz.add(controls,'oboje').listen();
+            OBOJE.onChange( function() {
+                controls.mreza = false;
+                controls.ploha = false;
+                controls.oboje = true;
+                ploha1wire.visible = true;
+                ploha1.visible = true;
+                render();  
+            });
+
+            prikaz.open();
+
+            var koordinatne_ravnine = gui.addFolder('Koordinatne ravnine');
+
+            var xy_rav = koordinatne_ravnine.add(controls,'xy').listen();
+            xy_rav.onChange( function() {
+                if (controls.xy) {
+                    ravninaXY.visible = true;
+                } else {
+                    ravninaXY.visible = false;
+                }
+                render();
+            });
+
+            var yz_rav = koordinatne_ravnine.add(controls,'yz').listen();
+            yz_rav.onChange( function() {
+                if (controls.yz) {
+                    ravninaYZ.visible = true;
+                } else {
+                    ravninaYZ.visible = false;
+                }
+                render();
+            });
+
+            var xz_rav = koordinatne_ravnine.add(controls,'xz').listen();
+            xz_rav.onChange( function() {
+                if (controls.xz) {
+                    ravninaXZ.visible = true;
+                } else {
+                    ravninaXZ.visible = false;
+                }
+                render();
+            });
+
+            koordinatne_ravnine.open();
+
+            gui.add(controls,'help');
+
+            render();
+
+            function render() {
+                renderer.render(scene, camera);
+            }
+
+            $(window).resize( function() {
+                camera.aspect = (window.innerWidth) / (window.innerHeight);
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight);
+                render();
+            });
+
+            function vektor(h1, r1, h2, r2) {
+                var valjakGeometry = new THREE.CylinderGeometry(r1,r1,h1,10);
+                var stozacGeometry = new THREE.CylinderGeometry(0,r2,h2,12);
+                var valjak = new THREE.Mesh(valjakGeometry);
+                var stozac = new THREE.Mesh(stozacGeometry);
+                var vek = new THREE.Geometry();
+                stozac.translateY((h1+h2)/2);
+                valjak.updateMatrix();
+                stozac.updateMatrix();
+                vek.merge(valjak.geometry, valjak.matrix);
+                vek.merge(stozac.geometry, stozac.matrix);
+                return vek;
+            }
+
+            function createText(text, params) {
+                var textGeo = new THREE.TextGeometry(text, params);
+                textGeo.computeBoundingBox();
+                textGeo.computeVertexNormals();
+                var material = [new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false}),
+                                new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false})];
+                var textMesh = new THREE.Mesh(textGeo, material);
+                return textMesh;
+            }
+        }//init
+        </script>
+    </body>
+</html>

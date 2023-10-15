@@ -1,0 +1,428 @@
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>G2 neprekidnost - &gamma; pristup</title>
+         <link rel="stylesheet" type="text/css" href="../vendor/jsxgraph.css"/>
+         <script src="../vendor/jsxgraphcore.js"></script>
+         <script src="../noUISlider/nouislider.min.js"></script>
+         <link rel="stylesheet" type="text/css" href="../noUISlider/nouislider.css"/>
+         <script src="../lib/jquery-3.3.1.min.js"></script>
+         <script src="../lib/bootstrap.min.js"></script>
+         <link rel="stylesheet" href="../lib/bootstrap.min.css">
+         <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+         <link href="../vendor/simple-sidebar.css" rel="stylesheet">
+         <link rel="stylesheet" type="text/css" href="../vendor/page.css">
+         <style>
+          .btn:focus, .btn:active, label.btn {
+          outline: none !important;
+          box-shadow: none !important;
+          -webkit-box-shadow: none !important;
+          }
+          .btn.btn-custom-sm {
+            border-radius: 0;
+          }
+          .JXGinfobox {
+            background-color: yellow;
+            padding-left:2px;
+            padding-right: 2px;
+            margin-top: -5px;
+          }
+          [data-toggle="collapse"].collapsed .fa:before { content: "\f056"; }
+          [data-toggle="collapse"] .fa:before { content: "\f055"; }
+         </style>
+    </head>
+
+    <body>
+       
+      <div id="container" style="height:700px;">
+
+        <div id="wrapper">
+
+      
+        <div id="sidebar-wrapper">
+          <ul class="sidebar-nav">
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B&eacute;zierove krivulje</b></li>
+          <li><a href="bernsteinovi_polinomi.html">Bernsteinovi polinomi</a></li>
+          <li><a href="deCasteljau.html">De Casteljaunov algoritam</a></li>
+          <li><a href="partBezier.html">Subdivizija B&eacute;zierove krivulje</a></li>
+          <li><a href="derivacijaBezier.html">Derivacija B&eacute;zierove krivulje</a></li>
+          <li><a href="podizanje_stupnja_Bezier.html">Podizanje stupnja</a></li>
+          <li><a href="G2neprekidnost.html">Geometrijska neprekidnost</a></li>
+          <li><a href="#" style="color:yellow;">G<sup>2</sup> neprekidnost</a></li>
+          <li><a href="konike.html">Konike</a></li>
+          <li><a href="kruznica.html">Kružnica</a></li>
+          <li><a href="racionalni_deCasteljau.html">Racionalne B&eacute;zierove krivulje</a></li>
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B-splajnovi</b></li>
+           <li><a href="bspline_basis.html">Bazne funkcije</a></li>
+           <li><a href="lokalni_deboor.html">Lokalni De Boorov algoritam</a></li>
+           <li><a href="globalni_deboor.html">Globalni De Boorov algoritam</a></li>
+           <li><a href="kubicna_Bsplajn_krivulja.html">Kubična B-splajn krivulja</a></li>
+           <li><a href="periodicna_Bsplajn_krivulja.html">Zatvorena B-splajn krivulja</a></li>
+          </ul>
+        </div>
+
+        <div class="row">
+
+          <div class="col">
+            <a style="position:absolute; left:15px; padding:5px 5px;" href="#menu-toggle" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" id="menu-toggle"><span class="fas fa-th-list fa-2x" style="color:white;"></span></a>
+       
+        <div id="content" style="width:950px;">
+           <div id="box" class="jxgbox" style="width:650px; height:600px; margin-bottom:30px; margin-right:30px; z-index:100; display: inline-block;"></div>
+           <div id="box2" class="jxgbox" style="width:260px; height:600px; margin-bottom:30px; z-index:100; display: inline-block;"></div>
+           <div class="alert alert-secondary" role="alert" style="width:540px; margin-top:50px; margin-left:120px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div style="margin-top:25px;"><span class="badge badge-primary">0</span> <div id="interval-slider-elem" style="width:75%; display: inline-block;"></div> <span class="badge badge-primary">2</span>
+            <button type="button" class="btn btn-sm btn-danger" id="refresh" style="position:relative; left:40px; top:0px; border-radius:7px;"><span class="fas fa-sync-alt" style="color:white;"></span></button>
+            </div>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-top:20px;">
+              <span><span class="badge badge-primary">G<sup>2</sup> neprekidnost</span>&nbsp;&nbsp;</span> 
+              <label class="btn btn-sm btn-secondary active">
+                <input type="radio" value="0" name="neprekidnost_view" id="option1" autocomplete="off" checked> geometrijski pristup
+              </label>
+              <label class="btn btn-sm btn-secondary">
+                <input type="radio" value="1" name="neprekidnost_view" id="option2" autocomplete="off"> &gamma; pristup
+              </label>
+            </div>
+           </div>
+        </div>
+
+      </div>      
+
+      <div class="col">
+
+        <a style="position:absolute;top:0px; right:15px; margin:0; padding:5px 5px;" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" data-toggle="collapse" href="#pomoc" aria-expanded="false" aria-controls="collapseExample"><span class="far fa-image fa-2x" style="color:white;"></span></a>
+
+      <div class="collapse" id="pomoc" style="width:550; position: absolute; top: 50; right:30; z-index:100;">
+       <div class="card card-body">
+       <p style="text-align:center;">
+        <a style="position:absolute; top:0px; left:0px;" href="slike/G2gamma.pdf" target="_blank"><button type="button" class="btn btn-danger btn-sm btn-custom-sm" style="vertical-align:top;"><span class="fas fa-file-pdf" style="color:white;"></span></button></a>
+        <img src="slike/G2gamma.png" width="500"></p>
+
+        <div class="accordion" id="accordionExample">
+          <div class="card" style="border:hidden;">
+          <div class="card-header" id="headingSix" style="background-color: white; padding:0;">
+            <h2 class="mb-0">
+              <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+               <i class="fa"></i> Pomoć
+              </button>
+            </h2>
+          </div>
+          <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
+            <div class="card-body">
+              <ul style="margin:0px; padding:0px;">
+                <li style="margin-bottom:2pt;">U lijevom apletu se modelira krivulja na temelju odabranog pristupa za <i>G<sup>2</sup></i> neprekidnost.</li>
+                <li style="margin-bottom:2pt;">Desni aplet prikazuje graf funkcije zakrivljenosti krivulje prikazane u lijevom apletu. Slika se može zumirati duž y-osi i translatirati pomoću tipki na dnu apleta.</li>
+                <li>Pomoću slidera možemo mijenjati duljine intervala na kojima su definirane <i>crvena</i> i <i>plava</i> krivulja.</li>
+                <li>Pomoću tipke <span class="badge badge-danger"><span class="fas fa-sync-alt" style="color:white;"></span></span> možemo vratiti aplet u početno stanje.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        </div>
+
+      </div>
+     </div> 
+
+
+        <div class="alert alert-secondary" role="alert" style="width:540px; margin-top:60px; margin-left:80px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <p><b>G<sup>2</sup> neprekidnost</b><p>
+            <hr>
+            <p><span class="badge badge-secondary" style="margin-bottom:5px;">geometrijski pristup</span><br>
+            Ravninske <i>G<sup>2</sup></i> krivulje imaju neprekidnu zakrivljenost s predznakom,<br> a prostorne <i>G<sup>2</sup></i> krivulje imaju
+            neprekidnu zakrivljenost i neprekidne vektore binormala (neprekidno mijenjanje oskulacijskih ravnina).</p>
+            <p><img src="slike/G2nepr1.png" style="margin-left:30px;"></p>
+            <p><span class="badge badge-secondary" style="margin-bottom:5px;">&gamma; pristup</span><br>
+            Traži se još dodatni zahjev da krivulja bude i <i>C<sup>1</sup></i> neprekidna pa mora vrijediti <img src="slike/G2nepr2.png"> pri čemu su
+            <img src="slike/G2nepr3.png"> i <img src="slike/G2nepr4.png"> duljine intervala na kojima su definirane <i>crvena</i> i <i>plava</i> krivulja.</p>
+            <p><img src="slike/G2nepr5.png" style="margin-left:20px;"></p>
+            <p>Ako je <img src="slike/G2nepr6.png">, tada je krivulja <i>C<sup>2</sup></i> neprekidna.</p>
+            <p><span class="badge badge-secondary" style="margin-bottom:5px;">&nu; pristup</span><br>
+            Iz neprekidnosti po oskulacijskim ravninama i <i>C<sup>1</sup></i> neprekidnosti može se pokazati da vrijedi 
+            <img src="slike/G2nepr7.png" style="margin-left:5px;">.<br>
+            Konstanta &nu; ovisi o parametrizaciji krivulje i vrijedi</p>
+            <p style="text-align:center;"><img src="slike/G2nepr8.png"></p>
+          </div>
+      </div>
+
+      </div>
+    </div>
+        
+      </div>
+
+      <script language="JavaScript">
+            JXG.Options.infobox.strokeColor = '#0033cc';
+            interval_slider_elem = document.getElementById('interval-slider-elem');
+
+            noUiSlider.create(interval_slider_elem, {start: [1], connect: 'lower', tooltips:[true], step: 0.01, 
+                                         range: {'min': 0, 'max': 2}, padding:[0.2,0.2]});
+
+            function tocka(p1, p2, delta) {
+              let vekX = p2.X() - p1.X();
+              let vekY = p2.Y() - p1.Y();
+              let dist = Math.sqrt(vekX**2 + vekY**2);
+              vekX /= dist;
+              vekY /= dist;
+              return [p2.X() - vekX * delta, p2.Y() - vekY * delta];
+            }
+
+            function Rminus() {        
+              if (B2.X() != B1.X()) return (B2.X() - B1.X()) / (D.X() - B2.X());
+              else return (B2.Y() - B1.Y()) / (D.Y() - B2.Y());   
+            }
+
+            function Rplus() {        
+              if (D.X() != C2.X()) return (C1.X() - D.X()) / (C2.X() - C1.X());
+              else return (C1.Y() - D.Y()) / (C2.Y() - C1.Y());  
+            }
+
+            function Rfun() {
+              return Math.sqrt(Rminus() * Rplus());
+            }
+
+            function RplusGamma() {
+              return RfunGamma()**2 / Rminus();
+            }
+
+            function RfunGamma() {
+              return ts / (2 - ts);
+            }
+
+            function fleksija1() {// na [0, ts]
+              let db0X = B1.X() - B0.X(), db0Y = B1.Y() - B0.Y();
+              let db1X = B2.X() - B1.X(), db1Y = B2.Y() - B1.Y();
+              let db2X = B3.X() - B2.X(), db2Y = B3.Y() - B2.Y();
+              let d2b0X = db1X - db0X, d2b0Y = db1Y - db0Y;
+              let d2b1X = db2X - db1X, d2b1Y = db2Y - db1Y;
+              return t => 2*((1-t/ts)**3 * (db0X * d2b0Y - db0Y * d2b0X) +
+                            3*(t/ts)*(1-t/ts)**2 * (b13 * (db0X * d2b1Y - db0Y * d2b1X) + b23 * (db1X * d2b0Y - db1Y * d2b0X)) +
+                            3*(1-t/ts)*(t/ts)**2 * (b23 * (db1X * d2b1Y - db1Y * d2b1X) + b13 * (db2X * d2b0Y - db2Y * d2b0X)) +
+                            (t/ts)**3 * (db2X * d2b1Y - db2Y * d2b1X)) / 
+                          (3 * (((1-t/ts)**2 * db0X + 2*(t/ts)*(1-t/ts) * db1X + (t/ts)**2 * db2X)**2 + ((1-t/ts)**2 * db0Y + 
+                            2*(t/ts)*(1-t/ts) * db1Y + (t/ts)**2 * db2Y)**2)**1.5); 
+            }
+
+            function fleksija2() {
+              let db0X = C1.X() - B3.X(), db0Y = C1.Y() - B3.Y();
+              let db1X = C2.X() - C1.X(), db1Y = C2.Y() - C1.Y();
+              let db2X = C3.X() - C2.X(), db2Y = C3.Y() - C2.Y();
+              let d2b0X = db1X - db0X, d2b0Y = db1Y - db0Y;
+              let d2b1X = db2X - db1X, d2b1Y = db2Y - db1Y;
+              let ts2 = 2 - ts;
+              return t => 2*(((2-t)/ts2)**3 * (db0X * d2b0Y - db0Y * d2b0X) +
+                            3*(t-ts)/ts2*((2-t)/ts2)**2 * (b13 * (db0X * d2b1Y - db0Y * d2b1X) + b23 * (db1X * d2b0Y - db1Y * d2b0X)) +
+                            3*((2-t)/ts2)*((t-ts)/ts2)**2 * (b23 * (db1X * d2b1Y - db1Y * d2b1X) + b13 * (db2X * d2b0Y - db2Y * d2b0X)) +
+                            ((t-ts)/ts2)**3 * (db2X * d2b1Y - db2Y * d2b1X)) / 
+                          (3 * ((((2-t)/ts2)**2 * db0X + 2*((t-ts)/ts2)*(2-t)/ts2 * db1X + ((t-ts)/ts2)**2 * db2X)**2 + 
+                            (((2-t)/ts2)**2 * db0Y + 2*((t-ts)/ts2)*(2-t)/ts2 * db1Y + ((t-ts)/ts2)**2 * db2Y)**2)**1.5); 
+            }
+
+            var opcija = 0; // 0 - geometrijski pristup, 1 - gamma pristup
+            var ts = 1; //slider interval
+            var b13 = 1 / 3, b23 = 2 / 3;
+                        
+            var aplet = JXG.JSXGraph.initBoard('box', {boundingbox: [-2, 9, 10, -0.5], grid:true,  
+                                                       showCopyright:false,
+                                                       showNavigation:false,axis:true,
+                                                       keepAspectRatio:true,
+                                                       zoom:{wheel:false},
+                                                       pan:{enabled:false}});
+
+            var aplet2 = JXG.JSXGraph.initBoard('box2', {boundingbox: [-0.3, 3, 2.2, -3], grid:false,  
+                                                       showCopyright:false, keepAspectRatio: false,
+                                                       showNavigation:true, axis:true,
+                                                       zoom:{wheel:false, min:0.01, max:100},
+                                                       pan:{enabled:false}});
+
+            aplet.addChild(aplet2);
+            
+            aplet.highlightInfobox = function (x, y, el) {
+                if (el.name != '<span>b<sub>3</sub>=c<sub>0</sub></span>') {
+                  aplet.infobox.setText('');
+                  this.infobox.rendNode.style.border = 'none';
+                } else {
+                  this.infobox.setText(el.name);
+                  this.infobox.rendNode.style.border = 'solid #ffccff 1px';
+                }
+            };
+
+            aplet2.attr.zoom.factorx = 1;
+            aplet2.attr.zoom.factory = 1.5;
+            aplet2.zoom100();
+
+            var ime = aplet2.create('text',[function() {return aplet2.getBoundingBox()[2];},
+                                           function() {return aplet2.getBoundingBox()[1];},
+                                           '<span style="background-color:white;">Zakrivljenost&nbsp;&nbsp;</span>'],
+                                           {anchorX:'right',anchorY:'top',fontSize:14});
+
+            var B0 = aplet.create('point', [-1.1,2.2], {'name':'<span style="background-color:white; opacity:0.7;">b<sub>0</sub></span>', 
+                size:4, color:'#009900', label:{offset:[-5,-17]}});
+            var D = aplet.create('point', [4.5,7.5], {'name':'<span style="background-color:white; opacity:0.7;">d</span>', 
+                size:4, color:'#009900', label:{offset:[-5,17]}, face:'square'});
+            var B1 = aplet.create('point', [-0.7,5.3], {'name':'<span style="background-color:white; opacity:0.7;">b<sub>1</sub></span>', 
+                size:4, color:'#009900', label:{offset:[-5,17]}});
+            var C2 = aplet.create('point', [8.3,3.6], {'name':'<span style="background-color:white; opacity:0.7;">c<sub>2</sub></span>', 
+                size:4, color:'#009900', label:{offset:[-5,17]}});
+            var C3 = aplet.create('point', [9,1], {'name':'<span style="background-color:white; opacity:0.7;">c<sub>3</sub></span>', 
+                size:4, color:'#009900', label:{offset:[-5,-17]}});
+
+            var B1hide = aplet.create('point', [function(){return tocka(D, B1, 0.2);}], {visible:false});
+            var D1hide = aplet.create('point', [function(){return tocka(B1, D, 0.2);}], {visible:false});
+            var segGlider1 = aplet.create('segment', [B1hide,D1hide], {visible:false});
+            var C2hide = aplet.create('point', [function(){return tocka(D, C2, 0.2);}], {visible:false});
+            var D2hide = aplet.create('point', [function(){return tocka(C2, D, 0.2);}], {visible:false});
+            var segGlider2 = aplet.create('segment', [D2hide,C2hide], {visible:false});
+
+            var B2 = aplet.create('glider', [0.5*(B1.X()+D.X()), 0.5*(B1.Y()+D.Y()), segGlider1], 
+                {'name':'<span style="background-color:white; opacity:0.7;">b<sub>2</sub></span>', size:4, color:'#00ccff', label:{offset:[-5,17]}});
+            
+            var C1 = aplet.create('glider', [0.5*(D.X()+C2.X()), 0.5*(D.Y()+C2.Y()), segGlider2], 
+                {'name':'<span style="background-color:white; opacity:0.7;">c<sub>1</sub></span>', size:4, color:'#00ccff', label:{offset:[-5,17]}});
+            var B3 = aplet.create('point', [function(){return 1 / (1 + Rfun()) * B2.X() + Rfun() / (1 + Rfun()) * C1.X();},
+                                            function(){return 1 / (1 + Rfun()) * B2.Y() + Rfun() / (1 + Rfun()) * C1.Y();}], 
+                           {'name':'<span>b<sub>3</sub>=c<sub>0</sub></span>', size:2, color:'#ffff00', label:{visible:false}});
+
+            var segment1 = aplet.create('segment', [B0,B1], {strokeColor:'#0099ff',dash:1,strokeWidth:1});
+            var segment2 = aplet.create('segment', [B1,B2], {strokeColor:'#0099ff',dash:1,strokeWidth:1});
+            var segment3 = aplet.create('segment', [B2,B3], {strokeColor:'#0099ff',dash:1,strokeWidth:1});
+            var segment4 = aplet.create('segment', [B3,C1], {strokeColor:'#a80fff',dash:1,strokeWidth:1});
+            var segment5 = aplet.create('segment', [C1,C2], {strokeColor:'#a80fff',dash:1,strokeWidth:1});
+            var segment6 = aplet.create('segment', [C2,C3], {strokeColor:'#a80fff',dash:1,strokeWidth:1});
+            var segB2D = aplet.create('segment', [B2,D], {strokeColor:'#ff3e96',dash:2,strokeWidth:1});
+            var segC1D = aplet.create('segment', [C1,D], {strokeColor:'#ff3e96',dash:2,strokeWidth:1});
+
+            aplet.on('update', function() {
+              fun_zak1 = fleksija1();
+              fun_zak2 = fleksija2();
+            });
+
+            segment1.setAttribute({fixed:true,highlight:false});
+            segment2.setAttribute({fixed:true,highlight:false});
+            segment3.setAttribute({fixed:true,highlight:false});
+            segment4.setAttribute({fixed:true,highlight:false});
+            segment5.setAttribute({fixed:true,highlight:false});
+            segment6.setAttribute({fixed:true,highlight:false});
+            segB2D.setAttribute({fixed:true,highlight:false});
+            segC1D.setAttribute({fixed:true,highlight:false});
+            B3.setAttribute({strokeColor: 'black'});
+
+            var krivulja1 = aplet.create('curve', JXG.Math.Numerics.bezier([B0,B1,B2,B3]), {strokeWidth:3,strokeColor:'red',doAdvancedPlot:false});
+            var krivulja2 = aplet.create('curve', JXG.Math.Numerics.bezier([B3,C1,C2,C3]), {strokeWidth:3,strokeColor:'blue',doAdvancedPlot:false});
+
+            var fun_zak1 = fleksija1(), fun_zak2 = fleksija2();
+
+            var graf1 = aplet2.create('functiongraph',
+                       [function(x){ return fun_zak1(x);}, 0, function(){return ts;}],
+                       {strokeColor:'red',doAdvancedPlot:false,numberPointsHigh:4000}
+                    );
+            var graf2 = aplet2.create('functiongraph',
+                       [function(x){ return fun_zak2(x);}, function(){return ts;}, 2],
+                       {strokeColor:'blue',doAdvancedPlot:false,numberPointsHigh:4000}
+                    );
+            
+            $("#menu-toggle").click(function(event) {
+              event.preventDefault();
+              $("#wrapper").toggleClass("toggled");
+            });
+
+            interval_slider_elem.noUiSlider.on('update', function() {
+              ts = Number(interval_slider_elem.noUiSlider.get());
+              fun_zak1 = fleksija1(); 
+              fun_zak2 = fleksija2();
+              aplet.update();
+            });
+
+            interval_slider_elem.noUiSlider.on('end', function() {
+              aplet2.updateQuality = aplet2.BOARD_QUALITY_HIGH;
+              aplet2.update();
+              aplet2.updateQuality = aplet2.BOARD_QUALITY_LOW;
+            });
+
+            $('#refresh').on('click', function(event) {
+              event.preventDefault();
+              aplet.suspendUpdate();
+              aplet.removeObject([B3,C1,krivulja1,krivulja2]);
+              C1 = aplet.create('glider', [0.5*(D.X()+C2.X()), 0.5*(D.Y()+C2.Y()), segGlider2],
+                        {'name':'<span style="background-color:white; opacity:0.7;">c<sub>1</sub></span>', size:4, color:'#00ccff', label:{offset:[-5,17]}});
+              B3 = aplet.create('point', [function(){return 1 / (1 + Rfun()) * B2.X() + Rfun() / (1 + Rfun()) * C1.X();},
+                                            function(){return 1 / (1 + Rfun()) * B2.Y() + Rfun() / (1 + Rfun()) * C1.Y();}], 
+                           {'name':'<span>b<sub>3</sub>=c<sub>0</sub></span>', size:2, color:'#ffff00', label:{visible:false}});
+              B3.setAttribute({strokeColor: 'black'});
+              segment3 = aplet.create('segment', [B2,B3], {strokeColor:'#0099ff',dash:1,strokeWidth:1});
+              segment4 = aplet.create('segment', [B3,C1], {strokeColor:'#a80fff',dash:1,strokeWidth:1});
+              segment5 = aplet.create('segment', [C1,C2], {strokeColor:'#a80fff',dash:1,strokeWidth:1});
+              segC1D = aplet.create('segment', [C1,D], {strokeColor:'#ff3e96',dash:2,strokeWidth:1});
+              segment3.setAttribute({fixed:true,highlight:false});
+              segment4.setAttribute({fixed:true,highlight:false});
+              segment5.setAttribute({fixed:true,highlight:false});
+              segC1D.setAttribute({fixed:true,highlight:false});
+              B0.moveTo([-1.1,2.2]);
+              B1.moveTo([-0.7,5.3]);
+              C2.moveTo([8.3,3.6]);
+              C3.moveTo([9,1]);
+              D.moveTo([4.5,7.5]);
+              krivulja1 = aplet.create('curve', JXG.Math.Numerics.bezier([B0,B1,B2,B3]), {strokeWidth:3,strokeColor:'red',doAdvancedPlot:false});
+              krivulja2 = aplet.create('curve', JXG.Math.Numerics.bezier([B3,C1,C2,C3]), {strokeWidth:3,strokeColor:'blue',doAdvancedPlot:false});
+              opcija = 0;
+              ts = 1;
+              interval_slider_elem.noUiSlider.set(1);
+              $("#option1").prop("checked", true).trigger("click");
+              aplet.unsuspendUpdate();
+              aplet2.zoom100();
+              aplet2.setBoundingBox([-0.3, 3, 2.2, -3], false);
+              aplet2.zoom100();
+              aplet.fullUpdate();
+            });
+
+            $('input[name=neprekidnost_view]').on('change', function() {
+              if (parseInt($(this).val()) != opcija) {
+                opcija = parseInt($(this).val());
+                aplet.removeObject([B3,C1,krivulja1,krivulja2]);
+                aplet.suspendUpdate();
+
+                switch(opcija) {
+                  case 0:
+                  C1 = aplet.create('glider', [0.5*(D.X()+C2.X()), 0.5*(D.Y()+C2.Y()), segGlider2],
+                        {'name':'<span style="background-color:white; opacity:0.7;">c<sub>1</sub></span>', size:4, color:'#00ccff', label:{offset:[-5,17]}});
+                  B3 = aplet.create('point', [function(){return 1 / (1 + Rfun()) * B2.X() + Rfun() / (1 + Rfun()) * C1.X();},
+                                            function(){return 1 / (1 + Rfun()) * B2.Y() + Rfun() / (1 + Rfun()) * C1.Y();}], 
+                           {'name':'<span>b<sub>3</sub>=c<sub>0</sub></span>', size:2, color:'#ffff00', label:{visible:false}});
+                  break;
+
+                  case 1:
+                  C1 = aplet.create('point', [function(){return 1 / (1 + RplusGamma()) * D.X() + RplusGamma() / (1 + RplusGamma()) * C2.X();},
+                                              function(){return 1 / (1 + RplusGamma()) * D.Y() + RplusGamma() / (1 + RplusGamma()) * C2.Y();}], 
+                           {'name':'<span style="background-color:white; opacity:0.7;">c<sub>1</sub></span>', 
+                             size:3, color:'#ffff00', label:{offset:[-5,17]}});
+                  B3 = aplet.create('point', [function(){return 1 / (1 + RfunGamma()) * B2.X() + RfunGamma() / (1 + RfunGamma()) * C1.X();},
+                                              function(){return 1 / (1 + RfunGamma()) * B2.Y() + RfunGamma() / (1 + RfunGamma()) * C1.Y();}], 
+                           {'name':'<span>b<sub>3</sub>=c<sub>0</sub></span>', size:2, color:'#ffff00', label:{visible:false}});
+                  C1.setAttribute({strokeColor: 'black'});
+                }
+
+                fun_zak1 = fleksija1();
+                fun_zak2 = fleksija2();
+                B3.setAttribute({strokeColor: 'black'});
+                segment3 = aplet.create('segment', [B2,B3], {strokeColor:'#0099ff',dash:1,strokeWidth:1});
+                segment4 = aplet.create('segment', [B3,C1], {strokeColor:'#a80fff',dash:1,strokeWidth:1});
+                segment5 = aplet.create('segment', [C1,C2], {strokeColor:'#a80fff',dash:1,strokeWidth:1});
+                segC1D = aplet.create('segment', [C1,D], {strokeColor:'#ff3e96',dash:2,strokeWidth:1});
+
+                krivulja1 = aplet.create('curve', JXG.Math.Numerics.bezier([B0,B1,B2,B3]), {strokeWidth:3,strokeColor:'red',doAdvancedPlot:false});
+                krivulja2 = aplet.create('curve', JXG.Math.Numerics.bezier([B3,C1,C2,C3]), {strokeWidth:3,strokeColor:'blue',doAdvancedPlot:false});
+
+                segment3.setAttribute({fixed:true,highlight:false});
+                segment4.setAttribute({fixed:true,highlight:false});
+                segment5.setAttribute({fixed:true,highlight:false});
+                segC1D.setAttribute({fixed:true,highlight:false});
+
+                aplet.unsuspendUpdate();
+                aplet2.updateQuality = aplet2.BOARD_QUALITY_HIGH;
+                aplet2.update();
+                aplet2.updateQuality = aplet2.BOARD_QUALITY_LOW;
+              }
+            });
+        </script>
+
+    </body>
+
+</html>

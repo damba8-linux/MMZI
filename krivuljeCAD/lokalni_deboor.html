@@ -1,0 +1,275 @@
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>lokalni de Boor</title>
+         <link rel="stylesheet" type="text/css" href="../vendor/jsxgraph.css"/>
+         <script src="../vendor/jsxgraphcore.js"></script>
+         <script src="../lib/jquery-3.3.1.min.js"></script>
+         <script src="../lib/bootstrap.min.js"></script>
+         <link rel="stylesheet" href="../lib/bootstrap.min.css">
+         <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+         <link href="../vendor/simple-sidebar.css" rel="stylesheet">
+         <link rel="stylesheet" type="text/css" href="../vendor/page.css">
+         <style>
+          .btn:focus, .btn:active {
+          outline: none !important;
+          box-shadow: none !important;
+          -webkit-box-shadow: none !important;
+          }
+          .btn.btn-custom-sm {
+            border-radius: 0;
+          }
+         </style>
+    </head>
+
+    <body>
+       
+      <div id="container" style="height:700px;">
+
+        <div id="wrapper">
+
+      
+        <div id="sidebar-wrapper">
+          <ul class="sidebar-nav">
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B&eacute;zierove krivulje</b></li>
+          <li><a href="bernsteinovi_polinomi.html">Bernsteinovi polinomi</a></li>
+          <li><a href="deCasteljau.html">De Casteljaunov algoritam</a></li>
+          <li><a href="partBezier.html">Subdivizija B&eacute;zierove krivulje</a></li>
+          <li><a href="derivacijaBezier.html">Derivacija B&eacute;zierove krivulje</a></li>
+          <li><a href="podizanje_stupnja_Bezier.html">Podizanje stupnja</a></li>
+          <li><a href="G2neprekidnost.html">Geometrijska neprekidnost</a></li>
+          <li><a href="G2gamma.html">G<sup>2</sup> neprekidnost</a></li>
+          <li><a href="konike.html">Konike</a></li>
+          <li><a href="kruznica.html">Kružnica</a></li>
+          <li><a href="racionalni_deCasteljau.html">Racionalne B&eacute;zierove krivulje</a></li>
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B-splajnovi</b></li>
+           <li><a href="bspline_basis.html">Bazne funkcije</a></li>
+           <li><a href="#" style="color:yellow;">Lokalni De Boorov algoritam</a></li>
+           <li><a href="globalni_deboor.html">Globalni De Boorov algoritam</a></li>
+           <li><a href="kubicna_Bsplajn_krivulja.html">Kubična B-splajn krivulja</a></li>
+           <li><a href="periodicna_Bsplajn_krivulja.html">Zatvorena B-splajn krivulja</a></li>
+          </ul>
+        </div>
+
+        <div class="row">
+
+          <div class="col">
+            <a style="position:absolute; left:15px; padding:5px 5px;" href="#menu-toggle" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" id="menu-toggle"><span class="fas fa-th-list fa-2x" style="color:white;"></span></a>
+       
+        <div id="content" style="width:800px;">
+           <div id="box" class="jxgbox" style="width:800px; height:600px; margin-bottom:30px; z-index:100;"></div>
+           <button type="button" class="btn btn-sm btn-danger" id="refresh" style="position:relative; left:3px; top:-57px; z-index:200; border-radius:7px;"><span class="fas fa-sync-alt" style="color:white;"></span></button> 
+        </div>
+        <script language="JavaScript">
+
+            var knot = [1,2,3,7,8,9];
+            var tocke = [];
+            var control = [];
+            knot[-1] = knot[0] - 1;
+            knot[6] = knot[5] + 1;
+
+            function BS3(l,knot,u) {
+              if ((u >= knot[l-1]) && (u < knot[l])) {
+                return (u-knot[l-1])**3 / ((knot[l+2]-knot[l-1])*(knot[l+1]-knot[l-1])*(knot[l]-knot[l-1]));
+              } else if ((u >= knot[l]) && (u < knot[l+1])) {
+                return (u-knot[l-1])**2 * (knot[l+1]-u) / ((knot[l+2]-knot[l-1])*(knot[l+1]-knot[l-1])*(knot[l+1]-knot[l])) +
+                       (u-knot[l-1])*(u-knot[l])*(knot[l+2]-u) / ((knot[l+2]-knot[l-1])*(knot[l+2]-knot[l])*(knot[l+1]-knot[l])) +
+                       (u-knot[l])**2 * (knot[l+3]-u) / ((knot[l+3]-knot[l])*(knot[l+2]-knot[l])*(knot[l+1]-knot[l]));
+              } else if ((u >= knot[l+1]) && (u < knot[l+2])) {
+                return (knot[l+2]-u)**2 * (u-knot[l-1]) / ((knot[l+2]-knot[l-1])*(knot[l+2]-knot[l])*(knot[l+2]-knot[l+1])) +
+                       (knot[l+3]-u)*(knot[l+2]-u)*(u-knot[l]) / ((knot[l+3]-knot[l])*(knot[l+2]-knot[l])*(knot[l+2]-knot[l+1])) +
+                       (knot[l+3]-u)**2 * (u-knot[l+1]) / ((knot[l+3]-knot[l])*(knot[l+3]-knot[l+1])*(knot[l+2]-knot[l+1]));
+              } else if ((u >= knot[l+2]) && (u < knot[l+3])) {
+                return (knot[l+3]-u)**3 / ((knot[l+3]-knot[l])*(knot[l+3]-knot[l+1])*(knot[l+3]-knot[l+2]));
+              } else return 0;
+            }
+            
+            var aplet = JXG.JSXGraph.initBoard('box', {boundingbox: [-2, 9, 11, -0.5], grid:true,  
+                                                       showCopyright:false, keepaspectratio: false,
+                                                       showNavigation:false,axis:true,
+                                                       zoom:{wheel:false},
+                                                       pan:{enabled:false}});
+            
+            aplet.highlightInfobox = function (x, y, el) {
+                aplet.infobox.setText('');
+            }; 
+
+            var ime = aplet.create('text',[10.7,8.6,'<span style="background-color:white;">De Boorov algoritam</span>'],{anchorX:'right',anchorY:'bottom',fontSize:14});
+
+            for(let i=0; i<=5; i++) {
+              tocke[i] = aplet.create('point', [knot[i],0], {'name':'u_' + String(i+3), size:2, color:'blue', label:{offset:[-5,17]}});
+            }
+
+            var interval = aplet.create('segment', [tocke[2], tocke[3]], {strokeColor:'#8599a0',strokeWidth:4});
+            var pu = aplet.create('glider', [4.8,0,interval], {'name':'u', size:2, color:'#ffff00', label:{offset:[-5,17]}});
+
+            control[0] = aplet.create('point', [0.5,2], {'name':'<span style="background-color:white; opacity:0.7;">d_0</span>', size:4, color:'#009900', label:{offset:[-5,17]}});
+            control[1] = aplet.create('point', [1.5,7.5], {'name':'<span style="background-color:white; opacity:0.7;">d_1</span>', size:4, color:'#009900', label:{offset:[-5,17]}});
+            control[2] = aplet.create('point', [9,8], {'name':'<span style="background-color:white; opacity:0.7;">d_2</span>', size:4, color:'#009900', label:{offset:[-5,17]}}); 
+            control[3] = aplet.create('point', [10,2.5], {'name':'<span style="background-color:white; opacity:0.7;">d_3</span>', size:4, color:'#009900', label:{offset:[-5,17]}});
+
+            var D01 = aplet.create('point', [function(){return (knot[3]-pu.X())/(knot[3]-knot[0])*control[0].X() + (pu.X()-knot[0])/(knot[3]-knot[0])*control[1].X();},
+                                         function(){return (knot[3]-pu.X())/(knot[3]-knot[0])*control[0].Y() + (pu.X()-knot[0])/(knot[3]-knot[0])*control[1].Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_0^1</span>', face:'square', color:'#30c5dc', size:2, label:{offset:[-5,-17]}});
+            var D11 = aplet.create('point', [function(){return (knot[4]-pu.X())/(knot[4]-knot[1])*control[1].X() + (pu.X()-knot[1])/(knot[4]-knot[1])*control[2].X();},
+                                         function(){return (knot[4]-pu.X())/(knot[4]-knot[1])*control[1].Y() + (pu.X()-knot[1])/(knot[4]-knot[1])*control[2].Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_1^1</span>', face:'square', color:'#30c5dc', size:2, label:{offset:[-5,-17]}});
+            var D21 = aplet.create('point', [function(){return (knot[5]-pu.X())/(knot[5]-knot[2])*control[2].X() + (pu.X()-knot[2])/(knot[5]-knot[2])*control[3].X();},
+                                         function(){return (knot[5]-pu.X())/(knot[5]-knot[2])*control[2].Y() + (pu.X()-knot[2])/(knot[5]-knot[2])*control[3].Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_2^1</span>', face:'square', color:'#30c5dc', size:2, label:{offset:[-5,-17]}});
+
+            var p1 = aplet.create('point', [function(){return (knot[3]-knot[2])/(knot[3]-knot[0])*control[0].X() + (knot[2]-knot[0])/(knot[3]-knot[0])*control[1].X();},
+                                         function(){return (knot[3]-knot[2])/(knot[3]-knot[0])*control[0].Y() + (knot[2]-knot[0])/(knot[3]-knot[0])*control[1].Y();}],
+                                        {visible:false});
+            var p2 = aplet.create('point', [function(){return (knot[4]-knot[2])/(knot[4]-knot[1])*control[1].X() + (knot[2]-knot[1])/(knot[4]-knot[1])*control[2].X();},
+                                         function(){return (knot[4]-knot[2])/(knot[4]-knot[1])*control[1].Y() + (knot[2]-knot[1])/(knot[4]-knot[1])*control[2].Y();}],
+                                        {visible:false});
+            var p3 = aplet.create('point', [function(){return (knot[4]-knot[3])/(knot[4]-knot[1])*control[1].X() + (knot[3]-knot[1])/(knot[4]-knot[1])*control[2].X();},
+                                         function(){return (knot[4]-knot[3])/(knot[4]-knot[1])*control[1].Y() + (knot[3]-knot[1])/(knot[4]-knot[1])*control[2].Y();}],
+                                        {visible:false});
+            var p4 = aplet.create('point', [function(){return (knot[5]-knot[3])/(knot[5]-knot[2])*control[2].X() + (knot[3]-knot[2])/(knot[5]-knot[2])*control[3].X();},
+                                         function(){return (knot[5]-knot[3])/(knot[5]-knot[2])*control[2].Y() + (knot[3]-knot[2])/(knot[5]-knot[2])*control[3].Y();}],
+                                        {visible:false});
+            var p5 = aplet.create('point', [function(){return (knot[3]-knot[2])/(knot[3]-knot[1])*D01.X() + (knot[2]-knot[1])/(knot[3]-knot[1])*D11.X();},
+                                         function(){return (knot[3]-knot[2])/(knot[3]-knot[1])*D01.Y() + (knot[2]-knot[1])/(knot[3]-knot[1])*D11.Y();}],
+                                        {visible:false});
+            var p6 = aplet.create('point', [function(){return (knot[4]-knot[3])/(knot[4]-knot[2])*D11.X() + (knot[3]-knot[2])/(knot[4]-knot[2])*D21.X();},
+                                         function(){return (knot[4]-knot[3])/(knot[4]-knot[2])*D11.Y() + (knot[3]-knot[2])/(knot[4]-knot[2])*D21.Y();}],
+                                        {visible:false});               
+
+            var segment11 = aplet.create('segment', [control[0],p1], {strokeColor:'magenta',dash:1,strokeWidth:1});
+            var segment12 = aplet.create('segment', [control[1],p1], {strokeColor:'magenta',strokeWidth:1,shadow:true});
+            var segment21 = aplet.create('segment', [control[1],p2], {strokeColor:'magenta',dash:1,strokeWidth:1});
+            var segment22 = aplet.create('segment', [p2,p3], {strokeColor:'magenta',strokeWidth:1,shadow:true});
+            var segment23 = aplet.create('segment', [control[2],p3], {strokeColor:'magenta',dash:1,strokeWidth:1});
+            var segment31 = aplet.create('segment', [control[2],p4], {strokeColor:'magenta',strokeWidth:1,shadow:true});
+            var segment32 = aplet.create('segment', [control[3],p4], {strokeColor:'magenta',dash:1,strokeWidth:1});
+
+            var segment41 = aplet.create('segment', [D01,p5], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+            var segment42 = aplet.create('segment', [p5,D11], {strokeColor:'#0033ff',strokeWidth:1,shadow:true});
+            var segment51 = aplet.create('segment', [D11,p6], {strokeColor:'#0033ff',strokeWidth:1,shadow:true});
+            var segment52 = aplet.create('segment', [p6,D21], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+
+            var D02 = aplet.create('point', [function(){return (knot[3]-pu.X())/(knot[3]-knot[1])*D01.X() + (pu.X()-knot[1])/(knot[3]-knot[1])*D11.X();},
+                                         function(){return (knot[3]-pu.X())/(knot[3]-knot[1])*D01.Y() + (pu.X()-knot[1])/(knot[3]-knot[1])*D11.Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_0^2</span>', face:'square', color:'#6c8cff', size:2, label:{offset:[-5,-17]}});
+            var D12 = aplet.create('point', [function(){return (knot[4]-pu.X())/(knot[4]-knot[2])*D11.X() + (pu.X()-knot[2])/(knot[4]-knot[2])*D21.X();},
+                                         function(){return (knot[4]-pu.X())/(knot[4]-knot[2])*D11.Y() + (pu.X()-knot[2])/(knot[4]-knot[2])*D21.Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_1^2</span>', face:'square', color:'#6c8cff', size:2, label:{offset:[-5,-17]}});
+
+            var segment6 = aplet.create('segment', [D02,D12], {strokeColor:'#25976f',dash:2,strokeWidth:1});
+
+            var D03 = aplet.create('point', [function(){return (knot[3]-pu.X())/(knot[3]-knot[2])*D02.X() + (pu.X()-knot[2])/(knot[3]-knot[2])*D12.X();},
+                                         function(){return (knot[3]-pu.X())/(knot[3]-knot[2])*D02.Y() + (pu.X()-knot[2])/(knot[3]-knot[2])*D12.Y();}],
+                                        {'name':'<span style="background-color:white; opacity:0.7;">d_0^3</span>', color:'#ffff00', size:2, label:{offset:[-5,-17]}});
+
+            ime.setAttribute({fixed:true});
+            interval.setAttribute({fixed:true,highlight:false});
+            segment11.setAttribute({fixed:true,highlight:false});
+            segment12.setAttribute({fixed:true,highlight:false});
+            segment21.setAttribute({fixed:true,highlight:false});
+            segment22.setAttribute({fixed:true,highlight:false});
+            segment23.setAttribute({fixed:true,highlight:false});
+            segment31.setAttribute({fixed:true,highlight:false});
+            segment32.setAttribute({fixed:true,highlight:false});
+            segment41.setAttribute({fixed:true,highlight:false});
+            segment42.setAttribute({fixed:true,highlight:false});
+            segment51.setAttribute({fixed:true,highlight:false});
+            segment52.setAttribute({fixed:true,highlight:false});
+            segment6.setAttribute({fixed:true,highlight:false});
+            D01.setAttribute({highlight:false});
+            D11.setAttribute({highlight:false});
+            D21.setAttribute({highlight:false});
+            D02.setAttribute({highlight:false});
+            D12.setAttribute({highlight:false});
+            D03.setAttribute({strokeColor: 'black'});
+            pu.setAttribute({strokeColor: 'black'});
+            //control[0].setAttribute({snapToGrid:true,snapSizeX:0.1,snapSizeY:0.1});
+            
+            tocke[0].on('drag', function() {
+                tocke[0].moveTo([tocke[0].X(),0]);
+                if (tocke[0].X()>tocke[1].X()) tocke[0].moveTo([tocke[1].X(),0]);
+                knot[0] = tocke[0].X();
+                knot[-1] = tocke[0].X()-1;
+            });
+
+            for(let i=1; i<5; i++) {
+              tocke[i].on('drag', function() {
+                tocke[i].moveTo([tocke[i].X(),0]);
+                if (tocke[i].X()>tocke[i+1].X()) tocke[i].moveTo([tocke[i+1].X(),0]);
+                if (tocke[i].X()<tocke[i-1].X()) tocke[i].moveTo([tocke[i-1].X(),0]);
+                knot[i] = tocke[i].X();
+              });
+            }
+
+            tocke[5].on('drag', function() {
+                tocke[5].moveTo([tocke[5].X(),0]);
+                if (tocke[5].X()<tocke[4].X()) tocke[5].moveTo([tocke[4].X(),0]);
+                knot[5] = tocke[5].X();
+                knot[6] = tocke[5].X()+1;
+            });
+
+            var krivulja = aplet.create('curve',
+                       [function(t){ return control[0].X()*BS3(0,knot,t) + control[1].X()*BS3(1,knot,t) + control[2].X()*BS3(2,knot,t) + control[3].X()*BS3(3,knot,t);},
+                        function(t){ return control[0].Y()*BS3(0,knot,t) + control[1].Y()*BS3(1,knot,t) + control[2].Y()*BS3(2,knot,t) + control[3].Y()*BS3(3,knot,t);},
+                        function(){return knot[2];}, function(){return knot[3];}],{strokeWidth:3,strokeColor:'red',doAdvancedPlot:false});
+            
+            $("#menu-toggle").click(function(event) {
+              event.preventDefault();
+              $("#wrapper").toggleClass("toggled");
+            });
+
+            $('#refresh').on('click', function(event) {
+              event.preventDefault();
+              control[0].moveTo([0.5,2]);
+              control[1].moveTo([1.5,7.5]);
+              control[2].moveTo([9,8]);
+              control[3].moveTo([10,2.5]);
+              knot = [1,2,3,7,8,9];
+              knot[-1] = knot[0] - 1;
+              knot[6] = knot[5] + 1;
+              for(let i=0; i<=5; i++) {
+                tocke[i].moveTo([knot[i],0]);
+              }
+              pu.moveTo([4.8,0]);
+            });
+        </script>
+
+      </div>      
+
+      <div class="col">
+
+        <a style="position:absolute;top:0px; right:15px; margin:0; padding:5px 5px;" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" data-toggle="collapse" href="#pomoc" aria-expanded="false" aria-controls="collapseExample"><span class="far fa-image fa-2x" style="color:white;"></span></a>
+
+      <div class="collapse" id="pomoc" style="width:600; position: absolute; top: 50; right:30; z-index:100;">
+       <div class="card card-body">
+       <p style="text-align:center;">
+        <a style="position:absolute; top:0px; left:0px;" href="slike/deboor3.pdf" target="_blank"><button type="button" class="btn btn-danger btn-sm btn-custom-sm" style="vertical-align:top;"><span class="fas fa-file-pdf" style="color:white;"></span></button></a>
+        <img src="slike/deboor3.png" width="500"></p>
+      </div>
+     </div> 
+
+
+        <div class="alert alert-secondary" role="alert" style="width:530px; margin-top:80px; margin-left:80px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <p><b>De Boorov algoritam</b>&nbsp; <span class="badge badge-secondary">lokalna numeracija</span><p>
+            <hr>  
+            <p><img src="slike/deboor_alg0.png"></p>
+            <p><span class="badge badge-secondary">kontrolne točke</span>&nbsp; <img src="slike/deboor_alg1.png"></p>
+            <hr>
+            <p><img src="slike/deboor_alg2.png"></p>
+            <p><img src="slike/deboor_alg3.png"></p>
+            <p><img src="slike/deboor_alg4.png">&nbsp; je lokalni parametar na&nbsp; <img src="slike/deboor_alg5.png"></p>
+            <p><img src="slike/deboor_alg6.png"></p>
+            <p><img src="slike/deboor_alg7.png"></p>
+          </div>
+      </div>
+
+      </div>
+    </div>
+        
+      </div>
+
+    </body>
+
+</html>

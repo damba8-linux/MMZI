@@ -1,0 +1,29 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[line width=0.8pt]
+\tikzstyle{vrh}=[draw,circle,inner sep=1.2pt,fill=white]
+\node[vrh,label={[xshift=-2pt,yshift=1pt]below:$A$}] (A) at (0,0) {};
+\node[vrh,label={[xshift=0pt,yshift=1pt]below:$B$}] (B) at (4,0) {};
+\node[vrh,label={[xshift=0pt,yshift=1pt]below:$S$}] (S) at ($(A)!0.4!(B)$) {};
+%\draw<1 | handout:0> (A)--(S);
+%\draw<1-2 | handout:0> (S)--(B);
+%\draw[red,line width=1.5pt,->,>=stealth'] (A)--(S);
+%\draw[blue,line width=1.5pt,->,>=stealth'] (B)--(S);
+\draw (A)--(S);
+\draw (S)--(B);
+\draw (-1,0)--(A);
+\draw (B)--(5,0);
+\end{tikzpicture}

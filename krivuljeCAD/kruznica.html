@@ -1,0 +1,375 @@
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>kružnica</title>
+         <link rel="stylesheet" type="text/css" href="../vendor/jsxgraph.css"/>
+         <script src="../vendor/jsxgraphcore.js"></script>
+         <script src="../noUISlider/nouislider.min.js"></script>
+         <link rel="stylesheet" type="text/css" href="../noUISlider/nouislider.css"/>
+         <script src="../lib/jquery-3.3.1.min.js"></script>
+         <script src="../lib/bootstrap.min.js"></script>
+         <link rel="stylesheet" href="../lib/bootstrap.min.css">
+         <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+         <link href="../vendor/simple-sidebar.css" rel="stylesheet">
+         <link rel="stylesheet" type="text/css" href="../vendor/page.css">
+         <style>
+          .btn:focus, .btn:active, label.btn {
+          outline: none !important;
+          box-shadow: none !important;
+          -webkit-box-shadow: none !important;
+          }
+          .btn.btn-custom-sm {
+            border-radius: 0;
+          }
+         </style>
+    </head>
+
+    <body>
+       
+      <div id="container" style="height:700px;">
+
+        <div id="wrapper">
+
+      
+        <div id="sidebar-wrapper">
+          <ul class="sidebar-nav">
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B&eacute;zierove krivulje</b></li>
+          <li><a href="bernsteinovi_polinomi.html">Bernsteinovi polinomi</a></li>
+          <li><a href="deCasteljau.html">De Casteljaunov algoritam</a></li>
+          <li><a href="partBezier.html">Subdivizija B&eacute;zierove krivulje</a></li>
+          <li><a href="derivacijaBezier.html">Derivacija B&eacute;zierove krivulje</a></li>
+          <li><a href="podizanje_stupnja_Bezier.html">Podizanje stupnja</a></li>
+          <li><a href="G2neprekidnost.html">Geometrijska neprekidnost</a></li>
+          <li><a href="G2gamma.html">G<sup>2</sup> neprekidnost</a></li>
+          <li><a href="konike.html">Konike</a></li>
+          <li><a href="#" style="color:yellow;">Kružnica</a></li>
+          <li><a href="racionalni_deCasteljau.html">Racionalne B&eacute;zierove krivulje</a></li>
+           <li class="sidebar-brand" style="color:#e2fbf5;"><b>B-splajnovi</b></li>
+           <li><a href="bspline_basis.html">Bazne funkcije</a></li>
+           <li><a href="lokalni_deboor.html">Lokalni De Boorov algoritam</a></li>
+           <li><a href="globalni_deboor.html">Globalni De Boorov algoritam</a></li>
+           <li><a href="kubicna_Bsplajn_krivulja.html">Kubična B-splajn krivulja</a></li>
+           <li><a href="periodicna_Bsplajn_krivulja.html">Zatvorena B-splajn krivulja</a></li>
+          </ul>
+        </div>
+
+        <div class="row">
+
+          <div class="col">
+            <a style="position:absolute; left:15px; padding:5px 5px;" href="#menu-toggle" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" id="menu-toggle"><span class="fas fa-th-list fa-2x" style="color:white;"></span></a>
+       
+        <div id="content" style="width:800px;">
+           <div id="box" class="jxgbox" style="width:800px; height:600px; margin-bottom:30px; z-index:100;"></div>
+           <div class="alert alert-secondary" role="alert" style="width:500px; margin-top:50px; margin-bottom:40px; margin-left:120px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <div style="margin-top:15px;"><i>&nbsp;t&nbsp;</i>&nbsp; <div id="t-slider-elem" style="width:93%; display: inline-block;"></div></div>
+
+            <div class="btn-group btn-group-toggle" data-toggle="buttons" style="margin-top:20px; width:60%;">
+              <span><span class="badge badge-primary">prikaži</span>&nbsp;&nbsp;</span> <label class="btn btn-sm btn-secondary active">
+                <input type="radio" value="1" name="krivulja_view" id="option1" autocomplete="off" checked> krivulja
+              </label>
+              <label class="btn btn-sm btn-secondary">
+                <input type="radio" value="2" name="krivulja_view" id="option2" autocomplete="off"> komplement
+              </label>
+              <label class="btn btn-sm btn-secondary">
+                <input type="radio" value="3" name="krivulja_view" id="option3" autocomplete="off"> točke
+              </label>
+            </div>
+
+            <div style="margin-top:10px;">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1">
+              <label class="form-check-label" for="inlineCheckbox1">središte kružnice</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2">
+              <label class="form-check-label" for="inlineCheckbox2">polumjer kružnice</label>
+            </div>
+           </div>
+
+           <button type="button" class="btn btn-sm btn-danger" id="refresh" style="position:absolute; right:20px; bottom:15px; border-radius:7px; width:35px;"><span class="fas fa-sync-alt" style="color:white;"></span></button>
+         </div>
+        </div>
+
+      </div>      
+
+      <div class="col">
+
+        <a style="position:absolute;top:0px; right:15px; margin:0; padding:5px 5px;" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" data-toggle="collapse" href="#pomoc" aria-expanded="false" aria-controls="collapseExample"><span class="far fa-image fa-2x" style="color:white;"></span></a>
+      <div class="collapse" id="pomoc" style="width:400; position: absolute; top: 50; right:30; z-index:100;">
+       <div class="card card-body">
+       <p style="text-align:center;">
+        <a style="position:absolute; top:0px; left:0px;" href="slike/kruznica.pdf" target="_blank"><button type="button" class="btn btn-danger btn-sm btn-custom-sm" style="vertical-align:top;"><span class="fas fa-file-pdf" style="color:white;"></span></button></a>
+        <img src="slike/kruznica.png" width="350"></p>
+      </div>
+     </div> 
+
+
+        <div class="alert alert-secondary" role="alert" style="width:540px; margin-top:40px; margin-left:80px; box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+            <p><b>Kružnica</b><p>
+            <hr>  
+            <p><span class="badge badge-secondary">kontrolne točke</span>&nbsp; <img src="slike/konike0.png" style="margin-bottom:-4px;"><span style="display:inline-block; width:40px;"></span><span class="badge badge-secondary">težine</span>&nbsp; <img src="slike/konike1.png" style="margin-bottom:-4px;"></p>
+            <p><span class="badge badge-secondary">racionalna kvadratna forma konike</span></p>
+            <p style="text-align:center;"><img src="slike/konike2.png"></p> 
+            <p><img src="slike/konike3.png"></p>
+            <hr>
+            <p><span class="badge badge-secondary">Standardna forma konike</span>&nbsp; <img src="slike/konike11.png"></p>
+            <p style="text-align:center;"><img src="slike/konike12.png"></p>
+            <p><span class="badge badge-secondary">Komplementarni dio konike</span></p>
+            <p style="text-align:center;"><img src="slike/konike13.png"></p>
+            <p><span style="font-size:20px;">&#9999;</span> Točke <img src="slike/konike14.png"> su kolinearne točke za svaki <img src="slike/deCasteljau1.png" style="margin-right:1px;">.</p>
+            <hr>
+            <p><span class="badge badge-secondary">Kružnica u standardnoj formi</span></p>
+            <!--div style="position:absolute;right:20px;bottom:130px;"><span id="kut" class="badge badge-primary" style="display:inline-block; width:90px; text-align:left;"></span></div-->
+            <p style="margin-top:-5px;"><span style="font-size:20px;">&#9999;</span> <img src="slike/kruznica4.png" style="vertical-align: baseline;"><span id="kut" class="badge badge-primary" style="display:inline-block; width:90px; text-align:left; position:relative; left:15px; bottom:5px;"></span><br>
+              <span style="font-size:20px;">&#9999;</span> <img src="slike/kruznica1.png" style="vertical-align: baseline;"><span id="w1" class="badge badge-primary" style="display:inline-block; width:110px; text-align:left; position:relative; left:15px; bottom:5px;"></span><br>
+            <span style="font-size:20px;">&#9999;</span> <img src="slike/kruznica2.png" style="vertical-align: sub;"> je jednakokračni trokut s osnovicom <img src="slike/kruznica3.png" style="vertical-align: sub;">.</p>
+          </div>
+      </div>
+
+      </div>
+    </div>
+        
+      </div>
+
+      <script language="JavaScript">
+            var t_slider_elem = document.getElementById('t-slider-elem');
+            var t0 = 0.35;
+            var prikaz = 1; // 1 - prikazi smao krivulju, 2 - prikazi cijelu krivulju s komplementom, 3 - prikazi sve
+            var prikazO = false; //srediste kruznice prikazi/sakrij
+            var prikazR = false; //polumjer kruznice prikazi/sakrij
+
+            noUiSlider.create(t_slider_elem, {start: [0.35], connect: 'lower', tooltips:[true], step: 0.01, 
+                                         range: {'min': 0, 'max': 1}});
+
+            t_slider_elem.setAttribute('disabled', true);
+
+            function konikaX(t) {
+              let b0 = (1-t)**2;
+              let b1 = 2*t*(1-t);
+              let b2 = t**2;
+              let suma = b0 + w1*b1 + b2;
+              let sumaX = b0*control[0].X() + w1*b1*control[1].X() + b2*control[2].X();
+              return sumaX / suma;
+            }
+
+            function konikaXcom(t) {
+              let b0 = (1-t)**2;
+              let b1 = 2*t*(1-t);
+              let b2 = t**2;
+              let suma = b0 - w1*b1 + b2;
+              let sumaX = b0*control[0].X() - w1*b1*control[1].X() + b2*control[2].X();
+              if (suma == 0) return NaN;
+              else return sumaX / suma;
+            }
+
+            function konikaY(t) {
+              let b0 = (1-t)**2;
+              let b1 = 2*t*(1-t);
+              let b2 = t**2;
+              let suma = b0 + w1*b1 + b2;
+              let sumaY = b0*control[0].Y() + w1*b1*control[1].Y() + b2*control[2].Y();
+              return sumaY / suma;
+            }
+
+            function konikaYcom(t) {
+              let b0 = (1-t)**2;
+              let b1 = 2*t*(1-t);
+              let b2 = t**2;
+              let suma = b0 - w1*b1 + b2;
+              let sumaY = b0*control[0].Y() - w1*b1*control[1].Y() + b2*control[2].Y();
+              if (suma == 0) return NaN;
+              else return sumaY / suma;
+            }
+
+            function DMS(kut) {
+              let fi = 180 / Math.PI * kut;
+              let stupanj = Math.floor(fi);
+              let minuta = (fi - stupanj) * 60;
+              let sekunda = (minuta - Math.floor(minuta)) * 60;
+              minuta = Math.floor(minuta);
+              sekunda = Math.round(sekunda);
+              if (sekunda == 60) {
+                sekunda = 0;
+                if (minuta < 59) {
+                  minuta += 1;
+                } else {
+                  minuta = 0;
+                  stupanj += 1;
+                }
+              }
+              let rez;
+              if (sekunda == 0 && minuta == 0) {
+                rez = `${stupanj}&deg;`;
+              } else if (sekunda == 0) {
+                rez = `${stupanj}&deg;${minuta}'`;
+              } else {
+                rez = `${stupanj}&deg;&thinsp;${minuta}'&thinsp;${sekunda}''`;
+              }
+              return rez;
+            }
+            
+            var control = [];
+            
+            var aplet = JXG.JSXGraph.initBoard('box', {boundingbox: [-2, 9, 11, -1], grid:false,  
+                                                       showCopyright:false, keepaspectratio: false,
+                                                       showNavigation:false,axis:true,
+                                                       zoom:{wheel:false,min:0.1,max:5},
+                                                       showNavigation:true,
+                                                       pan:{enabled:false}});
+            
+            aplet.highlightInfobox = function (x, y, el) {
+                aplet.infobox.setText('');
+            }; 
+
+            aplet.zoom100();
+
+            var ime2 = aplet.create('text',[function() {return aplet.getBoundingBox()[2];},
+                                           function() {return aplet.getBoundingBox()[1];},
+                                           '<span style="font-weight:bold; color:#8eb5ee;">kružnica&nbsp;</span>'],
+                                           {anchorX:'right',anchorY:'top',fontSize:20});
+
+            control[0] = aplet.create('point', [2,4], {'name':'<span style="background-color:white; opacity:0.7;">b_0</span>', size:4, color:'#009900', label:{offset:[-5,-17]}});
+            control[2] = aplet.create('point', [6,5], {'name':'<span style="background-color:white; opacity:0.7;">b_2</span>', size:4, color:'#009900', label:{offset:[-5,-17]}});
+
+            var segment3 = aplet.create('segment', [control[0],control[2]], {strokeColor:'#0033ff',dash:2,strokeWidth:1});
+            var M = aplet.create('midpoint', [control[0],control[2]],{visible:false});
+            var pM = aplet.create('perpendicular',[segment3,M],{dash:2,strokeWidth:1,strokeColor:'magenta'});
+
+            control[1] = aplet.create('glider', [3,7,pM], {'name':'<span style="background-color:white; opacity:0.7;">b_1</span>', size:4, color:'#009900', label:{offset:[2,17]}});
+  
+            var alpha = aplet.create('nonreflexangle', [control[2], control[0], control[1]], {radius: 0.5, label:{offset:[-8,-8]}});
+            var w1 = Math.cos(alpha.Value());
+            var alphaDMS = DMS(alpha.Value());
+            $("#kut").html(`&alpha;&nbsp;=&nbsp;${alphaDMS}`);
+            $("#w1").html(`w<sub>1</sub>&nbsp;=&nbsp;${JXG.toFixed(w1,9)}`);
+
+            var T1 = aplet.create('point', [function(){return konikaX(t0);}, function(){return konikaY(t0);}], 
+                                       {size:2, color:'yellow', label:{visible:false}, visible: function(){return (prikaz > 2);}});
+            var T2 = aplet.create('point', [function(){return konikaXcom(t0);}, function(){return konikaYcom(t0);}], 
+                                       {size:2, color:'yellow', label:{visible:false}, visible: function(){return (prikaz > 2);}});
+            var pravac = aplet.create('line',[control[1],T1], {strokeColor:'#14a467',dash:1,strokeWidth:1, visible: function(){return (prikaz > 2);}});
+
+            var segment1 = aplet.create('segment', [control[0],control[1]], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+            var segment2 = aplet.create('segment', [control[1],control[2]], {strokeColor:'#0033ff',dash:1,strokeWidth:1});
+            var Ob0 = aplet.create('perpendicular',[segment1,control[0]],{visible:false});
+            var O = aplet.create('intersection', [pM, Ob0], {name:'<span style="background-color:white; opacity:0.7;">O</span>', 
+                                                             label:{offset:[5,-5]}, visible: function() {return prikazO;}});
+
+            var segment4 = aplet.create('segment', [control[0],O], {strokeColor:'#aeb8ec',dash:1,strokeWidth:2,visible: function() {return prikazR;}});
+            var segment5 = aplet.create('segment', [control[2],O], {strokeColor:'#aeb8ec',dash:1,strokeWidth:2,visible: function() {return prikazR;}});
+            var polumjer = aplet.create('text',[function() {return 0.87*aplet.getBoundingBox()[2] + 0.13*aplet.getBoundingBox()[0];},
+                                                function() {return 0.95*aplet.getBoundingBox()[1] + 0.05*aplet.getBoundingBox()[3];},
+                                                function() {return `<span style="font-weight:bold; color:#aeb8ec;">polumjer:&thinsp;${O.Dist(control[0]).toFixed(2)}</span>`}], 
+                                                {anchorX:'left',anchorY:'top',visible: function() {return prikazR;}});
+
+            segment1.setAttribute({fixed:true,highlight:false});
+            segment2.setAttribute({fixed:true,highlight:false});
+            segment4.setAttribute({fixed:true,highlight:false});
+            segment5.setAttribute({fixed:true,highlight:false});
+            pM.setAttribute({fixed:true,highlight:false});
+            alpha.setAttribute({fixed:true,highlight:false});
+            pravac.setAttribute({fixed:true,highlight:false});
+            T1.setAttribute({strokeColor: 'black'});
+            T2.setAttribute({strokeColor: 'black'});
+
+            var krivulja = aplet.create('curve', [function(t){return konikaX(t);},
+                                                  function(t){return konikaY(t);},
+                                                  0,1], {strokeWidth:3,strokeColor:'red'});
+
+            var krivuljaCom = aplet.create('curve', [function(t){return konikaXcom(t);},
+                                                  function(t){return konikaYcom(t);},
+                                                  0,1], {strokeWidth:3,strokeColor:'#6abff8',dash:2, visible: function(){return (prikaz > 1);}});
+
+            aplet.on('update', function() {
+              w1 = Math.cos(alpha.Value());
+              alphaDMS = DMS(alpha.Value());
+              $("#kut").html(`&alpha;&nbsp;=&nbsp;${alphaDMS}`);
+              $("#w1").html(`w<sub>1</sub>&nbsp;=&nbsp;${JXG.toFixed(w1,9)}`);
+            });
+
+            control[1].on('drag', function() {
+              w1 = Math.cos(alpha.Value());
+              alphaDMS = DMS(alpha.Value());
+              $("#kut").html(`&alpha;&nbsp;=&nbsp;${alphaDMS}`);
+              $("#w1").html(`w<sub>1</sub>&nbsp;=&nbsp;${JXG.toFixed(w1,9)}`);
+              aplet.update();
+            });
+
+            control[0].on('drag', function() {
+              w1 = Math.cos(alpha.Value());
+              alphaDMS = DMS(alpha.Value());
+              $("#kut").html(`&alpha;&nbsp;=&nbsp;${alphaDMS}`);
+              $("#w1").html(`w<sub>1</sub>&nbsp;=&nbsp;${JXG.toFixed(w1,9)}`);
+              aplet.update();
+            });
+
+            control[2].on('drag', function() {
+              w1 = Math.cos(alpha.Value());
+              alphaDMS = DMS(alpha.Value());
+              $("#kut").html(`&alpha;&nbsp;=&nbsp;${alphaDMS}`);
+              $("#w1").html(`w<sub>1</sub>&nbsp;=&nbsp;${JXG.toFixed(w1,9)}`);
+              aplet.update();
+            });
+
+            segment3.on('drag', function() {
+              w1 = Math.cos(alpha.Value());
+              alphaDMS = DMS(alpha.Value());
+              $("#kut").html(`&alpha;&nbsp;=&nbsp;${alphaDMS}`);
+              $("#w1").html(`w<sub>1</sub>&nbsp;=&nbsp;${JXG.toFixed(w1,9)}`);
+              aplet.update();
+            });
+            
+            $("#menu-toggle").click(function(event) {
+              event.preventDefault();
+              $("#wrapper").toggleClass("toggled");
+            });
+
+            t_slider_elem.noUiSlider.on('update', function() {
+              t0 = Number(t_slider_elem.noUiSlider.get());
+              aplet.update();
+            });
+
+            $('input[name=krivulja_view]').on('change', function() {
+              prikaz = parseInt($(this).val());
+              if (prikaz == 3)
+                t_slider_elem.removeAttribute('disabled');
+              else
+                t_slider_elem.setAttribute('disabled', true);
+              aplet.update();
+            });
+
+            $('#inlineCheckbox1').on('change', function() {
+              prikazO = $(this).prop('checked');
+              aplet.update();
+            });
+
+            $('#inlineCheckbox2').on('change', function() {
+              prikazR = $(this).prop('checked');
+              aplet.update();
+            });
+
+            $('#refresh').on('click', function(event) {
+              event.preventDefault();
+              aplet.zoom100();
+              aplet.setBoundingBox([-2, 9, 11, -1], false);
+              aplet.zoom100();
+              control[0].moveTo([2,4]);
+              control[2].moveTo([6,5]);
+              control[1].moveTo([3,7]);
+              w1 = Math.cos(alpha.Value());
+              t0 = 0.35;
+              prikazO = false;
+              prikazR = false;
+              t_slider_elem.noUiSlider.set(0.35);
+              t_slider_elem.setAttribute('disabled', true);
+              $("#option1").prop("checked", true).trigger("click");
+              $("#inlineCheckbox1").prop("checked", false);
+              $("#inlineCheckbox2").prop("checked", false);
+              aplet.update();
+            });
+        </script>
+
+    </body>
+
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>ravnina vektorski oblik</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+        <style>
+            body {margin: 0; overflow: hidden}
+            button:focus {outline:0 !important;}
+            .btn.btn-custom-sm {
+                border-radius: 0;
+            }
+            .card {
+                background-color: rgba(255,255,255, 0.95) !important;
+                font-size: 95%;
+            }
+            .center {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div style="position: absolute; left:0px; top: 0px;">
+            <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" onclick="toggler('info');"><span class="fa fa-info-circle fa-2x" style="color:white;"></span></a>
+        </div>
+
+        <div style="position: absolute; right:0px; top: 0px; z-index:10;">
+            <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" data-toggle="modal" data-target="#infoModal"><span class="fa fa-question-circle fa-2x" style="color:white;"></span></a>
+        </div>
+
+        <div style="position: absolute; left:0px; bottom:0px;">
+            <span class="badge badge-primary" style="border-radius: 0; font-size:100%; diplay: inline-block; width: 155px; text-align: left;">Pogled kamere&nbsp;<span class="badge badge-light" id="pogkam">T<sub>0</sub></span></span>
+        </div>
+
+        <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 45px; width:400px;">
+        <div id="infoHead" class="card-header">
+        Vektorski oblik jednadžbe ravnine
+        </div>
+        <div id="infoBody" class="card-body">
+        <ul style="padding:8px;">
+        <li>Ravnina <img src='data/ravPI.png' style='vertical-align: baseline;'> zadana je s točkom <img src='data/T0.png' style='vertical-align: sub;'> i dva nekolinearna vektora <img src='data/vecA.png' style='vertical-align: baseline;'> i <img src='data/vecB.png' style='vertical-align: baseline;'>.</li>
+        <li>Za svaku točku <img src='data/T.png' style='vertical-align: baseline;'>, vektori <img src='data/vecT0T.png' style='vertical-align: sub;'>, <img src='data/vecA.png' style='vertical-align: baseline;'> i <img src='data/vecB.png' style='vertical-align: baseline;'> su komplanarni.</li>
+        <li style="margin-top:5px;">Stoga postoje <img src='data/skalari.png' style='vertical-align: text-bottom;'> takvi da je <img src='data/eqn.png' class="center" style='vertical-align: baseline;'></li>
+        <li>Kako je <img src='data/radT0T.png' style='vertical-align: sub;'>, konačno se dobiva vektorski oblik jednadžbe ravnine <img src='data/ravPI.png' style='vertical-align: baseline;'>: <img src='data/vekRav.png' class="center" style='vertical-align: baseline;'></li>
+        <li style="margin-top:8px;">Radijvektori <img src='data/radR.png' style='vertical-align: baseline;'> i <img src='data/radR0.png' style='vertical-align: sub;'> općenito ne leže u ravnini <img src='data/ravPI.png' style='vertical-align: baseline;'>, osim u slučaju kada ravnina <img src='data/ravPI.png' style='vertical-align: baseline;'> prolazi kroz ishodište koordinatnog sustava.</li>
+        <li>Parametri <img src='data/lambda.png' style='vertical-align: baseline;'> i <img src='data/mu.png' style='vertical-align: text-bottom;'> su koordinate točke <img src='data/T.png' style='vertical-align: baseline;'> s obzirom na koordinatni sustav <img src='data/koor_sus.png' style='vertical-align: sub;'> u ravnini <img src='data/ravPI.png' style='vertical-align: baseline;'> pri čemu je <img src='data/baza.png' style='vertical-align: sub;'> baza za <img src='data/R2.png' style='vertical-align: baseline;'>.</li>
+        </ul>
+        </div>
+        </div>
+
+        <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upravljanje 3D scenom</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <ul>
+                 <li>Lijeva tipka miša - rotiranje kamere oko 3D scene</li>
+                 <li>Srednja tipka miša - približavanje i udaljavanje od objekta</li>
+                 <li>Pritiskom na tipku <code>O</code> na tastaturi stavlja se pogled kamere prema ishodištu koordinatnog sustava.</li>
+                 <li>Pritiskom na tipku <code>T</code> na tastaturi stavlja se pogled kamere prema točki <i>T<sub>0</sub></i>&thinsp;.</li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="WebGL-output"></div>
+
+        <script language="JavaScript">
+            function toggler(divId) {
+                $("#" + divId).slideToggle(500);
+            }
+        </script>
+
+        <script language="JavaScript" type="module">
+        import * as THREE from '../lib/three.module.js';
+        import { OrbitControls } from '../lib/OrbitControls.js';
+        
+        $("#info").hide();
+
+        var manager = new THREE.LoadingManager();
+        manager.onLoad = function() { // when all resources are loaded
+            init();
+        }
+
+        var font = null;
+        var texture = null;
+
+        var fontloader = new THREE.FontLoader(manager);
+        fontloader.load("../lib/helvetiker_regular.typeface.json", function(response) {font = response;});
+
+        var textureloader = new THREE.TextureLoader(manager);
+        textureloader.load('cement4.jpg', function(response) {texture = response});
+
+        function init() {
+
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            var renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setClearColor(0xA9A9A9, 1);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            $("#WebGL-output").append(renderer.domElement);
+
+            camera.position.x = 50;
+            camera.position.y = 14;
+            camera.position.z = 50;
+
+            var pointLight = new THREE.PointLight("#eeeeee");
+            pointLight.distance = 250;
+            pointLight.position.set(30,60,100);
+            scene.add(pointLight);
+
+            var pointLight2 = new THREE.PointLight("#eeeeee");
+            pointLight2.distance = 250;
+            pointLight2.position.set(-60,-60,-100);
+            scene.add(pointLight2);
+
+            var mat1 = new THREE.MeshPhongMaterial({color: 0x7fffd4, specular: 0x7777ff,  emissive:0xb22222, flatShading: false});
+            var mat2 = new THREE.MeshLambertMaterial({color: 0xffffe0, emissive:0x222222, side:THREE.DoubleSide, transparent: true, opacity:0.65, depthWrite: false, flatShading: false});
+            var mat2tex = new THREE.MeshLambertMaterial({color: 0xffffe0, emissive:0x444444, side:THREE.DoubleSide, transparent: true, 
+                                                             opacity:0.6, depthWrite: false, map:texture, flatShading: false});
+            var mat4 = new THREE.MeshPhongMaterial({color: 0x00ff00, emissive: 0x222222,  flatShading: false});
+            var mat5 = new THREE.MeshPhongMaterial({color: 0xff00ff, emissive: 0x222222,  flatShading: false});
+            var mat6 = new THREE.MeshNormalMaterial({flatShading: false});
+
+            var Zos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+            scene.add(Zos);
+
+            var Yos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+            Yos.rotation.z = -Math.PI / 2;
+            scene.add(Yos);
+
+            var Xos = new THREE.Mesh(vektor(48, 0.25, 2, 0.8), mat1);
+            Xos.rotation.x = Math.PI / 2;
+            scene.add(Xos);
+
+            var tekst_options = {
+                size: 2,
+                height: 0.3,
+                font: font,
+                curveSegments: 12
+            };
+
+            var oznake_options = {
+                size: 1,
+                height: 0.2,
+                font: font,
+                curveSegments: 12
+            };
+
+            var minioznake_options = {
+                size: 0.7,
+                height: 0.2,
+                font: font,
+                curveSegments: 12
+            };
+
+            var tekst_Zos = createText('z', tekst_options);
+            tekst_Zos.translateX(1);
+            tekst_Zos.translateY(25);
+            scene.add(tekst_Zos);
+
+            var tekst_Yos = createText('y', tekst_options);
+            tekst_Yos.translateX(26);
+            scene.add(tekst_Yos);
+
+            var tekst_Xos = createText('x', tekst_options);
+            tekst_Xos.translateY(-0.5);
+            tekst_Xos.translateZ(27.3);
+            tekst_Xos.rotation.y = Math.PI / 2;
+            scene.add(tekst_Xos);
+
+            var ravninaXYgeometrija = new THREE.BufferGeometry();
+            var ver1 = [ [-24,0,-24], [24,0,-24], [24,0,5], [5,0,24], [-24,0,24] ];
+            var vertices1 = new Float32Array(ver1.length * 3);
+            var normals1 = new Float32Array(ver1.length * 3);
+            var indeksi1 = new Uint16Array([0,1,2, 0,2,3, 0,3,4]);
+            var tekstura = new Float32Array([0,0, 1,0, 1,0.6, 0.6,1, 0,1]);
+
+            for (var i = 0; i < ver1.length; i++) {
+                vertices1[3*i] = ver1[i][0];
+                vertices1[3*i+1] = ver1[i][1];
+                vertices1[3*i+2] = ver1[i][2];
+                normals1[3*i] = 0;
+                normals1[3*i+1] = 1;
+                normals1[3*i+2] = 0;
+            }
+
+            ravninaXYgeometrija.setAttribute( 'position', new THREE.BufferAttribute( vertices1, 3 ) );
+            ravninaXYgeometrija.setAttribute( 'normal', new THREE.BufferAttribute( normals1, 3 ) );
+            ravninaXYgeometrija.setIndex(new THREE.BufferAttribute( indeksi1, 1 ) );
+            ravninaXYgeometrija.setAttribute( 'uv', new THREE.BufferAttribute( tekstura, 2 ) );
+
+            var ravninaXY = new THREE.Mesh(ravninaXYgeometrija, mat2tex);
+            scene.add(ravninaXY);
+
+            var ravninaGeometrija = new THREE.BufferGeometry();
+
+            var a = new THREE.Vector3(28,-4,5), b = new THREE.Vector3(5,-4,28), u = new THREE.Vector3(-5,10,-5);
+
+            var c = new THREE.Vector3(), d = new THREE.Vector3(), v = new THREE.Vector3(), vxu = new THREE.Vector3();
+            u.multiplyScalar(2.4);
+            c.addVectors(b,u);
+            d.addVectors(a,u);
+            v.addVectors(b,a.clone().negate());
+            vxu.crossVectors(v,u).normalize();
+
+            var ver2 = [ [a.x, a.y, a.z], [b.x, b.y, b.z], [c.x, c.y, c.z], [d.x, d.y, d.z] ];
+            var vertices2 = new Float32Array(ver2.length * 3);
+            var normals2 = new Float32Array(ver2.length * 3);
+            var indeksi2 = new Uint16Array([0,1,2, 0,2,3]);
+
+            for (var i = 0; i < ver2.length; i++) {
+                vertices2[3*i] = ver2[i][0];
+                vertices2[3*i+1] = ver2[i][1];
+                vertices2[3*i+2] = ver2[i][2];
+                normals2[3*i] = vxu.getComponent(0);//-0.70534561585859;
+                normals2[3*i+1] = vxu.getComponent(1);//-0.70534561585859;
+                normals2[3*i+2] = vxu.getComponent(2);//-0.70534561585859;
+            }
+
+            ravninaGeometrija.setAttribute( 'position', new THREE.BufferAttribute( vertices2, 3 ) );
+            ravninaGeometrija.setAttribute( 'normal', new THREE.BufferAttribute( normals2, 3 ) );
+            ravninaGeometrija.setIndex(new THREE.BufferAttribute( indeksi2, 1 ) );
+
+            var ravnina = new THREE.Mesh(ravninaGeometrija, mat2);
+            scene.add(ravnina);
+
+            var tocka0 = new THREE.Mesh(new THREE.SphereGeometry(0.4,20,20), mat1);
+            tocka0.translateX(11);
+            tocka0.translateY(14);
+            tocka0.translateZ(4);
+            scene.add(tocka0);
+
+            var tocka = new THREE.Mesh(new THREE.SphereGeometry(0.4,20,20), mat1);
+            tocka.translateX(7);
+            tocka.translateY(8);
+            tocka.translateZ(14);
+            scene.add(tocka);
+
+            //vektor T0T
+            var vektorT0T = new THREE.Vector3(-4,-6,10), vek = vektorT0T.clone();
+            vektorT0T.sub(vek.multiplyScalar(1.9 / vek.length()));
+            var theta = -Math.atan(vektorT0T.z / vektorT0T.x), r = vektorT0T.length(), fi = Math.acos(vektorT0T.y / r);
+            var T0T = new THREE.Mesh(vektor(r, 0.16, 1.5, 0.5), mat5);
+            T0T.translateX(11);
+            T0T.translateY(14);
+            T0T.translateZ(4);
+            T0T.rotation.y = theta;
+            T0T.rotation.z = fi;
+            T0T.translateY(r/2);
+            scene.add(T0T);
+
+            //radijvektor T0
+            var radijT0 = new THREE.Vector3(11,14,4);
+            vek = radijT0.clone();
+            radijT0.sub(vek.multiplyScalar(1.9 / vek.length()));
+            theta = -Math.atan(radijT0.z / radijT0.x), r = radijT0.length(), fi = -Math.acos(radijT0.y / r);
+            var radijvektorT0 = new THREE.Mesh(vektor(r, 0.16, 1.5, 0.5), mat6);
+            radijvektorT0.rotation.y = theta;
+            radijvektorT0.rotation.z = fi;
+            radijvektorT0.translateY(r/2);
+            scene.add(radijvektorT0);
+
+            var oznaka_r0 = createText('r', oznake_options);
+            oznaka_r0.translateX(5.4);
+            oznaka_r0.translateY(8.5);
+            oznaka_r0.translateZ(2);
+            oznaka_r0.rotation.y = theta;
+            scene.add(oznaka_r0);
+
+            var oznaka0_r0 = createText('0', minioznake_options);
+            oznaka0_r0.translateX(5.4);
+            oznaka0_r0.translateY(8.1);
+            oznaka0_r0.translateZ(2);
+            oznaka_r0.rotation.order = 'YZX';
+            oznaka0_r0.rotation.y = theta;
+            oznaka0_r0.translateX(0.2);
+            scene.add(oznaka0_r0);
+
+            //radijvektor T
+            var radijT = new THREE.Vector3(7,8,14);
+            vek = radijT.clone();
+            radijT.sub(vek.multiplyScalar(1.9 / vek.length()));
+            theta = -Math.atan(radijT.z / radijT.x), r = radijT.length(), fi = -Math.acos(radijT.y / r);
+            var radijvektorT = new THREE.Mesh(vektor(r, 0.16, 1.5, 0.5), mat6);
+            radijvektorT.rotation.y = theta;
+            radijvektorT.rotation.z = fi;
+            radijvektorT.translateY(r/2);
+            scene.add(radijvektorT);
+
+            var oznaka_r = createText('r', oznake_options);
+            oznaka_r.translateX(3.5);
+            oznaka_r.translateY(4.5);
+            oznaka_r.translateZ(7);
+            oznaka_r.rotation.y = theta;
+            scene.add(oznaka_r);
+
+            //vektor a
+            vek = new THREE.Vector3(-8,2,6);
+            theta = -Math.atan(vek.z / vek.x), r = vek.length(), fi = Math.acos(vek.y / r);
+            var vektorA = new THREE.Mesh(vektor(r, 0.16, 1.5, 0.5), mat4);
+            vektorA.translateX(11);
+            vektorA.translateY(14);
+            vektorA.translateZ(4);
+            vektorA.rotation.y = theta;
+            vektorA.rotation.z = fi;
+            vektorA.translateY(r/2);
+            scene.add(vektorA);
+
+            //vektor b
+            vek = new THREE.Vector3(5,-6,1);
+            theta = -Math.atan(vek.z / vek.x), r = vek.length(), fi = -Math.acos(vek.y / r);
+            var vektorB = new THREE.Mesh(vektor(r, 0.16, 1.5, 0.5), mat4);
+            vektorB.translateX(11);
+            vektorB.translateY(14);
+            vektorB.translateZ(4);
+            vektorB.rotation.y = theta;
+            vektorB.rotation.z = fi;
+            vektorB.translateY(r/2);
+            scene.add(vektorB);
+
+            //a=(-1,0,1), b=(-1,2,1), n=(1,1,1)
+            theta = Math.PI / 4, fi = Math.asin(1 / Math.sqrt(3));
+
+            var oznaka_T0 = createText('T', oznake_options);
+            oznaka_T0.translateX(10.9);
+            oznaka_T0.translateY(14.5);
+            oznaka_T0.translateZ(3.9);
+            oznaka_T0.rotation.order = 'YZX';
+            oznaka_T0.rotation.y = theta;
+            oznaka_T0.rotation.x = -fi;
+            scene.add(oznaka_T0);
+
+            var oznaka0_T0 = createText('0', minioznake_options);
+            oznaka0_T0.translateX(11.5);
+            oznaka0_T0.translateY(14.1);
+            oznaka0_T0.translateZ(3.7);
+            oznaka0_T0.rotation.order = 'YZX';
+            oznaka0_T0.rotation.y = theta;
+            oznaka0_T0.rotation.x = -fi;
+            scene.add(oznaka0_T0);
+
+            var oznaka_T = createText('T', oznake_options);
+            oznaka_T.translateX(6.45);
+            oznaka_T.translateY(8.6);
+            oznaka_T.translateZ(14.25);
+            oznaka_T.rotation.order = 'YZX';
+            oznaka_T.rotation.y = theta;
+            oznaka_T.rotation.x = -fi;
+            scene.add(oznaka_T);
+
+            var oznaka_A = createText('a', oznake_options);
+            oznaka_A.translateX(6.85);
+            oznaka_A.translateY(15.45);
+            oznaka_A.translateZ(6.85);
+            oznaka_A.rotation.order = 'YZX';
+            oznaka_A.rotation.y = theta;
+            oznaka_A.rotation.x = -fi;
+            scene.add(oznaka_A);
+
+            var oznaka_B = createText('b', oznake_options);
+            oznaka_B.translateX(14.35);
+            oznaka_B.translateY(10.45);
+            oznaka_B.translateZ(4.35);
+            oznaka_B.rotation.order = 'YZX';
+            oznaka_B.rotation.y = theta;
+            oznaka_B.rotation.x = -fi;
+            scene.add(oznaka_B);
+
+            var trokutXYgeometrija = new THREE.BufferGeometry();
+            var vertices3 = new Float32Array([24,0,5, 24,0,24, 5,0,24]);
+            var normals3 = new Float32Array([0,1,0, 0,1,0, 0,1,0]);
+            var tekstura3 = new Float32Array([1,0.6, 1,1, 0.6,1]);
+
+            trokutXYgeometrija.setAttribute( 'position', new THREE.BufferAttribute( vertices3, 3 ) );
+            trokutXYgeometrija.setAttribute( 'normal', new THREE.BufferAttribute( normals3, 3 ) );
+            trokutXYgeometrija.setAttribute( 'uv', new THREE.BufferAttribute( tekstura3, 2 ) );
+
+            var trokutXY = new THREE.Mesh(trokutXYgeometrija, mat2tex);
+            scene.add(trokutXY);
+
+            var pogledT = new THREE.Vector3(11,14,4);
+
+            var orbitControls = new OrbitControls(camera, renderer.domElement);
+            orbitControls.minDistance = 25;
+            orbitControls.maxDistance = 130;
+            orbitControls.enablePan = false;
+            orbitControls.maxPolarAngle = 3.14;
+            orbitControls.minPolarAngle = 0;
+            orbitControls.target = pogledT;//scene.position;
+            orbitControls.update();
+
+            orbitControls.addEventListener('change', render);
+
+            render();
+
+            function render() {
+                renderer.render( scene, camera );
+            }   
+
+            $(window).resize( function() {
+                camera.aspect = (window.innerWidth) / (window.innerHeight);
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight);
+                render();
+            });
+
+            function vektor(h1, r1, h2, r2) {
+                var valjakGeometry = new THREE.CylinderGeometry(r1,r1,h1,10);
+                var stozacGeometry = new THREE.CylinderGeometry(0,r2,h2,12);
+                var valjak = new THREE.Mesh(valjakGeometry);
+                var stozac = new THREE.Mesh(stozacGeometry);
+                var vek = new THREE.Geometry();
+                stozac.translateY((h1+h2)/2);
+                valjak.updateMatrix();
+                stozac.updateMatrix();
+                vek.merge(valjak.geometry, valjak.matrix);
+                vek.merge(stozac.geometry, stozac.matrix);
+                return vek;
+            }
+
+            function createText(text, params) {
+                var textGeo = new THREE.TextGeometry(text, params);
+                textGeo.computeBoundingBox();
+                textGeo.computeVertexNormals();
+                var material = [new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false}),
+                                new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false})];
+                var textMesh = new THREE.Mesh(textGeo, material);
+                return textMesh;
+            }
+
+            window.addEventListener("keydown", event => {
+                if (!$('#infoModal').is(':visible')) {
+                    if (event.repeat) return;
+                    if (event.key == "o") {
+                        $('#pogkam').html('O');
+                        orbitControls.target = scene.position;
+                        orbitControls.update();
+                        render();
+                    }
+                    if (event.key == "t") {
+                        $('#pogkam').html('T<sub>0</sub>');
+                        orbitControls.target = pogledT;
+                        orbitControls.update();
+                        render();
+                    }
+                }   
+            });
+        }
+        </script>
+</body>
+</html>

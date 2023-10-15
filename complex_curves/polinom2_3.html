@@ -1,0 +1,115 @@
+<html> 
+  <head> 
+	<meta charset="utf-8">  
+    <title>polinom2_3</title> 			
+    <script type='text/javascript' src='../x3dom/x3dom.js'> </script> 
+    <link rel='stylesheet' type='text/css' href='../x3dom/x3dom.css'>
+    <script src="../lib/jquery-3.3.1.min.js"></script>
+    <script src="../lib/bootstrap.min.js"></script>
+    <script src="../lib/dat.gui.min.js"></script>
+    <link rel="stylesheet" href="../lib/bootstrap.min.css">
+    <link rel="stylesheet" href="../lib/fontawesome/css/all.css"> 
+    <style>
+    body {
+      margin: 0; 
+      overflow: hidden;
+    }
+    .dg.a { margin-right:0px !important; }
+    /*x3d{
+      border:2px solid darkorange;
+	  }*/  
+    </style>
+  </head> 
+          
+  <body>
+  <x3d width='100%' height='100%', margin-left='0px' disableDoubleClick="true"> 
+    <scene> 
+      <inline url="data/polinom2_3.x3d" nameSpaceName="pol2_3" mapDEFToID="true" onclick=''/>
+    </scene> 
+  </x3d>
+
+   <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+     <div class="modal-dialog" role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="exampleModalLabel">Camera navigation</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+          <h6><b>Examine Mode (activate with key 'e'):</b></h6>
+           <ul>
+            <li>Left Button / Left Button + Shift &nbsp;&#8680;&nbsp; Rotate</li>
+            <li>Mid Button / Left Button + Ctl &nbsp;&#8680;&nbsp; Pan</li>
+            <li>Right Button / Wheel / Left Button + Alt &nbsp;&#8680;&nbsp; Zoom</li>
+           </ul>
+          <h6><b>Walk Mode (activate with key 'w'):</b></h6>
+           <ul>
+            <li>Left Button &nbsp;&#8680;&nbsp; Move forward</li>
+            <li>Right Button &nbsp;&#8680;&nbsp; Move backward</li>
+           </ul>
+          <h6><b>Fly Mode (activate with key 'f'):</b></h6>
+           <ul>
+            <li>Left Button &nbsp;&#8680;&nbsp; Move forward</li>
+            <li>Right Button &nbsp;&#8680;&nbsp; Move backward</li>
+           </ul>
+          <h6><b>Look at (activate with key 'l'):</b></h6>
+           <ul>
+            <li>Left Button &nbsp;&#8680;&nbsp; Move closer</li>
+            <li>Right Button &nbsp;&#8680;&nbsp; Move back</li>
+           </ul>
+          <h6><b>Non-interactive camera movement:</b></h6>
+           <ul>
+            <li>r &nbsp;&#8680;&nbsp; Reset view</li>
+            <li>a &nbsp;&#8680;&nbsp; Show all</li>
+            <li>u &nbsp;&#8680;&nbsp; Upright</li>
+            <li>m &nbsp;&#8680;&nbsp; Dotted view of the surface</li>
+           </ul>
+         </div>
+         <div class="modal-footer">
+           <a class="btn btn-link mr-auto" href="https://www.x3dom.org/documentation/interaction/" target="_blank" role="button">x3dom</a>
+           <a class="btn btn-danger btn-sm shadow-none mr-auto" href="data/complex_curve_visualisation.pdf" target="_blank"><span class="fas fa-file-pdf" style="color:white;"><sub>&thinsp;1</sub></span></a>
+           <a class="btn btn-danger btn-sm shadow-none mr-auto" href="data/complex_visualisation.pdf" target="_blank"><span class="fas fa-file-pdf" style="color:white;"><sub>&thinsp;2</sub></span></a>
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+       </div>
+     </div>
+   </div>
+
+   <script>
+    let gui = new dat.GUI({resizable: false, width: 180});
+    var controls = new function() {
+      this.wireframe = false;
+      this.help = function() {
+        $("#infoModal").modal();
+      };
+    }
+    let wireframe = gui.add(controls, 'wireframe').listen();
+    wireframe.onChange(function() {
+      let ID1 = document.getElementById('pol2_3__mat1_grid');
+      let ID2 = document.getElementById('pol2_3__mat2_grid');
+      let ID3 = document.getElementById('pol2_3__mat3_grid');
+      let ID4 = document.getElementById('pol2_3__mat4_grid');
+      let ID5 = document.getElementById('pol2_3__mat5_grid');
+      let ID6 = document.getElementById('pol2_3__mat6_grid');
+      if (controls.wireframe) {
+        ID1.setAttribute('transparency','1');
+        ID2.setAttribute('transparency','1');
+        ID3.setAttribute('transparency','1');
+        ID4.setAttribute('transparency','1');
+        ID5.setAttribute('transparency','1');
+        ID6.setAttribute('transparency','1');
+      } else {
+        ID1.setAttribute('transparency','0');
+        ID2.setAttribute('transparency','0');
+        ID3.setAttribute('transparency','0');
+        ID4.setAttribute('transparency','0');
+        ID5.setAttribute('transparency','0');
+        ID6.setAttribute('transparency','0');
+      }      
+    });
+    gui.add(controls,'help');
+   </script>
+  </body>
+  </html>

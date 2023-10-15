@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>specijalne ravnine</title>
+        <script src="../lib/jquery-3.3.1.min.js"></script>
+        <script src="../lib/bootstrap.min.js"></script>
+        <script src="../lib/dat.gui.min.js"></script>
+        <link rel="stylesheet" href="../lib/bootstrap.min.css">
+        <link rel="stylesheet" href="../lib/fontawesome/css/all.css">
+        <style>
+            body {margin: 0; overflow: hidden}
+            button:focus {outline:0 !important;}
+            .btn.btn-custom-sm {
+                border-radius: 0;
+            }
+            .matBut {
+                margin-right: 14px!important; 
+                margin-bottom: 14px!important;
+                width: 80px;
+                height:80px;
+            }
+            .card {
+                background-color: rgba(255,255,255, 0.95) !important;
+                font-size: 95%;
+            }
+            .dg.a { margin-right:0px !important; }
+        </style>
+    </head>
+
+
+    <body>
+
+        <div style="position: absolute; left:0px; top: 0px;">
+            <a type="button" class="btn btn-secondary btn-sm btn-custom-sm shadow-none" onclick="toggler('info');"><span class="fa fa-info-circle fa-2x" style="color:white;"></span></a>
+        </div>
+
+        <div id="info" class="card border-dark" style="position: absolute; left:5px; top: 45px; width:350px;">
+        <div id="infoHead" class="card-header">
+        Ax + By = 0
+        </div>
+        <div id="infoBody" class="card-body">
+        <p>Ravnina sadrži z-os.</p>
+        <p><b>Tastatura:</b> Pomoću tipki <b>A</b> i <b>D</b> dobivate druge ravnine ovog oblika.</p>
+        </div>
+        </div>
+       
+        <div align="center" style="position: absolute; right:30px; bottom: 30px; z-index: 2; width: 300px">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="btn-group">
+                        <button id="tipka_Q" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">Q</span></button>
+                        <button id="tipka_W" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">W</span></button>
+                        <button id="tipka_E" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">E</span></button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class=" btn-group">
+                        <button id="tipka_A" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">A</span></button>
+                        <button id="tipka_S" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">S</span></button>
+                        <button id="tipka_D" type="button" class="btn btn-info shadow-none col-md-4 matBut"><span style="font-weight: bold; font-size: 26px;">D</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true" data-backdrop="static">
+     <div class="modal-dialog modal-lg" role="document">
+       <div class="modal-content">
+         <div class="modal-header">
+           <h5 class="modal-title" id="exampleModalLabel">Specijalni položaji ravnine u prostoru</h5>
+           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+          <ul style="padding:8px;">
+            <li style="margin-bottom:5px;">Opći oblik jednadžbe ravnine u prostoru glasi <img src='data/opci1.png' style='vertical-align: text-bottom;'> pri čemu je <img src='data/opci2.png' style='vertical-align: text-bottom;'>.</li>
+            <li style="margin-bottom:5px;">U slučaju da su neki od brojeva <img src='data/opci3.png' style='vertical-align: text-bottom;'> jednaki nula, ravnina se nalazi u nekom specijalnom položaju s obzirom na koordinatni sustav.</li>
+            <li style="margin-bottom:5px;">Ako je <img src='data/opci4.png' style='vertical-align: baseline;'>, tada dobivamo trivijalnu relaciju koju zadovoljava svaka točka u prostoru pa u tom slučaju to nije ravnina.</li>
+            <li style="margin-bottom:5px;">Ako je <img src='data/opci5.png' style='vertical-align: baseline;'> i <img src='data/opci6.png' style='vertical-align: text-bottom;'>, tada niti jedna točka u prostoru ne zadovoljava gornju jednadžbu.</li>
+            <li style="margin-bottom:8px;">Sve ostale kombinacije da neki od brojeva <img src='data/opci3.png' style='vertical-align: text-bottom;'> budu jednaki nula, daju neki specijalni položaj ravnine s obzirom na koordinatni sustav. Svaki od tih slučajeva je ovdje posebno naveden i vizualiziran.</li>
+            <hr>
+            <li style="margin-bottom:5px;">U gornjem desnom kutu prozora možete odabrati jednu od kombinacija u kojoj su neki od brojeva <img src='data/opci3.png' style='vertical-align: text-bottom;'> jednaki nula. Automatski se vizualizira pripadna ravnina.</li>
+            <li style="margin-bottom:5px;">U gornjem lijevom kutu su prikazane informacije o trenutno odabranoj ravnini. Također, pomoću spomenutih tipki na tastaturi možete dobiti još neke druge ravnine s navedenim oblikom jednadžbe (ukoliko ima više takvih ravnina).</li>
+            <li style="margin-bottom:5px;">Informacije o ravnini možete po želji otvoriti ili zatvoriti klikom na tipku <span class="badge badge-secondary"><i class="fa fa-info-circle" aria-hidden="true"></i></span> u gornjem lijevom kutu prozora.</li>
+            <li>Pomoću srednje tipke miša možete približavati ili udaljavati kameru od objekta, a pomoću lijeve tipke miša možete se kretati oko objekta.</li>
+          </ul>
+         </div>
+         <div class="modal-footer">
+           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+       </div>
+     </div>
+    </div>
+
+        <div id="WebGL-output"></div>
+
+        <script language="JavaScript">
+            function toggler(divId) {
+                $("#" + divId).slideToggle(500);
+            }
+        </script>
+
+        <script language="JavaScript" type="module">
+        import * as THREE from '../lib/three.module.js';
+        import { OrbitControls } from '../lib/OrbitControls.js';
+    
+        var manager = new THREE.LoadingManager();
+        manager.onLoad = function() { // when all resources are loaded
+            init();
+        }
+
+        var font = null;
+        var texture = null;
+
+        var fontloader = new THREE.FontLoader(manager);
+        fontloader.load("../lib/helvetiker_regular.typeface.json", function(response) {font = response;});
+
+        var textureloader = new THREE.TextureLoader(manager);
+        textureloader.load('cement4.jpg', function(response) {texture = response});
+
+        function init() {
+            var plane, r, fi, theta;
+
+            var scene = new THREE.Scene();
+
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+            var renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setClearColor(0xA9A9A9, 1);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            $("#WebGL-output").append(renderer.domElement);
+
+            camera.position.x = 50;
+            camera.position.y = 14;
+            camera.position.z = 50;
+
+            var pomak;
+
+            var pointLight = new THREE.PointLight("#eeeeee");
+            pointLight.distance = 250;
+            pointLight.position.set(60,60,100);
+            scene.add(pointLight);
+
+            var pointLight2 = new THREE.PointLight("#eeeeee");
+            pointLight2.distance = 250;
+            pointLight2.position.set(-60,-60,-100);
+            scene.add(pointLight2);
+
+            var mat1 = new THREE.MeshPhongMaterial({color:0x7fffd4, specular: 0x7777ff,  emissive:0xb22222, flatShading: false});
+            var mat2 = new THREE.MeshBasicMaterial({color: 0x8fbc8f, side:THREE.DoubleSide, transparent: true, opacity:1, map:texture, flatShading: false});
+
+            var ravninaXY = new THREE.GridHelper(48, 48, 0x800000, 0x800000);
+            scene.add(ravninaXY);
+
+            var ravninaXZ = new THREE.GridHelper(48, 48, 0x000066, 0x000066);
+            ravninaXZ.rotation.z = Math.PI / 2;
+            scene.add(ravninaXZ);
+
+            var ravninaYZ = new THREE.GridHelper(48, 48, 0x000000, 0x000000);
+            ravninaYZ.rotation.x = Math.PI / 2;
+            scene.add(ravninaYZ);
+
+            var Zos = new THREE.Mesh(vektor(48), mat1);
+            scene.add(Zos);
+
+            var Yos = new THREE.Mesh(vektor(48), mat1);
+            Yos.rotation.z = -Math.PI / 2;
+            scene.add(Yos);
+
+            var Xos = new THREE.Mesh(vektor(48), mat1);
+            Xos.rotation.x = Math.PI / 2;
+            scene.add(Xos);
+
+            var tekst_options = {
+                size: 2,
+                height: 0.3,
+                font: font,
+                curveSegments: 12
+            };
+
+            var tekst_Zos = createText('z', tekst_options);
+            tekst_Zos.translateX(1);
+            tekst_Zos.translateY(25);
+            scene.add(tekst_Zos);
+
+            var tekst_Yos = createText('y', tekst_options);
+            tekst_Yos.translateX(26);
+            scene.add(tekst_Yos);
+
+            var tekst_Xos = createText('x', tekst_options);
+            tekst_Xos.translateY(-0.5);
+            tekst_Xos.translateZ(27.3);
+            tekst_Xos.rotation.y = Math.PI / 2;
+            scene.add(tekst_Xos);
+
+            var quaternion = new THREE.Quaternion();
+
+            plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(48,48,12,12), mat2);
+            fi = 45;
+            plane.rotation.y = Math.PI / 4;
+            scene.add(plane);
+
+            var orbitControls = new OrbitControls(camera, renderer.domElement);
+            orbitControls.minDistance = 25;
+            orbitControls.maxDistance = 130;
+            orbitControls.enablePan = false;
+            orbitControls.maxPolarAngle = 3.14;
+            orbitControls.minPolarAngle = 0;
+            orbitControls.target = scene.position;
+
+            orbitControls.addEventListener('change', render);
+
+            var controls = new function() {
+                this.ravnina = '* C=0, D=0';
+                this.help = function() {
+                    $("#infoModal").modal();
+                };
+            }
+
+            var gui = new dat.GUI({resizable : false});
+
+            var opcijaRavnina = gui.add(controls, 'ravnina', ['* A=0', '* B=0', '* C=0', '* D=0', '* A=0, B=0', '* A=0, C=0', '* B=0, C=0', '* A=0, D=0',
+                                              '* B=0, D=0', '* C=0, D=0', '* A=0, B=0, D=0', '* A=0, C=0, D=0', '* B=0, C=0, D=0']);
+
+            opcijaRavnina.onChange(function(value) {
+                plane.position.copy(scene.position);
+                plane.quaternion.copy(quaternion);
+                switch (value) {
+                    case '* A=0':
+                        fi = 45;
+                        r = 10;
+                        plane.rotation.order = 'YZX';
+                        plane.rotation.y = Math.PI / 2;
+                        plane.rotation.x = fi * Math.PI / 180;
+                        plane.translateZ(r);
+                        $("#infoHead").html("By + Cz + D = 0");
+                        $("#infoBody").html("<p>Ravnina je paralelna s x-osi, odnosno okomita je na yz-ravninu.</p>\
+                                           <p><b>Tastatura:</b> Pomoću tipki <b>A</b>, <b>D</b>, <b>W</b> i <b>S</b> dobivate druge ravnine ovog oblika.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* B=0':
+                        fi = 315;
+                        r = 10;
+                        plane.rotation.x = fi * Math.PI / 180;
+                        plane.translateZ(r);
+                        $("#infoHead").html("Ax + Cz + D = 0");
+                        $("#infoBody").html("<p>Ravnina je paralelna s y-osi, odnosno okomita je na xz-ravninu.</p>\
+                                           <p><b>Tastatura:</b> Pomoću tipki <b>A</b>, <b>D</b>, <b>W</b> i <b>S</b> dobivate druge ravnine ovog oblika.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* C=0':
+                        fi = 45;
+                        r = 10;
+                        plane.rotation.y = fi * Math.PI / 180;
+                        plane.translateZ(r);
+                        $("#infoHead").html("Ax + By + D = 0");
+                        $("#infoBody").html("<p>Ravnina je paralelna sa z-osi, odnosno okomita je na xy-ravninu.</p>\
+                                           <p><b>Tastatura:</b> Pomoću tipki <b>A</b>, <b>D</b>, <b>W</b> i <b>S</b> dobivate druge ravnine ovog oblika.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* D=0':
+                        fi = 45;
+                        theta = 40;
+                        plane.rotation.order = 'YZX';
+                        plane.rotation.y = fi * Math.PI / 180;
+                        plane.rotation.x = theta * Math.PI / 180;
+                        $("#infoHead").html("Ax + By + Cz = 0");
+                        $("#infoBody").html("<p>Ravnina prolazi kroz ishodište koordinatnog sustava.</p>\
+                                           <p><b>Tastatura:</b> Pomoću tipki <b>A</b>, <b>D</b>, <b>Q</b> i <b>E</b> dobivate druge ravnine ovog oblika.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* A=0, B=0':
+                        r = 14;
+                        plane.translateY(r);
+                        plane.rotation.x = Math.PI / 2;
+                        $("#infoHead").html("Cz + D = 0");
+                        $("#infoBody").html("<p>Ravnina je okomita na z-os, odnosno paralelna je s xy-ravninom.</p>\
+                                           <p><b>Tastatura:</b> Pomoću tipki <b>W</b> i <b>S</b> dobivate druge ravnine ovog oblika.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* A=0, C=0':
+                        r = 14;
+                        plane.translateX(r);
+                        plane.rotation.y = Math.PI / 2;
+                        $("#infoHead").html("By + D = 0");
+                        $("#infoBody").html("<p>Ravnina je okomita na y-os, odnosno paralelna je s xz-ravninom.</p>\
+                                           <p><b>Tastatura:</b> Pomoću tipki <b>W</b> i <b>S</b> dobivate druge ravnine ovog oblika.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* B=0, C=0':
+                        r = 14;
+                        plane.translateZ(r);
+                        $("#infoHead").html("Ax + D = 0");
+                        $("#infoBody").html("<p>Ravnina je okomita na x-os, odnosno paralelna je s yz-ravninom.</p>\
+                                           <p><b>Tastatura:</b> Pomoću tipki <b>W</b> i <b>S</b> dobivate druge ravnine ovog oblika.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* A=0, D=0':
+                        fi = 45;
+                        plane.rotation.order = 'YZX';
+                        plane.rotation.x = fi * Math.PI / 180;
+                        plane.rotation.y = Math.PI / 2;
+                        $("#infoHead").html("By + Cz = 0");
+                        $("#infoBody").html("<p>Ravnina sadrži x-os.</p>\
+                                           <p><b>Tastatura:</b> Pomoću tipki <b>A</b> i <b>D</b> dobivate druge ravnine ovog oblika.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* B=0, D=0':
+                        fi = 45;
+                        plane.rotation.x = fi * Math.PI / 180;
+                        $("#infoHead").html("Ax + Cz = 0");
+                        $("#infoBody").html("<p>Ravnina sadrži y-os.</p>\
+                                           <p><b>Tastatura:</b> Pomoću tipki <b>A</b> i <b>D</b> dobivate druge ravnine ovog oblika.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* C=0, D=0':
+                        fi = 45;
+                        plane.rotation.y = fi * Math.PI / 180;
+                        $("#infoHead").html("Ax + By = 0");
+                        $("#infoBody").html("<p>Ravnina sadrži z-os.</p>\
+                                           <p><b>Tastatura:</b> Pomoću tipki <b>A</b> i <b>D</b> dobivate druge ravnine ovog oblika.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* A=0, B=0, D=0':
+                        plane.rotation.x = Math.PI / 2;
+                        $("#infoHead").html("Cz = 0");
+                        $("#infoBody").html("<p>Radi se o xy-ravnini koja ima jednadžbu z=0.</p>");
+                        ravninaXY.visible = false;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* A=0, C=0, D=0':
+                        plane.rotation.y = Math.PI / 2;
+                        $("#infoHead").html("By = 0");
+                        $("#infoBody").html("<p>Radi se o xz-ravnini koja ima jednadžbu y=0.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = false;
+                        ravninaYZ.visible = true;
+                        break;
+                    case '* B=0, C=0, D=0':
+                        $("#infoHead").html("Ax = 0");
+                        $("#infoBody").html("<p>Radi se o yz-ravnini koja ima jednadžbu x=0.</p>");
+                        ravninaXY.visible = true;
+                        ravninaXZ.visible = true;
+                        ravninaYZ.visible = false;
+                        break;
+                }
+                render();
+            });
+
+            gui.add(controls,'help');
+
+            render();
+
+            function render() {
+                renderer.render( scene, camera );
+            }
+
+            $(window).resize( function() {
+                camera.aspect = (window.innerWidth) / (window.innerHeight);
+                camera.updateProjectionMatrix();
+                renderer.setSize( window.innerWidth, window.innerHeight);
+                render();
+            });
+
+            function vektor(h) {
+                var valjakGeometry = new THREE.CylinderGeometry(0.25,0.25,h,10);
+                var stozacGeometry = new THREE.CylinderGeometry(0,0.8,2,12);
+                var valjak = new THREE.Mesh(valjakGeometry);
+                var stozac = new THREE.Mesh(stozacGeometry);
+                var vek = new THREE.Geometry();
+                stozac.translateY(h/2 + 1);
+                valjak.updateMatrix();
+                stozac.updateMatrix();
+                vek.merge(valjak.geometry, valjak.matrix);
+                vek.merge(stozac.geometry, stozac.matrix);
+                return vek;
+            }
+
+            function createText(text, params) {
+                var textGeo = new THREE.TextGeometry(text, params);
+                textGeo.computeBoundingBox();
+                textGeo.computeVertexNormals();
+                var material = [new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false}),
+                                new THREE.MeshPhongMaterial({color: 0xff22cc, flatShading: false})];
+                var textMesh = new THREE.Mesh(textGeo, material);
+                return textMesh;
+            }
+
+            function tipka_A(opcija, dfi) {//smanjuje fi
+                switch (opcija) {
+                    case '* A=0':
+                        if (fi >= dfi) fi -= dfi;
+                        else fi = 360+fi-dfi;
+                        plane.translateZ(-r);
+                        plane.rotation.x = fi * Math.PI / 180;
+                        plane.translateZ(r);
+                        render();
+                        break;
+                    case '* B=0':
+                        if (fi >= dfi) fi -= dfi;
+                        else fi = 360+fi-dfi;
+                        plane.translateZ(-r);
+                        plane.rotation.x = fi * Math.PI / 180;
+                        plane.translateZ(r);
+                        render();
+                        break;
+                    case '* C=0':
+                        if (fi >= dfi) fi -= dfi;
+                        else fi = 360+fi-dfi;
+                        plane.translateZ(-r);
+                        plane.rotation.y = fi * Math.PI / 180;
+                        plane.translateZ(r);
+                        render();
+                        break;
+                    case '* D=0':
+                        if (fi >= dfi) fi -= dfi;
+                        else fi = 360+fi-dfi;
+                        plane.rotation.y = fi * Math.PI / 180;
+                        render();
+                        break;
+                    case '* A=0, D=0':
+                        if (fi >= dfi) fi -= dfi;
+                        else fi = 360+fi-dfi;
+                        plane.rotation.x = fi * Math.PI / 180;
+                        render();
+                        break;
+                    case '* B=0, D=0':
+                        if (fi >= dfi) fi -= dfi;
+                        else fi = 360+fi-dfi;
+                        plane.rotation.x = fi * Math.PI / 180;
+                        render();
+                        break;
+                    case '* C=0, D=0':
+                        if (fi >= dfi) fi -= dfi;
+                        else fi = 360+fi-dfi;
+                        plane.rotation.y = fi * Math.PI / 180;
+                        render();
+                        break;
+                }
+            }
+
+            function tipka_D(opcija, dfi) {//povecava fi
+                switch (opcija) {
+                    case '* A=0':
+                        if (fi <= 360-dfi) fi += dfi;
+                        else fi = fi+dfi-360;
+                        plane.translateZ(-r);
+                        plane.rotation.x = fi * Math.PI / 180;
+                        plane.translateZ(r);
+                        render();
+                        break;
+                    case '* B=0':
+                        if (fi <= 360-dfi) fi += dfi;
+                        else fi = fi+dfi-360;
+                        plane.translateZ(-r);
+                        plane.rotation.x = fi * Math.PI / 180;
+                        plane.translateZ(r);
+                        render();
+                        break;
+                    case '* C=0':
+                        if (fi <= 360-dfi) fi += dfi;
+                        else fi = fi+dfi-360;
+                        plane.translateZ(-r);
+                        plane.rotation.y = fi * Math.PI / 180;
+                        plane.translateZ(r);
+                        render();
+                        break;
+                    case '* D=0':
+                        if (fi <= 360-dfi) fi += dfi;
+                        else fi = fi+dfi-360;
+                        plane.rotation.y = fi * Math.PI / 180;
+                        render();
+                        break;
+                    case '* A=0, D=0':
+                        if (fi <= 360-dfi) fi += dfi;
+                        else fi = fi+dfi-360;
+                        plane.rotation.x = fi * Math.PI / 180;
+                        render();
+                        break;
+                    case '* B=0, D=0':
+                        if (fi <= 360-dfi) fi += dfi;
+                        else fi = fi+dfi-360;
+                        plane.rotation.x = fi * Math.PI / 180;
+                        render();
+                        break;
+                    case '* C=0, D=0':
+                        if (fi <= 360-dfi) fi += dfi;
+                        else fi = fi+dfi-360;
+                        plane.rotation.y = fi * Math.PI / 180;
+                        render();
+                        break;
+                }
+            }
+
+            function tipka_S(opcija,dr) {//smanjuje r
+                switch (opcija) {
+                    case '* A=0':
+                        if (r > -15) {
+                            if (r+15 >= dr) pomak = -dr;
+                            else pomak = -r-15;
+                            r += pomak;
+                            plane.translateZ(pomak);
+                            render();
+                        }
+                        break;
+                    case '* B=0':
+                        if (r > -15) {
+                            if (r+15 >= dr) pomak = -dr;
+                            else pomak = -r-15;
+                            r += pomak;
+                            plane.translateZ(pomak);
+                            render();
+                        }
+                        break;
+                    case '* C=0':
+                        if (r > -15) {
+                            if (r+15 >= dr) pomak = -dr;
+                            else pomak = -r-15;
+                            r += pomak;
+                            plane.translateZ(pomak);
+                            render();
+                        }
+                        break;
+                    case '* A=0, B=0':
+                        if (r > -20) {
+                            if (r+20 >= dr) pomak = -dr;
+                            else pomak = -r-20;
+                            r += pomak;
+                            plane.translateZ(-pomak);
+                            render();
+                        }
+                        break;
+                    case '* A=0, C=0':
+                        if (r > -20) {
+                            if (r+20 >= dr) pomak = -dr;
+                            else pomak = -r-20;
+                            r += pomak;
+                            plane.translateZ(pomak);
+                            render();
+                        }
+                        break;
+                    case '* B=0, C=0':
+                        if (r > -20) {
+                            if (r+20 >= dr) pomak = -dr;
+                            else pomak = -r-20;
+                            r += pomak;
+                            plane.translateZ(pomak);
+                            render();
+                        }
+                        break;
+                }
+            }
+
+            function tipka_W(opcija,dr) {//povecava r
+                switch (opcija) {
+                    case '* A=0':
+                        if (r < 15) {
+                            if (15-r >= dr) pomak = dr;
+                            else pomak = 15-r;
+                            r += pomak;
+                            plane.translateZ(pomak);
+                            render();
+                        }
+                        break;
+                    case '* B=0':
+                        if (r < 15) {
+                            if (15-r >= dr) pomak = dr;
+                            else pomak = 15-r;
+                            r += pomak;
+                            plane.translateZ(pomak);
+                            render();
+                        }
+                        break;
+                    case '* C=0':
+                        if (r < 15) {
+                            if (15-r >= dr) pomak = dr;
+                            else pomak = 15-r;
+                            r += pomak;
+                            plane.translateZ(pomak);
+                            render();
+                        }
+                        break;
+                    case '* A=0, B=0':
+                        if (r < 20) {
+                            if (20-r >= dr) pomak = dr;
+                            else pomak = 20-r;
+                            r += pomak;
+                            plane.translateZ(-pomak);
+                            render();
+                        }
+                        break;
+                    case '* A=0, C=0':
+                        if (r < 20) {
+                            if (20-r >= dr) pomak = dr;
+                            else pomak = 20-r;
+                            r += pomak;
+                            plane.translateZ(pomak);
+                            render();
+                        }
+                        break;
+                    case '* B=0, C=0':
+                        if (r < 20) {
+                            if (20-r >= dr) pomak = dr;
+                            else pomak = 20-r;
+                            r += pomak;
+                            plane.translateZ(pomak);
+                            render();
+                        }
+                        break;
+                }
+            }
+
+            function tipka_Q(dtheta) {//smanjuje theta
+                if (controls.ravnina == '* D=0') {
+                    if (theta >= dtheta) theta -= dtheta;
+                    else theta = 360+theta-dtheta;
+                    plane.rotation.x = theta * Math.PI / 180;
+                    render();
+                }
+            }
+
+            function tipka_E(dtheta) {//povecava theta
+                if (controls.ravnina == '* D=0') {
+                    if (theta <= 360-dtheta) theta += dtheta;
+                    else theta = theta+dtheta-360;
+                    plane.rotation.x = theta * Math.PI / 180;
+                    render();
+                }
+            }
+
+            $("#tipka_A").click(function() {
+                tipka_A(controls.ravnina,15);
+            });
+
+            $("#tipka_D").click(function() {
+                tipka_D(controls.ravnina,15);
+            });
+
+            $("#tipka_Q").click(function() {
+                tipka_Q(15);
+            });
+
+            $("#tipka_E").click(function() {
+                tipka_E(15);
+            });
+
+            $("#tipka_S").click(function() {
+                tipka_S(controls.ravnina,2);
+            });
+
+            $("#tipka_W").click(function() {
+                tipka_W(controls.ravnina,2);
+            });
+
+            window.addEventListener("keydown", event => {
+                if (!$('#infoModal').is(':visible')) {
+                    switch (event.key) {
+                        case 'a':
+                        tipka_A(controls.ravnina,2);
+                        break;
+                        case 'd':
+                        tipka_D(controls.ravnina,2);
+                        break;
+                        case 'q':
+                        tipka_Q(2);
+                        break;
+                        case 'e':
+                        tipka_E(2);
+                        break;
+                        case 's':
+                        tipka_S(controls.ravnina,0.5);
+                        break;
+                        case 'w':
+                        tipka_W(controls.ravnina,0.5);
+                        break;
+                    }
+                }   
+            });
+        }//init
+        </script>
+
+    </body>
+</html>

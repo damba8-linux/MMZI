@@ -1,0 +1,51 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[scale=1, line width=0.8pt,x=1.5cm,y=1.5cm, font=\small]
+\coordinate (A) at (-2,-1);
+\coordinate (B) at (2,-1);
+\coordinate (C) at (3.5,1);
+\coordinate (D) at (-0.5,1);
+\coordinate (P1) at ($(A)!0.5!(B)$);
+\coordinate (P2) at ($(D)!0.5!(C)$);
+\coordinate (T) at ($(P1)!0.55!(P2)$);
+\path (T) +(15:1) coordinate (Q1);
+\path (T) +(40:0.8) coordinate (Q2);
+\path (T) +(15:1.5) coordinate (N);
+\draw (T) -- +(220:2.2);
+\path[name path=pr1] (N) -- +(0,1);
+\path[name path=pr2] (T) -- +(40:2.2);
+\path[name intersections={of=pr1 and pr2, by=S}];
+\filldraw[orange, fill opacity=0.5,line width = 0pt] (A) -- (B) -- (C) -- (D) -- cycle;
+\draw[orange] (A) -- (B) -- (C) -- (D) -- cycle;
+%\draw ($(C)!0.315!(D)$) -- ($(C)!0.385!(D)$);
+%\draw ($(C)!0.415!(D)$) -- ($(C)!0.655!(D)$);
+%\draw ($(C)!0.68!(D)$) -- (D) -- (A) -- ($(A)!0.1!(B)$);
+\draw[black!60] (T) -- +(15:2.2);
+\draw[black!60] (T) -- +(195:2.2);
+\draw (T) -- +(40:2.2);
+\draw[line width=0.4pt] (Q1) arc (15:65:0.5);
+\draw[line width=0.4pt] (Q2) arc (65:101:1); 
+\draw[->, >=stealth',blue] (T)-- +(0,2.2cm);
+\draw[fill=white,draw=black!60] (T) circle(1.8pt);
+\draw[line width=0.4pt] (N) -- (S);
+\draw[line width=0.4pt] ($(N)+(90:0.12)$) -- ++($0.1*(T)-0.1*(Q1)$) -- +(0,-0.12); 
+\node[above left] at ($(B)+(0.08,0)$) {$\Pi$};
+\node at ($(T)+(0.6,0.3)$) {\rotatebox{45}{$\chi$}};
+\node[right] at ($(T)+(-0.08,0.37)$) {\rotatebox{45}{\scriptsize$\frac{\pi}{2}-\chi$}};
+\node at ($(T)+(36:2.1)$) {$p$};
+\node at ($(T)+(10:2.1)$) {$p'$};
+\node at ($(T)+(0.14,2.1cm)$) {$\vec{n}$};
+\end{tikzpicture}

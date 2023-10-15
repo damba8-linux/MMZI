@@ -1,0 +1,61 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[line width=0.8pt]
+\tikzstyle{vrh}=[draw,circle,inner sep=1.3pt,fill=white]
+\tikzstyle{vrh2}=[draw,circle,inner sep=1.2pt,fill=white,draw=black!50]
+\node[inner sep=0pt] at (5.48,6.9) {};
+\coordinate (kA) at (0,0);
+\coordinate (kB) at (1,2);
+\coordinate (kC) at (6,2);
+\coordinate (kD) at (5,0);
+\coordinate (kE) at (5,6);
+\coordinate (kF) at (3,5);
+\coordinate (kG) at (7,2);
+\coordinate (kH) at (8,4);
+\coordinate (kT) at (1.19,3.64);
+\coordinate (kS) at (2.58,1.02);
+\coordinate (kSc) at (4.65,4.93);
+\coordinate (kPr) at (4.21,4.09);
+\coordinate (kTc) at (3.97,3.64);
+\coordinate (kN) at (0.1,5.69);
+\coordinate (kor1) at ($(kS)!0.5!(kT)$);
+\coordinate (kor2) at ($(kS)!0.5!(kTc)$);
+\node[vrh,label={[xshift=-6pt,yshift=2pt]below:$T$}] (T) at (kT) {};
+\node[vrh2,label={[xshift=4pt,yshift=2pt]below:\color{black!60}$S$},xslant=0.3] (S) at (kS) {};
+\node[vrh2,label={[xshift=15pt,yshift=3pt]below:\color{black!60}$S'$},xslant=0.3] (Sc) at (kSc) {};
+\node[black!50,sloped,xslant=0.3,above right] at (-0.02,-0.07) {$\pi_1$};
+\node[black!50,sloped,yslant=-0.9,above right] at (6.4,2.5) {\small$\pi_2$};
+\draw[black!30] (kPr)--(Sc);
+\draw[line width=1pt,red!50] (5.8,1.9)--(5.8,1.6);
+\draw[line width=1pt,->,>=stealth',red] (5.8,1.6)--(5.8,1) node[pos=0.9,right] {$\vec{n}_1$};
+\shadedraw[opacity=0.3,top color=white,bottom color=gray,shading angle=105,line width=0.5pt]
+(kA)--(kB)--(kC)--(kD)--cycle;
+\shadedraw[opacity=0.3,top color=white,bottom color=gray,shading angle=105,line width=0.5pt]
+(kE)--(kF)--(kG)--(kH)--cycle;
+\draw (kN)--(T) node[pos=0,right] {$p$};
+\draw (T)--(S);
+\draw (S)--(kPr);
+\draw (Sc)--(5.48,6.5) node[pos=1,right=-2.5pt] {$p'$};
+\draw[line width=0.6pt] (S)--($(S)+(0,5cm)$) node[pos=0.95,right=-2pt] {$q$};
+\node[vrh,label={[xshift=6pt,yshift=2pt]below:$T'$}] (Tc) at (kTc) {};
+\draw[dashed,line width=0.6pt] (T)--(Tc);
+\node[vrh,label={[xshift=-7pt,yshift=2pt]below:$P$}] (P) at (2.58,3.64) {};
+\draw[line width=1.5pt,->,>=stealth',red] ($(kN)!0.15!(kT)$)--($(kN)!0.7!(kT)$) node[pos=0.2,right] {$\vec{v}$};
+\draw[line width=0.5pt] (P) ++(-90:0.23) arc (-90:0:0.23);
+\filldraw ($(P)+(-45:0.14)$) circle (0.25pt);
+\draw[line width=0.5pt,postaction={decorate,decoration={markings,mark=at position 0.5 with {\draw[-,black,line width=0.5pt] (0,-2pt) -- (0,2pt);}}}] (S) ++(90:0.65) arc (90:117.93:0.65);
+\draw[line width=0.5pt,postaction={decorate,decoration={markings,mark=at position 0.5 with {\draw[-,black,line width=0.5pt] (0,-2pt) -- (0,2pt);}}}] (S) ++(62.07:0.6) arc (62.07:90:0.6);
+\end{tikzpicture}

@@ -1,0 +1,36 @@
+﻿\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{mindmap,trees}
+\usetikzlibrary{shadows}
+\usepgflibrary{shapes}
+\usetikzlibrary{shadows.blur}
+\usetikzlibrary{shapes.callouts}
+\usetikzlibrary{shapes.arrows}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{matrix}
+\usetikzlibrary{patterns}
+\usetikzlibrary{math}
+\usetikzlibrary{arrows}
+\usetikzlibrary{intersections}
+\begin{tikzpicture}[scale=1, line width=0.6pt,x=0.6cm,y=0.6cm, font=\small]
+\filldraw[yellow,line width=0pt] (7,2)--(10,5)--(10,10)--(7,7);
+\draw (7,2)--(10,5)--(10,10)--(7,7)--cycle;
+\filldraw[red,line width=0pt] (7,7)--(10.68,8.02)--(10.68,3.02)--(7,2);
+\draw (7,7)--(10.68,8.02)--(10.68,3.02)--(7,2)--cycle;
+\filldraw[lightgreen,line width=0pt] (7,7)--(11,6)--(11,1)--(7,2);
+\draw (7,7)--(11,6)--(11,1)--(7,2)--cycle;
+\filldraw[deepskyblue,line width=0pt] (7,7)--(9.3,3.98)--(9.3,-1.06)--(7,2);
+\draw (7,7)--(9.3,3.98)--(9.3,-1.06)--(7,2)--cycle;
+\filldraw[deepskyblue,line width=0pt] (7,7)--(4.7,10.02)--(4.7,5.06)--(7,2);
+\draw (7,7)--(4.7,10.02)--(4.7,5.06)--(7,2)--cycle;
+\filldraw[lightgreen,line width=0pt] (7,7)--(3,8)--(3,3)--(7,2);
+\draw (7,7)--(3,8)--(3,3)--(7,2)--cycle;
+\filldraw[red,line width=0pt] (7,7)--(3.32,5.98)--(3.32,0.98)--(7,2);
+\draw (7,7)--(3.32,5.98)--(3.32,0.98)--(7,2)--cycle;
+\filldraw[yellow,line width=0pt] (7,7)--(4,4)--(4,-1)--(7,2);
+\draw (7,7)--(4,4)--(4,-1)--(7,2)--cycle;
+\draw (7,9)--(7,7);
+\draw (7,2)--(7,0);
+\node[right] at (6.9,8.8) {$p$};
+\end{tikzpicture}
